@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/personal projects/android development projects/Forest of Life/app/src/main/res/layout/activity_login.xml" value="0.26766304347826086" />
+        <entry key="..\:/personal projects/android development projects/Forest of Life/app/src/main/res/layout/activity_main_page.xml" value="0.26766304347826086" />
+        <entry key="..\:/personal projects/android development projects/Forest of Life/app/src/main/res/layout/fragment_forest.xml" value="0.264" />
+        <entry key="..\:/personal projects/android development projects/Forest of Life/app/src/main/res/layout/fragment_garden.xml" value="0.26766304347826086" />
+        <entry key="..\:/personal projects/android development projects/Forest of Life/app/src/main/res/layout/fragment_nursery.xml" value="0.26766304347826086" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
