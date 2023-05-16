@@ -6,6 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".NurseryFragment">
 
+    <EditText
+        android:id="@+id/editTextNumber3"
+        android:layout_width="77dp"
+        android:layout_height="59dp"
+        android:layout_marginEnd="56dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="476dp" />
+
+    <EditText
+        android:id="@+id/editTextNumber2"
+        android:layout_width="77dp"
+        android:layout_height="59dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintEnd_toStartOf="@+id/editTextNumber3"
+        tools:layout_editor_absoluteY="476dp" />
+
     <FrameLayout
         android:id="@+id/frameLayout3"
         android:layout_width="match_parent"
@@ -35,22 +55,21 @@
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:clickable="true"
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTime" />
+        tools:layout_editor_absoluteY="535dp" />
 
     <EditText
-        android:id="@+id/editTextTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:id="@+id/editTextNumber"
+        android:layout_width="77dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="56dp"
         android:ems="10"
-        android:inputType="time"
-        app:layout_constraintBottom_toTopOf="@+id/floatingActionButton"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:inputType="number"
+        app:layout_constraintEnd_toStartOf="@+id/editTextNumber2"
+        app:layout_constraintHorizontal_bias="0.433"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout3" />
+        tools:layout_editor_absoluteY="476dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
