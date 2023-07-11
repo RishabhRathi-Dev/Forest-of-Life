@@ -228,6 +228,11 @@ private fun saveUserInformation(name: String, context: Context) {
     editor.putString("name", name)
     editor.putBoolean("userRegistered", true)
 
+    //Initial Data
+    editor.putInt("water", 0)
+    editor.putInt("tree", 0)
+    editor.putInt("fertilizer", 0)
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
         editor.apply()
     }

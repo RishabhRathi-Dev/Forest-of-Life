@@ -1,5 +1,6 @@
 package com.rishabh.forestoflife.composables.utils.headers
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -30,8 +32,13 @@ import com.rishabh.forestoflife.R
 
 
 @Composable
-fun MainHeader(pageName: String, treesCount: Int, waterCount:Int, fertilizerCount:Int){
+fun MainHeader(pageName: String){
     //TODO: Create Main Header which goes in home, focus, island, profile
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+    val waterCount = sharedPreferences.getInt("water", 0)
+    val treesCount = sharedPreferences.getInt("tree", 0)
+    val fertilizerCount = sharedPreferences.getInt("fertilizer", 0)
     Row(
         modifier = Modifier
             .size(
@@ -103,5 +110,5 @@ fun MainHeader(pageName: String, treesCount: Int, waterCount:Int, fertilizerCoun
 @Preview
 @Composable
 fun MainHeaderPreview(){
-    MainHeader("Testing", 10, 100, 10)
+    MainHeader("Testing")
 }

@@ -15,6 +15,27 @@ sealed class BottomBarScreen(
         icon_focused = R.drawable.home_focus
     )
 
+    object Focus: BottomBarScreen(
+        route = "Focus",
+        title = "Focus",
+        icon = R.drawable.mindfulness_48px,
+        icon_focused = R.drawable.mindfulness_focus
+    )
+
+    object Island: BottomBarScreen(
+        route = "Island",
+        title = "Island",
+        icon = R.drawable.nature_48px,
+        icon_focused = R.drawable.nature_focus
+    )
+
+    object Profile: BottomBarScreen(
+        route = "Profile",
+        title = "Profile",
+        icon = R.drawable.person_48px,
+        icon_focused = R.drawable.person_focus
+    )
+
 
 
 }

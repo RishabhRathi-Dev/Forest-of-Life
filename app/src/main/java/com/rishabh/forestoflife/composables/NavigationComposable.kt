@@ -37,19 +37,19 @@ fun NavigationComposable(context: Context, navController: NavHostController) {
         // Main
         composable(Home.route){
             //Home(navController)
-            Home()
+            Home(navController)
         }
 
         composable(Focus.route){
-            Focus()
+            Focus(navController)
         }
 
         composable(Island.route){
-            Island()
+            Island(navController)
         }
 
         composable(Profile.route){
-            Profile()
+            Profile(navController)
         }
 
         //Others

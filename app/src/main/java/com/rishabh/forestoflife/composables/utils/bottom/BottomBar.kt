@@ -33,7 +33,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun BottomBar(navController: NavHostController){
     //TODO: Create Bottom bar ref https://www.boltuix.com/2022/08/custom-bottom-navigation-bar.html
     val screens = listOf(
-        BottomBarScreen.Home
+        BottomBarScreen.Home,
+        BottomBarScreen.Focus,
+        BottomBarScreen.Island,
+        BottomBarScreen.Profile
     )
 
     val navStackBackEntry by navController.currentBackStackEntryAsState()
@@ -74,7 +77,7 @@ fun RowScope.AddItem(
 
     Box(
         modifier = Modifier
-            .height(40.dp)
+            .height(50.dp)
             .clip(CircleShape)
             .background(background)
             .clickable(onClick = {
@@ -93,7 +96,7 @@ fun RowScope.AddItem(
             Icon(
                 painter = painterResource(id = if (selected) screen.icon_focused else screen.icon),
                 contentDescription = "icon",
-                tint = contentColor
+                tint = contentColor,
             )
             /*
             AnimatedVisibility(visible = selected) {
