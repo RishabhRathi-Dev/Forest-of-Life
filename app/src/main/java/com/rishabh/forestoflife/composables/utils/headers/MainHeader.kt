@@ -33,7 +33,8 @@ import com.rishabh.forestoflife.R
 
 @Composable
 fun MainHeader(pageName: String){
-    //TODO: Create Main Header which goes in home, focus, island, profile
+
+    // TODO:: Change to use Room as LiveData is needed
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
     val waterCount = sharedPreferences.getInt("water", 0)

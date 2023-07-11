@@ -22,9 +22,13 @@ fun Home(navHostController : NavHostController){
     }
 }
 
+@Composable
+fun HomeMock(){
+
+}
 
 @Preview
 @Composable
 fun HomePreview(){
-
+    HomeMock()
 }
