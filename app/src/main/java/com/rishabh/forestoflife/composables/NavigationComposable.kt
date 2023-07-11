@@ -31,7 +31,7 @@ fun NavigationComposable(context: Context, navController: NavHostController) {
         }
 
         composable(Onboarding2.route){
-            Onboarding2()
+            Onboarding2(navController)
         }
 
         // Main

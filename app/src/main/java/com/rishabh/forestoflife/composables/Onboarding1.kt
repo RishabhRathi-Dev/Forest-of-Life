@@ -49,8 +49,6 @@ import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 
 @Composable
 fun Onboarding1(navHostController: NavHostController){
-    // TODO : Onboarding 1 here
-
     Box(
         modifier = Modifier
             .fillMaxSize()
