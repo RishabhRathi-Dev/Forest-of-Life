@@ -10,7 +10,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.Update
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 import java.util.Calendar
@@ -18,9 +22,10 @@ import java.util.Calendar
 // Define the Inventory entity
 @Entity(tableName = "inventory")
 data class Inventory(
-    val water: Int,
-    val fertilizer: Int,
-    val trees: Int
+    @PrimaryKey val id: Long = 0,
+    var water: Int,
+    var fertilizer: Int,
+    var trees: Int
 )
 
 // Define the Island entity
@@ -50,20 +55,40 @@ data class Task(
 // Create a Data Access Object (DAO) for the Inventory entity
 @Dao
 interface InventoryDao {
-    @Query("SELECT * FROM inventory")
-    fun getAllItems(): Flow<List<Inventory>>
+    @Query("SELECT * FROM inventory WHERE id=0")
+    fun getAllItems(): LiveData<List<Inventory>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(item: Inventory)
+
+    @Update
+    suspend fun updateItem(item: Inventory)
+
+    @Transaction
+    suspend fun addToInventory(waterToAdd: Int, fertilizerToAdd: Int, treesToAdd: Int) {
+        val existingItem = getInventoryItem()
+        existingItem?.let {
+            val updatedWater = existingItem.water + waterToAdd
+            val updatedFertilizer = existingItem.fertilizer + fertilizerToAdd
+            val updatedTrees = existingItem.trees + treesToAdd
+            existingItem.water = updatedWater
+            existingItem.fertilizer = updatedFertilizer
+            existingItem.trees = updatedTrees
+            updateItem(existingItem)
+        }
+    }
+
+    @Query("SELECT * FROM inventory WHERE id=0")
+    suspend fun getInventoryItem(): Inventory?
 }
 
 // Create a Data Access Object (DAO) for the Island entity
 @Dao
 interface IslandDao {
     @Query("SELECT * FROM island")
-    fun getAllIslands(): Flow<List<Island>>
+    fun getAllIslands(): LiveData<List<Island>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertIsland(island: Island)
 }
 
@@ -71,9 +96,9 @@ interface IslandDao {
 @Dao
 interface TaskDao {
     @Query("SELECT * FROM task")
-    fun getAllTasks(): Flow<List<Task>>
+    fun getAllTasks(): LiveData<List<Task>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: Task)
 
     @Update
@@ -112,7 +137,22 @@ interface TaskDao {
 }
 
 // Create the Room database
+// Define a custom type converter
+class DateTypeConverter {
+    @TypeConverter
+    fun toDate(timestamp: Long?): Date? {
+        return if (timestamp == null) null else Date(timestamp)
+    }
+
+    @TypeConverter
+    fun toTimestamp(date: Date?): Long? {
+        return date?.time
+    }
+}
+
+// Update your Room database configuration with the type converter
 @Database(entities = [Inventory::class, Island::class, Task::class], version = 1)
+@TypeConverters(DateTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun inventoryDao(): InventoryDao
     abstract fun islandDao(): IslandDao

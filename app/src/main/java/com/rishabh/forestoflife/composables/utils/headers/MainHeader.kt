@@ -15,6 +15,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -28,18 +30,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rishabh.forestoflife.R
+import com.rishabh.forestoflife.data.AppViewModel
+import com.rishabh.forestoflife.data.Inventory
 
 
 @Composable
 fun MainHeader(pageName: String){
 
-    // TODO:: Change to use Room as LiveData is needed
-    val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
-    val waterCount = sharedPreferences.getInt("water", 0)
-    val treesCount = sharedPreferences.getInt("tree", 0)
-    val fertilizerCount = sharedPreferences.getInt("fertilizer", 0)
+    // TODO:: Add Background
+    val viewModel: AppViewModel = viewModel()
+    val inventoryItems by viewModel.getInventoryItems().observeAsState()
+    var treesCount : Int = 0
+    var waterCount : Int = 0
+    var fertilizerCount : Int = 0
+
+    inventoryItems?.forEach {
+        treesCount = it.trees
+        waterCount = it.water
+        fertilizerCount = it.fertilizer
+    }
+
     Row(
         modifier = Modifier
             .size(

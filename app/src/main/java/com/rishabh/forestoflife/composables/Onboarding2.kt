@@ -49,13 +49,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
+import com.rishabh.forestoflife.data.AppViewModel
 
 @Composable
 fun Onboarding2(navHostController: NavHostController){
     val context = LocalContext.current
+    val viewModel: AppViewModel = viewModel()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -153,7 +157,7 @@ fun Onboarding2(navHostController: NavHostController){
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top=10.dp, bottom=10.dp, start = 16.dp, end = 16.dp)
+                    .padding(top = 10.dp, bottom = 10.dp, start = 16.dp, end = 16.dp)
             ) {
                 OutlinedButton(
                     onClick = {
@@ -162,7 +166,8 @@ fun Onboarding2(navHostController: NavHostController){
                         val allFieldsFilled = nameState.value.isNotBlank()
 
                         if (allFieldsFilled) {
-                            saveUserInformation(nameState.value, context)
+                            saveUserInformation(nameState.value, context, viewModel)
+
                             // Navigate to Home screen
                             navHostController.navigate("Home") {
                                 // Pop up to the start destination of the graph to
@@ -222,20 +227,18 @@ private fun mToast(context: Context){
     Toast.makeText(context, "Registration unsuccessful. Please enter all data correctly.", Toast.LENGTH_LONG).show()
 }
 
-private fun saveUserInformation(name: String, context: Context) {
+private fun saveUserInformation(name: String, context: Context, viewModel: AppViewModel) {
     val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+
     val editor = sharedPreferences.edit()
     editor.putString("name", name)
     editor.putBoolean("userRegistered", true)
 
-    //Initial Data
-    editor.putInt("water", 0)
-    editor.putInt("tree", 0)
-    editor.putInt("fertilizer", 0)
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
         editor.apply()
     }
+
+    viewModel.initialSetup()
 }
 
 @Preview
