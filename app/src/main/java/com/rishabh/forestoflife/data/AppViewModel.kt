@@ -36,7 +36,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             taskHeading = "Excercise",
             isDaily = true,
             isWeekly = false,
-            water = 1,
+            water = 5,
             fertilizer = 1,
             due = Calendar.getInstance().time,
             important = true
@@ -46,7 +46,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             taskHeading = "Make Routine",
             isDaily = false,
             isWeekly = false,
-            water = 1,
+            water = 5,
             fertilizer = 1,
             due = Calendar.getInstance().time,
             important = true

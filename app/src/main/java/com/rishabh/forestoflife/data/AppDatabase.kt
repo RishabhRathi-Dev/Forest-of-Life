@@ -217,7 +217,7 @@ interface DueTaskDao {
                         isDaily = task.isDaily,
                         isWeekly = task.isWeekly,
                         water = 5,
-                        fertilizer = 5,
+                        fertilizer = 1,
                         due = task.due
                     )
 
@@ -239,7 +239,7 @@ interface DueTaskDao {
                         isDaily = task.isDaily,
                         isWeekly = task.isWeekly,
                         water = 5,
-                        fertilizer = 5,
+                        fertilizer = 1,
                         due = task.due
                     )
 
