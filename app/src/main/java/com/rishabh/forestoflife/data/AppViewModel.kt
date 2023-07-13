@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.Database
 import androidx.room.Room
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val database: AppDatabase
@@ -21,6 +23,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun initialSetup() {
         val inventoryDao: InventoryDao = database.inventoryDao()
+        val taskDao : TaskDao = database.taskDao()
 
         val newItem = Inventory(
             water = 10,
@@ -28,9 +31,27 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             trees = 20
         )
 
+        val newTask = Task(
+            taskHeading = "Excercise",
+            isDaily = true,
+            isWeekly = false,
+            water = 1,
+            fertilizer = 1,
+            due = Calendar.getInstance().time,
+            important = true
+        )
+
         viewModelScope.launch {
             inventoryDao.insertItem(newItem)
+            taskDao.insertTask(newTask)
         }
+    }
+
+    fun getDueTaskList() : LiveData<List<DueTask>> {
+        return database.dueTaskDao().getAllTasks()
+    }
+    fun getTaskList() : LiveData<List<Task>> {
+        return database.taskDao().getAllTasks()
     }
 
     fun getInventoryItems(): LiveData<List<Inventory>> {

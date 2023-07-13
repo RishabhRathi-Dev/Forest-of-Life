@@ -7,15 +7,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.Update
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import kotlinx.coroutines.flow.Flow
 import java.util.Date
 import java.util.Calendar
 
@@ -48,9 +45,18 @@ data class Task(
     val water: Int,
     val fertilizer: Int,
     val isDaily: Boolean,
-    val isWeekly: Boolean
+    val isWeekly: Boolean,
+    val important: Boolean
 )
 
+// Define the DueTask entity
+@Entity(tableName = "DueTask")
+data class DueTask(
+    @PrimaryKey(autoGenerate = true)
+    val taskId: Long = 0,
+    var taskHeading: String,
+    var important: Boolean
+)
 
 // Create a Data Access Object (DAO) for the Inventory entity
 @Dao
@@ -95,11 +101,15 @@ interface IslandDao {
 // Create a Data Access Object (DAO) for the Task entity
 @Dao
 interface TaskDao {
+
     @Query("SELECT * FROM task")
     fun getAllTasks(): LiveData<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: Task)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addTaskToDueTable(dueTask: DueTask)
 
     @Update
     suspend fun updateTask(task: Task)
@@ -121,7 +131,19 @@ interface TaskDao {
                 task.due = calendar.time
                 updateTask(task)
             } else {
-                deleteTask(taskId)
+                deleteTask(task.taskId)
+            }
+        }
+    }
+
+    @Transaction
+    suspend fun checkDueAndUpdate() {
+        getAllTasks().value?.forEach { task ->
+            val currentDate = Date()
+            if (task.due.before(currentDate)) {
+                val toDue = DueTask(taskHeading = task.taskHeading, important = task.important)
+                addTaskToDueTable(toDue)
+                deleteTask(task.taskId)
             }
         }
     }
@@ -132,8 +154,15 @@ interface TaskDao {
     @Query("SELECT * FROM task WHERE taskId = :taskId")
     suspend fun getTaskById(taskId: Long): Task?
 
-    @Query("DELETE FROM task WHERE due < :currentDateInMillis")
-    suspend fun deleteExpiredTasks(currentDateInMillis: Long)
+}
+
+@Dao
+interface DueTaskDao {
+    @Query("SELECT * FROM DueTask")
+    fun getAllTasks(): LiveData<List<DueTask>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTask(task: DueTask)
 }
 
 // Create the Room database
@@ -151,10 +180,11 @@ class DateTypeConverter {
 }
 
 // Update your Room database configuration with the type converter
-@Database(entities = [Inventory::class, Island::class, Task::class], version = 1)
+@Database(entities = [Inventory::class, Island::class, Task::class, DueTask::class], version = 1)
 @TypeConverters(DateTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun inventoryDao(): InventoryDao
     abstract fun islandDao(): IslandDao
     abstract fun taskDao(): TaskDao
+    abstract fun dueTaskDao() : DueTaskDao
 }
