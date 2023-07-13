@@ -112,7 +112,7 @@ fun Onboarding2(navHostController: NavHostController){
                     fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.itim)),
                     fontWeight = FontWeight(400),
-                    color = Color(0xFF7C9C6E),
+                    color = colorResource(id = R.color.card_green),
                     letterSpacing = 0.6.sp,
                 ),
                 modifier = Modifier
@@ -191,7 +191,11 @@ fun Onboarding2(navHostController: NavHostController){
                     modifier= Modifier.wrapContentSize(),
                     border= BorderStroke(0.dp, Color(MaterialTheme.colorScheme.background.hashCode())),
                     contentPadding = PaddingValues(10.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFF789F65), contentColor =  Color(0xFFEDF2EB)),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = colorResource(id = R.color.card_green), 
+                        contentColor =  colorResource(id = R.color.app_bg)
+                    ),
+                    
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp)
                 ) {
 
@@ -210,7 +214,7 @@ fun Onboarding2(navHostController: NavHostController){
                     Icon(
                         painterResource(id = R.drawable.arrow_forward_48px) ,
                         contentDescription = "content description",
-                        tint= Color(0xFFEDF2EB),
+                        tint= colorResource(id = R.color.app_bg),
                         modifier = Modifier
                             .width(30.dp)
                             .height(30.dp)

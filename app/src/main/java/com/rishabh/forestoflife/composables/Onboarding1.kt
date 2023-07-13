@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.TextStyle
@@ -130,7 +131,7 @@ fun Onboarding1(navHostController: NavHostController){
                               },
                     shape = CircleShape,
                     modifier= Modifier.size(60.dp),
-                    border= BorderStroke(0.dp, Color(MaterialTheme.colorScheme.background.hashCode())),
+                    border= BorderStroke(0.dp, color = colorResource(id = R.color.app_bg)),
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White, contentColor =  Color.Gray),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp)

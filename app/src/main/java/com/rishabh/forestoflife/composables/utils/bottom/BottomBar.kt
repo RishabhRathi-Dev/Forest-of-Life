@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.rishabh.forestoflife.R
 
 @Composable
 fun BottomBar(navController: NavHostController){
@@ -70,10 +72,10 @@ fun RowScope.AddItem(
     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
     val background =
-        if (selected) (Color(0xFF789F65)).copy(alpha = 0.6f) else Color.Transparent
+        if (selected) ((colorResource(id = R.color.card_green))).copy(alpha = 0.6f) else Color.Transparent
 
     val contentColor =
-        if (selected) Color(0xFFEDF2EB) else Color.Black
+        if (selected) colorResource(id = R.color.app_bg) else Color.Black
 
     Box(
         modifier = Modifier

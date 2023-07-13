@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -38,7 +39,7 @@ fun AlternateHeader(pageName : String){
                 width = LocalConfiguration.current.screenWidthDp.dp, height = 70.dp
             )
             .safeContentPadding()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(colorResource(id = R.color.app_bg))
         ,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -46,9 +47,9 @@ fun AlternateHeader(pageName : String){
         Button(
             modifier = Modifier
                 .wrapContentSize()
-                .offset(x=(-15).dp)
+                .offset(x = (-15).dp)
             ,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background, contentColor = Color.Black),
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.app_bg), contentColor = Color.Black),
             onClick = { /*TODO*/ }) {
             Icon(
                 painter = painterResource(id = R.drawable.arrow_back_48px),

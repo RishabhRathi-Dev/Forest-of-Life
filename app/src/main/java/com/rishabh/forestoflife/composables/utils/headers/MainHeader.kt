@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -59,7 +60,7 @@ fun MainHeader(pageName: String){
                 width = LocalConfiguration.current.screenWidthDp.dp, height = 70.dp
             )
             .safeContentPadding()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = colorResource(id = R.color.app_bg))
         ,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
