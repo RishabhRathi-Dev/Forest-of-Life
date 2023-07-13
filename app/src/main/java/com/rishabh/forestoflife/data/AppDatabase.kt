@@ -55,7 +55,10 @@ data class DueTask(
     @PrimaryKey(autoGenerate = true)
     val taskId: Long = 0,
     var taskHeading: String,
-    var important: Boolean
+    var important: Boolean,
+    var due: Date,
+    val isDaily: Boolean,
+    val isWeekly: Boolean,
 )
 
 // Create a Data Access Object (DAO) for the Inventory entity
@@ -141,7 +144,14 @@ interface TaskDao {
         getAllTasks().value?.forEach { task ->
             val currentDate = Date()
             if (task.due.before(currentDate)) {
-                val toDue = DueTask(taskHeading = task.taskHeading, important = task.important)
+                val toDue = DueTask(
+                    taskHeading = task.taskHeading,
+                    important = task.important,
+                    isWeekly = task.isWeekly,
+                    isDaily = task.isDaily,
+                    due = task.due
+                )
+
                 addTaskToDueTable(toDue)
                 deleteTask(task.taskId)
             }
@@ -161,11 +171,45 @@ interface TaskDao {
 
 @Dao
 interface DueTaskDao {
-    @Query("SELECT * FROM DueTask")
+    @Query("SELECT * FROM DueTask ORDER BY important DESC")
     fun getAllTasks(): LiveData<List<DueTask>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: DueTask)
+
+    @Query("SELECT * FROM DueTask WHERE taskId = :taskId")
+    suspend fun getTaskById(taskId: Long): DueTask?
+
+    @Update
+    suspend fun updateTask(task: DueTask)
+
+    @Transaction
+    suspend fun completeTask(taskId: Long) {
+        val task = getTaskById(taskId)
+        task?.let {
+            if (task.isDaily) {
+                val calendar = Calendar.getInstance()
+                calendar.time = task.due
+                calendar.add(Calendar.DAY_OF_MONTH, 1) // Add one day
+                task.due = calendar.time
+                updateTask(task)
+            } else if (task.isWeekly) {
+                val calendar = Calendar.getInstance()
+                calendar.time = task.due
+                calendar.add(Calendar.WEEK_OF_YEAR, 1) // Add one week
+                task.due = calendar.time
+                updateTask(task)
+            } else {
+                deleteTask(task.taskId)
+            }
+        }
+    }
+
+    @Query("DELETE FROM DueTask WHERE taskId = :taskId")
+    suspend fun deleteTask(taskId: Long)
+
+    @Query("UPDATE DueTask SET important = (NOT important) WHERE taskId = :taskId")
+    suspend fun markUnmarkImportance(taskId: Long)
 }
 
 // Create the Room database

@@ -28,10 +28,20 @@ object Profile: Destinations{
     override val route = "Profile"
 }
 
-object Tasks: Destinations{
-    override val route = "Tasks"
+// Others
+
+object TaskList: Destinations{
+    override val route = "TaskList"
 }
 
-object Create: Destinations{
-    override val route = "Create"
+object CreateTask: Destinations{
+    override val route = "CreateTask"
+}
+
+object ChoosePlant: Destinations{
+    override val route = "ChoosePlant"
+}
+
+object ChooseTree: Destinations{
+    override val route = "ChooseTree"
 }

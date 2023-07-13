@@ -24,6 +24,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun initialSetup() {
         val inventoryDao: InventoryDao = database.inventoryDao()
         val taskDao : TaskDao = database.taskDao()
+        val dueTaskDao : DueTaskDao = database.dueTaskDao()
 
         val newItem = Inventory(
             water = 10,
@@ -51,12 +52,29 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             important = true
         )
 
+        val readAbout = DueTask(
+            taskHeading = "Read About in Profile",
+            important = true,
+            isWeekly = false,
+            isDaily = false,
+            due = Calendar.getInstance().time
+        )
+
         viewModelScope.launch {
             inventoryDao.insertItem(newItem)
             taskDao.insertTask(excercise)
             taskDao.insertTask(makeRoutine)
+            dueTaskDao.insertTask(readAbout)
         }
     }
+
+    fun workerCall(){
+        viewModelScope.launch {
+            database.taskDao().checkDueAndUpdate()
+        }
+    }
+
+    // Tasks Functions
 
     fun taskCompleted(taskId : Long, waterToAdd: Int, fertilizerToAdd: Int) {
         viewModelScope.launch {
@@ -77,12 +95,36 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getDueTaskList() : LiveData<List<DueTask>> {
-        return database.dueTaskDao().getAllTasks()
-    }
     fun getTaskList() : LiveData<List<Task>> {
         return database.taskDao().getAllTasks()
     }
+
+    // Due Task Functions
+
+    fun getDueTaskList() : LiveData<List<DueTask>> {
+        return database.dueTaskDao().getAllTasks()
+    }
+
+    fun dueTaskCompleted(taskId : Long) {
+        viewModelScope.launch {
+            database.dueTaskDao().completeTask(taskId = taskId)
+        }
+    }
+
+    fun deleteDueTask(taskId: Long){
+        viewModelScope.launch {
+            database.dueTaskDao().deleteTask(taskId)
+        }
+    }
+
+    fun markAndUnMarkImportantDueTask(taskId: Long){
+        viewModelScope.launch {
+            database.dueTaskDao().markUnmarkImportance(taskId)
+        }
+    }
+
+
+    // Inventory Functions
 
     fun getInventoryItems(): LiveData<List<Inventory>> {
         return database.inventoryDao().getAllItems()

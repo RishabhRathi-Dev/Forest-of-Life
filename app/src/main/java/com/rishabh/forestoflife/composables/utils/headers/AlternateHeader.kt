@@ -28,10 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
 
 @Composable
-fun AlternateHeader(pageName : String){
+fun AlternateHeader(pageName : String, navHostController: NavHostController){
     // TODO:: Create Alternate Header that goes on Task List and Create
     Row(
         modifier = Modifier
@@ -41,7 +42,7 @@ fun AlternateHeader(pageName : String){
             .safeContentPadding()
             .background(colorResource(id = R.color.app_bg))
         ,
-        verticalAlignment = Alignment.CenterVertically
+        //verticalAlignment = Alignment.CenterVertically
     ) {
         // Back Button
         Button(
@@ -50,10 +51,15 @@ fun AlternateHeader(pageName : String){
                 .offset(x = (-15).dp)
             ,
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.app_bg), contentColor = Color.Black),
-            onClick = { /*TODO*/ }) {
+            onClick = {
+
+                navHostController.popBackStack()
+
+            }) {
             Icon(
                 painter = painterResource(id = R.drawable.arrow_back_48px),
                 contentDescription = "Test",
+                modifier = Modifier.size(50.dp)
             )
         }
 
@@ -72,5 +78,5 @@ fun AlternateHeader(pageName : String){
 @Preview
 @Composable
 fun AlternateHeaderPreview(){
-    AlternateHeader("Testing")
+    //AlternateHeader("Testing")
 }

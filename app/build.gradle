@@ -50,9 +50,14 @@ android {
 
 dependencies {
 
+    // Work Manager
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
+
+    // Compose
     implementation("androidx.compose.material3:material3:1.1.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
 
+    // Room
     implementation("androidx.room:room-runtime:2.5.2")
     annotationProcessor("androidx.room:room-compiler:2.5.2")
     implementation "androidx.room:room-ktx:2.5.2"
