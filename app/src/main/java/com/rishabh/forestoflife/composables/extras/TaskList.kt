@@ -26,6 +26,8 @@ fun TaskList(navHostController: NavHostController){
     Scaffold(
         topBar = { AlternateHeader(pageName = "Tasks List", navHostController = navHostController) },
     ) {
+        val viewModel : AppViewModel = viewModel()
+        viewModel.workerCall()
         Box(
             modifier = Modifier.padding(it)
         ) {

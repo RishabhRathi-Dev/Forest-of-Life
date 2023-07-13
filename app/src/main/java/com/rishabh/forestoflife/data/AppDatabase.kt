@@ -1,20 +1,22 @@
 package com.rishabh.forestoflife.data
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.RoomDatabase
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Database
-import androidx.room.Update
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Entity
+import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import java.util.Date
+import androidx.room.Update
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 
 // Define the Inventory entity
 @Entity(tableName = "inventory")
@@ -108,6 +110,9 @@ interface TaskDao {
     @Query("SELECT * FROM task ORDER BY important DESC, due ASC")
     fun getAllTasks(): LiveData<List<Task>>
 
+    @Query("SELECT * FROM task ORDER BY important DESC, due ASC")
+    fun getAllTasksAsList() : List<Task>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: Task)
 
@@ -120,6 +125,7 @@ interface TaskDao {
     @Transaction
     suspend fun completeTask(taskId: Long) {
         val task = getTaskById(taskId)
+
         task?.let {
             if (task.isDaily) {
                 val calendar = Calendar.getInstance()
@@ -141,8 +147,13 @@ interface TaskDao {
 
     @Transaction
     suspend fun checkDueAndUpdate() {
-        getAllTasks().value?.forEach { task ->
-            val currentDate = Date()
+
+        val calendar = Calendar.getInstance()
+        calendar.time = Calendar.getInstance().time
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        val currentDate = calendar.time
+        val tasks = getAllTasksAsList()
+        tasks?.forEach { task ->
             if (task.due.before(currentDate)) {
                 val toDue = DueTask(
                     taskHeading = task.taskHeading,
@@ -183,22 +194,61 @@ interface DueTaskDao {
     @Update
     suspend fun updateTask(task: DueTask)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addTaskToTaskTable(task: Task)
+
     @Transaction
     suspend fun completeTask(taskId: Long) {
         val task = getTaskById(taskId)
+        val c = Calendar.getInstance()
+        c.time = Calendar.getInstance().time
+        c.add(Calendar.DAY_OF_MONTH, -1)
+        val current = c.time
         task?.let {
             if (task.isDaily) {
                 val calendar = Calendar.getInstance()
                 calendar.time = task.due
                 calendar.add(Calendar.DAY_OF_MONTH, 1) // Add one day
                 task.due = calendar.time
-                updateTask(task)
+                if (current.before(task.due)){
+                    val backToCurrent = Task(
+                        taskHeading = task.taskHeading,
+                        important = task.important,
+                        isDaily = task.isDaily,
+                        isWeekly = task.isWeekly,
+                        water = 5,
+                        fertilizer = 5,
+                        due = task.due
+                    )
+
+                    addTaskToTaskTable(backToCurrent)
+                    deleteTask(task.taskId)
+
+                } else {
+                    updateTask(task)
+                }
             } else if (task.isWeekly) {
                 val calendar = Calendar.getInstance()
                 calendar.time = task.due
-                calendar.add(Calendar.WEEK_OF_YEAR, 1) // Add one week
+                calendar.add(Calendar.WEEK_OF_YEAR, 7) // Add one week
                 task.due = calendar.time
-                updateTask(task)
+                if (current.before(task.due)){
+                    val backToCurrent = Task(
+                        taskHeading = task.taskHeading,
+                        important = task.important,
+                        isDaily = task.isDaily,
+                        isWeekly = task.isWeekly,
+                        water = 5,
+                        fertilizer = 5,
+                        due = task.due
+                    )
+
+                    addTaskToTaskTable(backToCurrent)
+                    deleteTask(task.taskId)
+
+                } else {
+                    updateTask(task)
+                }
             } else {
                 deleteTask(task.taskId)
             }

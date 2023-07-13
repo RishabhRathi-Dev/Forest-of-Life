@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +38,8 @@ import java.util.Calendar
 @Composable
 fun Home(navHostController : NavHostController){
     // TODO: Create Home
+    val viewModel : AppViewModel = viewModel()
+    viewModel.workerCall()
 
     Scaffold(
         topBar = { MainHeader(pageName = "Main") },
@@ -104,6 +107,7 @@ fun Home(navHostController : NavHostController){
                 }
 
             }
+
         }
     }
 }

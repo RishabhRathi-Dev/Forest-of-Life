@@ -68,6 +68,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // TODO : Call is not updating list
     fun workerCall(){
         viewModelScope.launch {
             database.taskDao().checkDueAndUpdate()
