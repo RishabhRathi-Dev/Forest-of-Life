@@ -102,7 +102,7 @@ interface IslandDao {
 @Dao
 interface TaskDao {
 
-    @Query("SELECT * FROM task")
+    @Query("SELECT * FROM task ORDER BY important DESC, due ASC")
     fun getAllTasks(): LiveData<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -147,6 +147,9 @@ interface TaskDao {
             }
         }
     }
+
+    @Query("UPDATE task SET important = (NOT important) WHERE taskId = :taskId")
+    suspend fun markUnmarkImportance(taskId: Long)
 
     @Query("DELETE FROM task WHERE taskId = :taskId")
     suspend fun deleteTask(taskId: Long)

@@ -34,13 +34,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rishabh.forestoflife.R
+import com.rishabh.forestoflife.data.AppViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
 @Composable
 fun TaskCard(
+    taskId: Long,
     TaskHeading : String,
     Due : Date,
     Water : Int,
@@ -52,13 +55,21 @@ fun TaskCard(
     //TODO:: Create customizable Task Card
     val w = (LocalConfiguration.current.screenWidthDp/2 - 20)
     val h = (LocalConfiguration.current.screenHeightDp/5 - 20).dp
+
+    val viewModel : AppViewModel = viewModel()
+
     Card(
         modifier = Modifier
             .padding(10.dp)
             .wrapContentSize()
         ,
 
-        elevation = CardDefaults.cardElevation(5.dp)
+        elevation = CardDefaults.cardElevation(5.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = colorResource(id = R.color.card_green),
+            contentColor = colorResource(id = R.color.app_white)
+        )
+
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -69,7 +80,7 @@ fun TaskCard(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
                     .wrapContentHeight()
-                    .size((1.5*w).dp, h)
+                    .size((1.5 * w).dp, h)
 
             ) {
                 Text(
@@ -130,12 +141,16 @@ fun TaskCard(
                             resulting = "Error"
                         }
 
-                        if (isDaily){
+                        else if (isDaily){
                             resulting = "Daily"
                         }
 
-                        if (isWeekly){
+                        else if (isWeekly){
                             resulting = "Weekly"
+                        }
+
+                        else {
+                            resulting = "One Time"
                         }
 
 
@@ -164,14 +179,18 @@ fun TaskCard(
                 }
             }
 
+            DeleteButton(viewModel = viewModel, taskId = taskId)
+
             // Star and Completed Button
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.size((0.5*w).dp, h).padding(5.dp)
+                modifier = Modifier
+                    .size((0.5 * w).dp, h)
+                    .padding(5.dp)
             ) {
-                ImportantToggleButton(important)
-                CompletedButton()
+                ImportantToggleButton(taskId, viewModel, important)
+                CompletedButton(viewModel, taskId = taskId, water = Water, fertilizer = Fertilizer)
             }
         }
 
@@ -179,9 +198,24 @@ fun TaskCard(
 }
 
 @Composable
-fun CompletedButton(){
+fun DeleteButton(viewModel: AppViewModel, taskId: Long){
+    IconButton(onClick = {
+        viewModel.deleteTask(taskId)
+    }) {
+        Icon(
+            painter = painterResource(id = R.drawable.delete_48px),
+            contentDescription = "Delete Task",
+            modifier = Modifier.size(50.dp)
+        )
+    }
+}
+
+@Composable
+fun CompletedButton(viewModel: AppViewModel, taskId : Long, water : Int, fertilizer : Int){
     IconButton(
-        onClick = { /*TODO*/ },
+        onClick = {
+            viewModel.taskCompleted(taskId = taskId, waterToAdd = water, fertilizerToAdd = fertilizer)
+        },
         modifier = Modifier
             .size(60.dp)
 
@@ -195,13 +229,13 @@ fun CompletedButton(){
 }
 
 @Composable
-fun ImportantToggleButton(important: Boolean) {
+fun ImportantToggleButton(taskId: Long, viewModel: AppViewModel,important: Boolean) {
     val (isImportant, setImportant) = remember { mutableStateOf(important) }
 
     IconButton(
         onClick = {
             setImportant(!isImportant)
-            //TODO : Change in database
+            viewModel.markAndUnMarkImportant(taskId)
                   },
         modifier = Modifier
             .size(50.dp)
@@ -219,5 +253,5 @@ fun ImportantToggleButton(important: Boolean) {
 @Preview
 @Composable
 fun TaskCardPreview(){
-    TaskCard("Tesaaadfaeaaaaaaaaaaaaaaaaaaaaaaaaating", Calendar.getInstance().time, 10, 5, true, false, true)
+    TaskCard(0, "Tesaaadfaeaaaaaaaaaaaaaaaaaaaaaaaaating", Calendar.getInstance().time, 10, 5, true, false, true)
 }

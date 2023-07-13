@@ -31,7 +31,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             trees = 20
         )
 
-        val newTask = Task(
+        val excercise = Task(
             taskHeading = "Excercise",
             isDaily = true,
             isWeekly = false,
@@ -41,9 +41,39 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             important = true
         )
 
+        val makeRoutine = Task(
+            taskHeading = "Make Routine",
+            isDaily = false,
+            isWeekly = false,
+            water = 1,
+            fertilizer = 1,
+            due = Calendar.getInstance().time,
+            important = true
+        )
+
         viewModelScope.launch {
             inventoryDao.insertItem(newItem)
-            taskDao.insertTask(newTask)
+            taskDao.insertTask(excercise)
+            taskDao.insertTask(makeRoutine)
+        }
+    }
+
+    fun taskCompleted(taskId : Long, waterToAdd: Int, fertilizerToAdd: Int) {
+        viewModelScope.launch {
+            database.inventoryDao().addToInventory(waterToAdd = waterToAdd, fertilizerToAdd = fertilizerToAdd, treesToAdd = 0)
+            database.taskDao().completeTask(taskId = taskId)
+        }
+    }
+
+    fun deleteTask(taskId: Long){
+        viewModelScope.launch {
+            database.taskDao().deleteTask(taskId)
+        }
+    }
+
+    fun markAndUnMarkImportant(taskId: Long){
+        viewModelScope.launch {
+            database.taskDao().markUnmarkImportance(taskId)
         }
     }
 
