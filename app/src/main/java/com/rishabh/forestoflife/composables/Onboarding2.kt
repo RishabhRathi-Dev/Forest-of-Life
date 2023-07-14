@@ -1,7 +1,9 @@
 package com.rishabh.forestoflife.composables
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -49,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -167,6 +170,9 @@ fun Onboarding2(navHostController: NavHostController){
 
                         if (allFieldsFilled) {
                             saveUserInformation(nameState.value, context, viewModel)
+
+                            val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                            ContextCompat.startActivity(context, intent, null)
 
                             // Navigate to Home screen
                             navHostController.navigate("Home") {
