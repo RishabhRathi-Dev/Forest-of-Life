@@ -155,7 +155,7 @@ fun timer(){
                     while (timeElapsed < (value * 60)) {
                         delay(1000) // Change interval here (in milliseconds)
                         timeElapsed++
-                        progress = 1 - (((value * 60) - timeElapsed).toFloat() / (value * 60))
+                        progress = (((timeElapsed).toFloat()) / (value * 60))
                         Log.d("Time", progress.toString())
                     }
                 }
