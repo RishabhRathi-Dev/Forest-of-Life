@@ -10,23 +10,27 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.colorResource
 import androidx.core.view.WindowCompat
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.rishabh.forestoflife.R
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = AppBg
+    primary = Green,
+    secondary = whiteSecond,
+    tertiary = PurpleGrey80,
+    background = AppBg,
 )
 
 private val LightColorScheme = lightColorScheme(
-
     background = AppBg,
     primary = Green,
-    secondary = whiteSecond
+    secondary = Color.Black,
+    tertiary = AppBg,
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -56,9 +60,19 @@ fun ForestOfLifeTheme(
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
+        val systemUiController = rememberSystemUiController()
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            systemUiController.setNavigationBarColor(
+                color = colorScheme.background,
+                darkIcons = false
+            )
+
+            systemUiController.setNavigationBarColor(
+                color = colorScheme.background,
+                darkIcons = false
+            )
+
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

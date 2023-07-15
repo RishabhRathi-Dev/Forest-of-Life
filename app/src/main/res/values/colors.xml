@@ -10,6 +10,7 @@
     <color name="app_white">#FFF8F8F8</color>
     <color name="card_green">#FF779F65</color>
     <color name="dark_card_green">#FF314639</color>
+    <color name="dark_mode_icon">#FFEFE3E5</color>
     <color name="app_yellow">#FFF3E989</color>
     <color name="app_bg">#FFEDF2EB</color>
     <color name="app_red">#FFE54343</color>

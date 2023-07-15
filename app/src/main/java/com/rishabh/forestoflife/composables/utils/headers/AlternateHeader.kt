@@ -2,6 +2,7 @@ package com.rishabh.forestoflife.composables.utils.headers
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -40,7 +41,6 @@ fun AlternateHeader(pageName : String, navHostController: NavHostController){
                 width = LocalConfiguration.current.screenWidthDp.dp, height = 70.dp
             )
             .safeContentPadding()
-            .background(colorResource(id = R.color.app_bg))
         ,
         //verticalAlignment = Alignment.CenterVertically
     ) {
@@ -50,7 +50,9 @@ fun AlternateHeader(pageName : String, navHostController: NavHostController){
                 .wrapContentSize()
                 .offset(x = (-15).dp)
             ,
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.app_bg), contentColor = Color.Black),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent ,
+                contentColor = if(isSystemInDarkTheme()) colorResource(id = R.color.dark_mode_icon) else Color.Black),
             onClick = {
 
                 navHostController.popBackStack()

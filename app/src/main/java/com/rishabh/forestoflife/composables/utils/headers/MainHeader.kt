@@ -60,7 +60,6 @@ fun MainHeader(pageName: String){
                 width = LocalConfiguration.current.screenWidthDp.dp, height = 70.dp
             )
             .safeContentPadding()
-            .background(color = colorResource(id = R.color.app_bg))
         ,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

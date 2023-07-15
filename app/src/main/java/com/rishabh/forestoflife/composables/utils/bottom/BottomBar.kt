@@ -3,6 +3,7 @@ package com.rishabh.forestoflife.composables.utils.bottom
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -72,10 +73,15 @@ fun RowScope.AddItem(
     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
     val background =
-        if (selected) ((colorResource(id = R.color.card_green))).copy(alpha = 0.6f) else Color.Transparent
+        if (selected) ((colorResource(id = R.color.card_green))) else Color.Transparent
 
-    val contentColor =
+    var contentColor =
         if (selected) colorResource(id = R.color.app_bg) else Color.Black
+
+    if (isSystemInDarkTheme()){
+        contentColor =
+            if (selected) colorResource(id = R.color.app_bg) else colorResource(id = R.color.dark_mode_icon)
+    }
 
     Box(
         modifier = Modifier
