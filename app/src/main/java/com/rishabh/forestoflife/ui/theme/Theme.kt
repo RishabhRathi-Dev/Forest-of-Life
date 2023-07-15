@@ -2,6 +2,7 @@ package com.rishabh.forestoflife.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.Window
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -11,26 +12,25 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.rishabh.forestoflife.R
+
 
 private val DarkColorScheme = darkColorScheme(
     primary = Green,
     secondary = whiteSecond,
     tertiary = PurpleGrey80,
-    background = AppBg,
+    background = secondBlack,
 )
 
 private val LightColorScheme = lightColorScheme(
     background = AppBg,
     primary = Green,
     secondary = Color.Black,
-    tertiary = AppBg,
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -58,12 +58,18 @@ fun ForestOfLifeTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
+    if (darkTheme){
+
+    }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         val systemUiController = rememberSystemUiController()
         SideEffect {
             val window = (view.context as Activity).window
-            systemUiController.setNavigationBarColor(
+
+            systemUiController.setStatusBarColor(
                 color = colorScheme.background,
                 darkIcons = false
             )
@@ -73,13 +79,13 @@ fun ForestOfLifeTheme(
                 darkIcons = false
             )
 
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

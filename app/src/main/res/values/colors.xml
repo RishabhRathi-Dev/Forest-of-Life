@@ -6,6 +6,7 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="black2">#FF201A1A</color>
 
     <color name="app_white">#FFF8F8F8</color>
     <color name="card_green">#FF779F65</color>
@@ -14,4 +15,5 @@
     <color name="app_yellow">#FFF3E989</color>
     <color name="app_bg">#FFEDF2EB</color>
     <color name="app_red">#FFE54343</color>
+    <color name="app_transparent">#00FFFFFF</color>
 </resources>
