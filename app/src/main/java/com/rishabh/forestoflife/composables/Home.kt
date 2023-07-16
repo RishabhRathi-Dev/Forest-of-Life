@@ -1,5 +1,7 @@
 package com.rishabh.forestoflife.composables
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +28,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
@@ -38,6 +41,7 @@ import java.util.Calendar
 @Composable
 fun Home(navHostController : NavHostController){
     // TODO: Create Home
+
     val viewModel : AppViewModel = viewModel()
     viewModel.workerCall()
 
@@ -85,7 +89,7 @@ fun Home(navHostController : NavHostController){
 
                 }
 
-                Column(){
+                Column {
                     val viewModel : AppViewModel = viewModel()
                     val tasksItems by viewModel.getTaskList().observeAsState()
                     var count = 2

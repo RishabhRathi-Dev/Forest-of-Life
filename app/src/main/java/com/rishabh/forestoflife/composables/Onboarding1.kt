@@ -92,7 +92,7 @@ fun Onboarding1(navHostController: NavHostController){
                     painter = painterResource(R.mipmap._64903),
                     contentDescription = "Your Image",
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                    contentScale = ContentScale.Crop
                 )
             }
 

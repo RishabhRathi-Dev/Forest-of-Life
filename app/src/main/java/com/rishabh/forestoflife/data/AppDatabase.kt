@@ -153,7 +153,7 @@ interface TaskDao {
         calendar.add(Calendar.DAY_OF_MONTH, -1)
         val currentDate = calendar.time
         val tasks = getAllTasksAsList()
-        tasks?.forEach { task ->
+        tasks.forEach { task ->
             if (task.due.before(currentDate)) {
                 val toDue = DueTask(
                     taskHeading = task.taskHeading,

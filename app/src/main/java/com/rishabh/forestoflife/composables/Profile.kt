@@ -10,15 +10,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,15 +35,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.rishabh.forestoflife.R
@@ -54,30 +65,9 @@ fun Profile(navHostController : NavHostController){
                 .padding(it)
         ) {
 
-            val sharedPreferences = LocalContext.current.getSharedPreferences("forestoflife", Context.MODE_PRIVATE)
+            val sharedPreferences = LocalContext.current.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
             var selectedImageUri by remember {
-                mutableStateOf<Uri?>(null)
-            }
-
-            val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.PickVisualMedia(),
-                onResult = { uri -> selectedImageUri = uri }
-            )
-
-            if (sharedPreferences.contains("profile")){
-                selectedImageUri = Uri.parse(sharedPreferences.getString("profile", null))
-            }
-
-            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            if (selectedImageUri != null){
-                LocalContext.current.contentResolver.takePersistableUriPermission(
-                    selectedImageUri!!, flag)
-                val editor = sharedPreferences.edit()
-                editor.putString("profile", selectedImageUri.toString())
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-                    editor.apply()
-                }
-
+                mutableStateOf(sharedPreferences.getInt("profile", R.drawable.person_48px))
             }
 
             // Photo, Name,
@@ -85,60 +75,103 @@ fun Profile(navHostController : NavHostController){
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                
+
+                var expanded by remember { mutableStateOf(false) }
+                val pictureList = listOf(
+                    R.drawable.person_48px,
+                    R.drawable.star_48px
+                    // TODO:: Add more image resource IDs here
+                )
+
                 IconButton(
                     onClick = {
-                        singlePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
+                        expanded = true
                     },
 
                     modifier = Modifier
                         .size(150.dp)
                         .clip(shape = CircleShape)
-                        .background(color = colorResource(id = R.color.card_green))
+                        .background(color = colorResource(id = R.color.card_green).copy(alpha = 0.1f))
 
                 ) {
+                    Icon(
+                        painter = painterResource(id = selectedImageUri),
+                        contentDescription = "Profile",
+                        modifier = Modifier.size(60.dp)
+                    )
+                }
 
-                    if (selectedImageUri == null){
-                        Icon(
-                            painter = painterResource(id = R.drawable.person_48px),
-                            contentDescription = "Placeholder"
-
-                        )
-
-                    } else {
-
-                        AsyncImage(
-                            model = selectedImageUri,
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxWidth(),
-                            contentScale = ContentScale.Crop
-                        )
-
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .offset(x=(LocalConfiguration.current.screenWidthDp/2).dp)
+                ) {
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                    ) {
+                        pictureList.forEach { picture ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    val editor = sharedPreferences.edit()
+                                    editor.putInt("profile", picture)
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                                        editor.apply()
+                                    }
+                                    selectedImageUri = picture
+                                    expanded = false
+                                }
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = picture),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(60.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
+                }
 
+                sharedPreferences.getString("name", "Anon")?.let {
+                        it1 ->
+                    Text(
+                        text = it1,
+                        fontSize = 32.sp,
+                        modifier = Modifier
+                            .padding(16.dp)
+
+                    )
                 }
 
             }
 
             // Trees Grown
-            Row() {
+            Row {
 
             }
 
             // Flowers Grown
-            Row() {
+            Row {
 
             }
 
             // Total Focus
-            Row() {
+            Row {
 
             }
 
         }
     }
+}
+
+@Composable
+fun DropDownForProfile(){
+    // Dropdown menu
+
 }
 
 @Preview

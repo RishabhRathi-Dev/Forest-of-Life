@@ -38,7 +38,7 @@ fun TaskList(navHostController: NavHostController){
                     modifier = Modifier.padding(16.dp)
                 )
 
-                Column() {
+                Column {
                     val viewModel: AppViewModel = viewModel()
                     val tasksItems by viewModel.getTaskList().observeAsState()
                     tasksItems?.forEach { item ->

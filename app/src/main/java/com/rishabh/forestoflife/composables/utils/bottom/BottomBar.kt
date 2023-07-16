@@ -17,6 +17,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +34,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rishabh.forestoflife.R
+import com.rishabh.forestoflife.composables.stopDND
 
 @Composable
 fun BottomBar(navController: NavHostController){
@@ -70,6 +74,15 @@ fun RowScope.AddItem(
     currentDestination: NavDestination?,
     navController: NavHostController
 ) {
+
+    var isScreenChanging by remember {
+        mutableStateOf(false)
+    }
+
+    if (isScreenChanging){
+        stopDND()
+    }
+
     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
     val background =
@@ -90,6 +103,9 @@ fun RowScope.AddItem(
             .background(background)
             .clickable(onClick = {
                 navController.navigate(screen.route) {
+                    if (screen.route == "Home" || screen.route == "Island" || screen.route == "Profile") {
+                        isScreenChanging = true
+                    }
                     popUpTo(navController.graph.findStartDestination().id)
                     launchSingleTop = true
                 }
