@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,6 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
@@ -50,13 +53,21 @@ fun Home(navHostController : NavHostController){
         bottomBar = { BottomBar(navController = navHostController) }
     ) {
         Column(
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
         ) {
 
-            Column(modifier = Modifier.padding(top=80.dp)){
+            Column(
+                modifier = Modifier
+                    .size(LocalConfiguration.current.screenWidthDp.dp, (LocalConfiguration.current.screenHeightDp/3.5).dp)
+                    .background(Color.Blue)
+            ) {
+
+            }
+
+            Column(){
 
                 Row(
                     modifier = Modifier

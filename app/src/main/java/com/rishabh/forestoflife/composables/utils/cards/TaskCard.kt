@@ -258,5 +258,5 @@ fun ImportantToggleButton(taskId: Long, viewModel: AppViewModel,important: Boole
 @Preview
 @Composable
 fun TaskCardPreview(){
-    TaskCard(0, "Tesaaadfaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaatingaaaaaaaaaaaaaa", Calendar.getInstance().time, 10, 5, true, false, true)
+    TaskCard(0, "adfaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaatingaaaaaaaaaaaaaaaaaaaaaaaaaa", Calendar.getInstance().time, 10, 5, true, false, true)
 }

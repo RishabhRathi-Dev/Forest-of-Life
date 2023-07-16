@@ -9,6 +9,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.DropdownMenu
@@ -35,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -93,13 +96,18 @@ fun Profile(navHostController : NavHostController){
                     modifier = Modifier
                         .size(150.dp)
                         .clip(shape = CircleShape)
-                        .background(color = colorResource(id = R.color.card_green).copy(alpha = 0.1f))
+                        .background(
+                            color = if (isSystemInDarkTheme())
+                                        colorResource(id = R.color.app_white).copy(alpha = 0.5f)
+                                    else
+                                        colorResource(id = R.color.card_green).copy(alpha = 0.1f)
+                        )
 
                 ) {
                     Icon(
                         painter = painterResource(id = selectedImageUri),
                         contentDescription = "Profile",
-                        modifier = Modifier.size(60.dp)
+                        modifier = Modifier.size(100.dp)
                     )
                 }
 
@@ -111,6 +119,12 @@ fun Profile(navHostController : NavHostController){
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .background(color = if (isSystemInDarkTheme())
+                                Color.LightGray.copy(alpha = 0.9f)
+                            else
+                                colorResource(id = R.color.card_green).copy(alpha = 0.15f)
+                            )
                     ) {
                         pictureList.forEach { picture ->
                             DropdownMenuItem(
@@ -124,16 +138,11 @@ fun Profile(navHostController : NavHostController){
                                     expanded = false
                                 }
                             ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = picture),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(60.dp)
-                                    )
-                                }
+                                Image(
+                                    painter = painterResource(id = picture),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(50.dp)
+                                )
                             }
                         }
                     }
