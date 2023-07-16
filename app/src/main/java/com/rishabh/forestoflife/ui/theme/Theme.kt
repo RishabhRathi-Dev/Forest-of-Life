@@ -78,8 +78,8 @@ fun ForestOfLifeTheme(
             )
 
             systemUiController.isNavigationBarVisible = false
-
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
 

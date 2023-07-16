@@ -61,7 +61,7 @@ fun Home(navHostController : NavHostController){
 
             Column(
                 modifier = Modifier
-                    .size(LocalConfiguration.current.screenWidthDp.dp, (LocalConfiguration.current.screenHeightDp/3.5).dp)
+                    .size(LocalConfiguration.current.screenWidthDp.dp, (LocalConfiguration.current.screenHeightDp/3.35).dp)
                     .background(Color.Blue)
             ) {
 
