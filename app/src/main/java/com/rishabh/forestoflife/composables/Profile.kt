@@ -176,9 +176,11 @@ fun Profile(navHostController : NavHostController){
                         text = "Trees Grown : "
                     )
 
-                    Text(
-                        text = "placeholder"
-                    )
+                    sharedPreferences.getString("TreesGrown", "0")?.let { it1 ->
+                        Text(
+                            text = it1
+                        )
+                    }
                 }
 
                 // Flowers Grown
@@ -190,9 +192,11 @@ fun Profile(navHostController : NavHostController){
                         text = "Flowers Grown : "
                     )
 
-                    Text(
-                        text = "placeholder"
-                    )
+                    sharedPreferences.getString("FlowersGrown", "0")?.let { it1 ->
+                        Text(
+                            text = it1
+                        )
+                    }
                 }
 
                 // Total Focus
@@ -204,9 +208,11 @@ fun Profile(navHostController : NavHostController){
                         text = "Total Focus Time : "
                     )
 
-                    Text(
-                        text = "placeholder" + " min"
-                    )
+                    sharedPreferences.getString("TotalFocusTime", "00:00")?.let { it1 ->
+                        Text(
+                            text = it1
+                        )
+                    }
                 }
             }
 

@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rishabh.forestoflife.composables.NavigationComposable
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.ui.theme.ForestOfLifeTheme
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavigationComposable(
                         context = LocalContext.current,
-                        navController = navController
+                        navController = navController,
                     )
                 }
 

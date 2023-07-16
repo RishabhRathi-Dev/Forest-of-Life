@@ -224,7 +224,7 @@ fun DueImportantToggleButton(taskId: Long, viewModel: AppViewModel,important: Bo
         Icon(
             imageVector = Icons.Default.Star,
             contentDescription = null,
-            tint = if (isImportant) Color.Yellow else Color.LightGray,
+            tint = if (isImportant) colorResource(id = R.color.app_yellow) else Color.White,
             modifier = Modifier
                 .size(75.dp)
         )

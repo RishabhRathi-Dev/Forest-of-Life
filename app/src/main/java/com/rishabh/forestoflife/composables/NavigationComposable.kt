@@ -66,7 +66,7 @@ fun NavigationComposable(context: Context, navController: NavHostController) {
         }
 
         composable(CreateTask.route){
-            CreateTask()
+            CreateTask(navController)
         }
 
         composable(ChoosePlant.route){

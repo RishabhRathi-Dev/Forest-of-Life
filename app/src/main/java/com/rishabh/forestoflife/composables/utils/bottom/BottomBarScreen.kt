@@ -1,5 +1,7 @@
 package com.rishabh.forestoflife.composables.utils.bottom
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import com.rishabh.forestoflife.R
 
 sealed class BottomBarScreen(
@@ -20,6 +22,13 @@ sealed class BottomBarScreen(
         title = "Focus",
         icon = R.drawable.mindfulness_48px,
         icon_focused = R.drawable.mindfulness_focus
+    )
+
+    object Add: BottomBarScreen(
+        route = "CreateTask",
+        title = "CreateTask",
+        icon = 0,
+        icon_focused = 0
     )
 
     object Island: BottomBarScreen(

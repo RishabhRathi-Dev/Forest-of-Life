@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -59,9 +60,6 @@ fun ForestOfLifeTheme(
         else -> LightColorScheme
     }
 
-    if (darkTheme){
-
-    }
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -79,8 +77,12 @@ fun ForestOfLifeTheme(
                 darkIcons = false
             )
 
+            systemUiController.isNavigationBarVisible = false
+
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
+
+
     }
 
     MaterialTheme(
