@@ -73,7 +73,9 @@ fun Profile(navHostController : NavHostController){
             // Photo, Name,
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
 
                 var expanded by remember { mutableStateOf(false) }
@@ -102,8 +104,9 @@ fun Profile(navHostController : NavHostController){
                 }
 
                 Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .offset(x=(LocalConfiguration.current.screenWidthDp/2).dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .offset(x = (LocalConfiguration.current.screenWidthDp / 2).dp)
                 ) {
                     DropdownMenu(
                         expanded = expanded,
@@ -149,29 +152,58 @@ fun Profile(navHostController : NavHostController){
 
             }
 
-            // Trees Grown
-            Row {
+            // Details
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Trees Grown : "
+                    )
 
+                    Text(
+                        text = "placeholder"
+                    )
+                }
+
+                // Flowers Grown
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Flowers Grown : "
+                    )
+
+                    Text(
+                        text = "placeholder"
+                    )
+                }
+
+                // Total Focus
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Total Focus Time : "
+                    )
+
+                    Text(
+                        text = "placeholder" + " min"
+                    )
+                }
             }
 
-            // Flowers Grown
-            Row {
-
-            }
-
-            // Total Focus
-            Row {
-
-            }
 
         }
     }
-}
-
-@Composable
-fun DropDownForProfile(){
-    // Dropdown menu
-
 }
 
 @Preview

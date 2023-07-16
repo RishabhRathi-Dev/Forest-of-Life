@@ -4,20 +4,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,20 +21,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rishabh.forestoflife.R
+import com.rishabh.forestoflife.composables.utils.helpers.AutoResizeText
+import com.rishabh.forestoflife.composables.utils.helpers.FontSizeRange
 import com.rishabh.forestoflife.data.AppViewModel
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 
 @Composable
@@ -52,7 +49,7 @@ fun DueTaskCard(
 ){
     //TODO:: Create customizable Task Card
     val w = (LocalConfiguration.current.screenWidthDp/2 - 20)
-    val h = (LocalConfiguration.current.screenHeightDp/5 - 20).dp
+    val h = (LocalConfiguration.current.screenHeightDp/5).dp
 
     val viewModel : AppViewModel = viewModel()
 
@@ -81,13 +78,34 @@ fun DueTaskCard(
                     .size((1.5 * w).dp, h)
 
             ) {
-                Text(
-                    text = TaskHeading,
-                    fontSize = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.itim)),
-                    modifier = Modifier
-                        .padding(5.dp)
-                )
+                Column() {
+                    AutoResizeText(
+                        text = TaskHeading,
+                        fontSizeRange = FontSizeRange(
+                            min = 16.sp,
+                            max = 24.sp,
+                        ),
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        fontFamily = FontFamily(Font(R.font.itim)),
+                        modifier = Modifier
+                            .padding(5.dp)
+                    )
+
+                    // Rewards
+
+                    Row(modifier = Modifier
+                        .padding(start = 5.dp, end = 5.dp)) {
+
+                        Text(
+                            text = "No Rewards",
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.itim))
+                        )
+
+                    }
+
+                }
 
                 // Type and Due
 
