@@ -89,7 +89,6 @@ fun Focus(navHostController : NavHostController){
         Column(modifier = Modifier.padding(it)) {
 
             timer()
-            // TODO:: DND will continue if gone to other so resolve that
         }
     }
 
