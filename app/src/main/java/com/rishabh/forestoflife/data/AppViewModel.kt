@@ -90,6 +90,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun createTask(task: Task){
+        viewModelScope.launch {
+            database.taskDao().insertTask(task)
+        }
+    }
+
     fun markAndUnMarkImportant(taskId: Long){
         viewModelScope.launch {
             database.taskDao().markUnmarkImportance(taskId)
