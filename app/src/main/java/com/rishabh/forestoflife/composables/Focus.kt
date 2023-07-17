@@ -17,11 +17,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -30,10 +34,13 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
@@ -50,11 +57,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -88,6 +98,15 @@ fun Focus(navHostController : NavHostController){
 
         Column(modifier = Modifier.padding(it)) {
 
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height((LocalConfiguration.current.screenHeightDp / 2.25).dp)
+                    .background(color = Color.Cyan)
+            ) {
+
+            }
+
             timer()
         }
     }
@@ -119,39 +138,20 @@ fun timer(){
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     ).value
 
+    var accumulatedDrag = 0f
+    val threshold = 18f
 
-    PlainTooltipBox(tooltip = { Text("Drag to change") }) {
+    PlainTooltipBox(tooltip = { Text("Left to subtract Right to add") }) {
 
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .tooltipAnchor()
-                .pointerInput(Unit) {
-                    detectVerticalDragGestures { change, dragAmount ->
-                        change.consume()
-                        if (abs(dragAmount) > 10f) {
-                            if (dragAmount > 0) {
-                                if (value < 60) {
-                                    value += 15
-                                } else {
-                                    value = 15
-                                }
-
-                            } else if (dragAmount < 0) {
-                                if (value > 15) {
-                                    value -= 15
-                                } else {
-                                    value = 60
-                                }
-                            }
-                        }
-                    }
-                }
-
                 .padding(5.dp)
                 .clip(RoundedCornerShape(5.dp))
                 .border(BorderStroke(2.dp, color = Color.Black.copy(alpha = 0.1f)))
+
 
 
         ) {
@@ -177,7 +177,7 @@ fun timer(){
                 CircularProgressIndicator(
                     progress = animatedProgress,
                     Modifier
-                        .size(175.dp)
+                        .size(200.dp)
                         .padding(5.dp),
                     trackColor = colorResource(id = R.color.app_bg),
                     color = colorResource(id = R.color.app_yellow),
@@ -196,6 +196,63 @@ fun timer(){
 
             } else {
 
+                val w = (LocalConfiguration.current.screenWidthDp/2).dp
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Button(
+                        onClick = {
+
+                            if (value > 15){
+                                value -= 15
+                            }
+
+                        },
+                        modifier = Modifier
+                            .size(w, 200.dp),
+
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background,
+                            contentColor = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray
+                        ),
+                        shape = RectangleShape
+
+                    )
+                    {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_back_ios_48px),
+                            contentDescription = "Subtract",
+                            modifier = Modifier.offset(x=(-w/4)+5.dp)
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+
+                            if (value < 60){
+                                value += 15
+                            }
+
+                        },
+                        modifier = Modifier
+                            .size(w, 200.dp),
+
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background,
+                            contentColor = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray),
+                        shape = RectangleShape
+
+                    )
+                    {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_forward_ios_48px),
+                            contentDescription = "Add",
+                            modifier = Modifier.offset(x=(w/4))
+                        )
+                    }
+                }
+
 
                 OutlinedButton(
                     onClick = {
@@ -209,7 +266,7 @@ fun timer(){
                     ),
                     border = BorderStroke(0.dp, colorResource(id = R.color.card_green)),
                     modifier = Modifier
-                        .size(175.dp)
+                        .size(200.dp)
                         .padding(15.dp),
                     elevation = ButtonDefaults.buttonElevation(5.dp)
 
