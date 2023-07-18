@@ -80,9 +80,9 @@ interface InventoryDao {
         val existingItem = getInventoryItem()
         existingItem?.let {
 
-            val updatedWater = if (existingItem.water + waterToAdd <= 20) existingItem.water + waterToAdd else 20
-            val updatedFertilizer = if (existingItem.fertilizer + fertilizerToAdd <= 10) existingItem.fertilizer + fertilizerToAdd else 10
-            val updatedTrees = if (existingItem.trees + treesToAdd <= 50) existingItem.trees + treesToAdd else 50
+            val updatedWater = if (existingItem.water + waterToAdd <= MAX_WATER) existingItem.water + waterToAdd else MAX_WATER
+            val updatedFertilizer = if (existingItem.fertilizer + fertilizerToAdd <= MAX_FERTILIZER) existingItem.fertilizer + fertilizerToAdd else MAX_FERTILIZER
+            val updatedTrees = if (existingItem.trees + treesToAdd <= MAX_TREES) existingItem.trees + treesToAdd else MAX_TREES
             existingItem.water = updatedWater
             existingItem.fertilizer = updatedFertilizer
             existingItem.trees = updatedTrees

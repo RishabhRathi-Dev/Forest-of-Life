@@ -41,6 +41,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.data.AppViewModel
 import com.rishabh.forestoflife.data.Inventory
+import com.rishabh.forestoflife.data.MAX_FERTILIZER
+import com.rishabh.forestoflife.data.MAX_TREES
+import com.rishabh.forestoflife.data.MAX_WATER
 
 
 @Composable
@@ -53,9 +56,9 @@ fun MainHeader(pageName: String){
     var waterCount : Int = 0
     var fertilizerCount : Int = 0
 
-    val treeMax = 50
-    val waterMax = 20
-    val fertilizerMax = 10
+    val treeMax = MAX_TREES
+    val waterMax = MAX_WATER
+    val fertilizerMax = MAX_FERTILIZER
 
     inventoryItems?.forEach {
         treesCount = it.trees
