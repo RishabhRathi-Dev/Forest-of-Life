@@ -19,7 +19,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +52,10 @@ fun MainHeader(pageName: String){
     var treesCount : Int = 0
     var waterCount : Int = 0
     var fertilizerCount : Int = 0
+
+    val treeMax = 50
+    val waterMax = 20
+    val fertilizerMax = 10
 
     inventoryItems?.forEach {
         treesCount = it.trees
@@ -78,11 +87,33 @@ fun MainHeader(pageName: String){
                 .padding(10.dp)
         ) {
             // Trees in island
-            Box(modifier = Modifier
+            Row(modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp)
                 //.paint(painterResource(id = ), contentScale = ContentScale.FillBounds)
             ){
+                val currentPercentage = (treesCount * 100)/ treeMax
+                Icon(
+                    painter = painterResource(id = R.drawable.park_48px),
+                    contentDescription = "Tree",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .graphicsLayer(alpha = 0.99f)
+                        .drawWithCache {
+                            onDrawWithContent {
+                                drawContent()
+                                drawRect(
+                                    brush =
+                                    Brush.verticalGradient(
+                                        colors = listOf(Color.Transparent, Color.Green), // Fill-up color and transparent for empty part
+                                        startY = 100f - currentPercentage.toFloat(),
+                                        endY = 100f
+                                    ),
+                                    blendMode = BlendMode.SrcAtop)
+                            }
+                        },
+
+                )
                 Text(
                     text = treesCount.toString(),
                     fontSize = 24.sp,
@@ -92,11 +123,32 @@ fun MainHeader(pageName: String){
             //Icon(painter = painterResource(id = R.drawable), contentDescription = "Test")
 
             // Water
-            Box(modifier = Modifier
+            Row(modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp)
                 //.paint(painterResource(id = ), contentScale = ContentScale.FillBounds)
             ){
+                val currentPercentage = (waterCount * 100)/ waterMax
+                Icon(
+                    painter = painterResource(id = R.drawable.water_drop_48px),
+                    contentDescription = "Water",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .graphicsLayer(alpha = 0.99f)
+                        .drawWithCache {
+                            onDrawWithContent {
+                                drawContent()
+                                drawRect(
+                                    brush =
+                                    Brush.verticalGradient(
+                                        colors = listOf(Color.Transparent, Color.Blue), // Fill-up color and transparent for empty part
+                                        startY = 100f - currentPercentage.toFloat(),
+                                        endY = 100f
+                                ),
+                                    blendMode = BlendMode.SrcAtop)
+                            }
+                        },
+                )
                 Text(
                     text = waterCount.toString(),
                     fontSize = 24.sp,
@@ -105,11 +157,32 @@ fun MainHeader(pageName: String){
             }
 
             // Fertilizer
-            Box(modifier = Modifier
+            Row(modifier = Modifier
                 .wrapContentSize()
                 .padding(5.dp)
                 //.paint(painterResource(id = ), contentScale = ContentScale.FillBounds)
             ){
+                val currentPercentage = (fertilizerCount * 100)/ fertilizerMax
+                Icon(
+                    painter = painterResource(id = R.drawable.garden_cart_48px),
+                    contentDescription = "Fertilizer",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .graphicsLayer(alpha = 0.99f)
+                        .drawWithCache {
+                            onDrawWithContent {
+                                drawContent()
+                                drawRect(
+                                    brush =
+                                    Brush.verticalGradient(
+                                        colors = listOf(Color.Transparent, Color.Yellow), // Fill-up color and transparent for empty part
+                                        startY = 100f - currentPercentage.toFloat(),
+                                        endY = 100f
+                                    ),
+                                    blendMode = BlendMode.SrcAtop)
+                            }
+                        },
+                )
                 Text(
                     text = fertilizerCount.toString(),
                     fontSize = 24.sp,

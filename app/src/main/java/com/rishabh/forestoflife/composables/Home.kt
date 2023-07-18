@@ -100,6 +100,8 @@ fun Home(navHostController : NavHostController){
 
                 }
 
+                // TODO :: Visual bug where the list is getting updated before ui giving wrong importance to cards on different date
+                // Possible solution is to stop using livedata for the list then it will not change position
                 Column {
                     val viewModel : AppViewModel = viewModel()
                     val tasksItems by viewModel.getTaskList().observeAsState()
