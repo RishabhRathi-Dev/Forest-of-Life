@@ -86,11 +86,11 @@ fun CreateTask(navHostController : NavHostController){
         val state = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis, initialDisplayMode = DisplayMode.Input)
 
         // Rewards
-        val water by remember {
+        var water by remember {
             mutableStateOf(0)
         }
 
-        val fertilizer by remember {
+        var fertilizer by remember {
             mutableStateOf(0)
         }
 
@@ -268,6 +268,38 @@ fun CreateTask(navHostController : NavHostController){
                     )
                 }
 
+                if(isImportant){
+                    if (checkedState && !weekly){
+                        water = 3
+                        fertilizer = 1
+                    }
+
+                    else if (checkedState && weekly){
+                        water = 5
+                        fertilizer = 5
+                    }
+
+                    else {
+                        water = 3
+                        fertilizer = 3
+                    }
+                } else {
+                    if (checkedState && !weekly){
+                        water = 2
+                        fertilizer = 0
+                    }
+
+                    else if (checkedState && weekly){
+                        water = 5
+                        fertilizer = 3
+                    }
+
+                    else {
+                        water = 3
+                        fertilizer = 2
+                    }
+                }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -310,8 +342,8 @@ fun CreateTask(navHostController : NavHostController){
                                   due = (Calendar.getInstance().apply {
                                       timeInMillis = state.selectedDateMillis!!
                                   }).time,
-                                  isWeekly = weekly,
-                                  isDaily = !weekly,
+                                  isWeekly = checkedState && weekly,
+                                  isDaily = checkedState && !weekly,
                                   important = isImportant,
                                   water = water,
                                   fertilizer = fertilizer

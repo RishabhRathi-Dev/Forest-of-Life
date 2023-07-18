@@ -172,6 +172,9 @@ interface TaskDao {
     @Query("UPDATE task SET important = (NOT important) WHERE taskId = :taskId")
     suspend fun markUnmarkImportance(taskId: Long)
 
+    @Query("UPDATE task SET water = :water, fertilizer = :fertilizer WHERE taskId = :taskId")
+    suspend fun updateRewards(taskId: Long, water: Int, fertilizer: Int)
+
     @Query("DELETE FROM task WHERE taskId = :taskId")
     suspend fun deleteTask(taskId: Long)
 

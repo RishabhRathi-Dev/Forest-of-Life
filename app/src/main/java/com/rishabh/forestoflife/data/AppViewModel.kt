@@ -96,9 +96,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun markAndUnMarkImportant(taskId: Long){
+    fun markAndUnMarkImportant(taskId: Long, water : Int, fertilizer : Int){
         viewModelScope.launch {
             database.taskDao().markUnmarkImportance(taskId)
+            database.taskDao().updateRewards(taskId, water, fertilizer)
         }
     }
 

@@ -194,7 +194,7 @@ fun TaskCard(
                     .size((0.5 * w).dp, h)
                     .padding(5.dp)
             ) {
-                ImportantToggleButton(taskId, viewModel, important)
+                ImportantToggleButton(taskId, viewModel, important, isDaily, isWeekly)
                 CompletedButton(viewModel, taskId = taskId, water = Water, fertilizer = Fertilizer)
             }
         }
@@ -234,13 +234,49 @@ fun CompletedButton(viewModel: AppViewModel, taskId : Long, water : Int, fertili
 }
 
 @Composable
-fun ImportantToggleButton(taskId: Long, viewModel: AppViewModel,important: Boolean) {
+fun ImportantToggleButton(taskId: Long, viewModel: AppViewModel, important: Boolean, isDaily: Boolean, isWeekly: Boolean) {
     val (isImportant, setImportant) = remember { mutableStateOf(important) }
+    var water = 0
+    var fertilizer = 0
 
     IconButton(
         onClick = {
             setImportant(!isImportant)
-            viewModel.markAndUnMarkImportant(taskId)
+
+            if(!isImportant){
+                if (isDaily){
+                    water = 3
+                    fertilizer = 1
+                }
+
+                else if (isWeekly){
+                    water = 5
+                    fertilizer = 5
+                }
+
+                else {
+                    water = 3
+                    fertilizer = 3
+                }
+
+            } else {
+                if (isDaily){
+                    water = 2
+                    fertilizer = 0
+                }
+
+                else if (isWeekly){
+                    water = 5
+                    fertilizer = 3
+                }
+
+                else {
+                    water = 3
+                    fertilizer = 2
+                }
+            }
+
+            viewModel.markAndUnMarkImportant(taskId, water, fertilizer)
                   },
         modifier = Modifier
             .size(50.dp)
