@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Database
 import androidx.room.Room
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
@@ -107,10 +108,35 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         return database.taskDao().getAllTasks()
     }
 
+    fun getTaskListAsList() : List<Task> {
+        return database.taskDao().getAllTasksAsList()
+    }
+
+    fun getImportantTaskList() : LiveData<List<Task>> {
+        return database.taskDao().getImportantTasks()
+    }
+
+    fun getTodayTaskList() : LiveData<List<Task>> {
+        var yesterday = Calendar.getInstance()
+        val today = Calendar.getInstance().time;
+        yesterday.time = Calendar.getInstance().time
+        yesterday.add(Calendar.DATE, -1)
+
+        return database.taskDao().getTodayTasks(yesterday.time, today)
+    }
+
     // Due Task Functions
 
     fun getDueTaskList() : LiveData<List<DueTask>> {
         return database.dueTaskDao().getAllTasks()
+    }
+
+    fun getImportantDueTaskList() : LiveData<List<DueTask>> {
+        return database.dueTaskDao().getImportantTasks()
+    }
+
+    fun getDueTaskListAsList() : List<DueTask> {
+        return database.dueTaskDao().getAllTasksAsList()
     }
 
     fun dueTaskCompleted(taskId : Long) {
@@ -127,6 +153,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun markAndUnMarkImportantDueTask(taskId: Long){
         viewModelScope.launch {
+            delay(100)
             database.dueTaskDao().markUnmarkImportance(taskId)
         }
     }

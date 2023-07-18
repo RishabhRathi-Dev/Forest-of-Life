@@ -108,10 +108,16 @@ interface IslandDao {
 @Dao
 interface TaskDao {
 
-    @Query("SELECT * FROM task ORDER BY important DESC, due ASC")
+    @Query("SELECT * FROM task ORDER BY due ASC")
     fun getAllTasks(): LiveData<List<Task>>
 
-    @Query("SELECT * FROM task ORDER BY important DESC, due ASC")
+    @Query("SELECT * FROM task WHERE important = 1")
+    fun getImportantTasks(): LiveData<List<Task>>
+
+    @Query("SELECT * FROM task WHERE due BETWEEN :prevDate AND :date")
+    fun getTodayTasks(prevDate : Date, date: Date) : LiveData<List<Task>>
+
+    @Query("SELECT * FROM task ORDER BY due ASC")
     fun getAllTasksAsList() : List<Task>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -186,8 +192,14 @@ interface TaskDao {
 
 @Dao
 interface DueTaskDao {
-    @Query("SELECT * FROM DueTask ORDER BY important DESC")
+    @Query("SELECT * FROM DueTask")
     fun getAllTasks(): LiveData<List<DueTask>>
+
+    @Query("SELECT * FROM DueTask WHERE important = 1")
+    fun getImportantTasks(): LiveData<List<DueTask>>
+
+    @Query("SELECT * FROM DueTask")
+    fun getAllTasksAsList(): List<DueTask>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: DueTask)
