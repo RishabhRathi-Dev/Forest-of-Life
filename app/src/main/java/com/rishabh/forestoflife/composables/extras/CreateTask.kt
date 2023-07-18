@@ -1,5 +1,7 @@
 package com.rishabh.forestoflife.composables.extras
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -68,6 +71,7 @@ fun CreateTask(navHostController : NavHostController){
         topBar = { AlternateHeader(pageName = "Create Task", navHostController = navHostController) },
     ) {
         val viewModel: AppViewModel = viewModel()
+        val context = LocalContext.current
 
         // TextFields (Task Heading) Variables
         var taskHeading by remember { mutableStateOf("") }
@@ -337,20 +341,27 @@ fun CreateTask(navHostController : NavHostController){
                 OutlinedButton(
                     onClick = {
 
-                        val task : Task = Task(
-                                  taskHeading = taskHeading,
-                                  due = (Calendar.getInstance().apply {
-                                      timeInMillis = state.selectedDateMillis!!
-                                  }).time,
-                                  isWeekly = checkedState && weekly,
-                                  isDaily = checkedState && !weekly,
-                                  important = isImportant,
-                                  water = water,
-                                  fertilizer = fertilizer
-                              )
+                        if (taskHeading.length > 0) {
 
-                        viewModel.createTask(task)
-                        navHostController.popBackStack()
+                            val task: Task = Task(
+                                taskHeading = taskHeading,
+                                due = (Calendar.getInstance().apply {
+                                    timeInMillis = state.selectedDateMillis!!
+                                }).time,
+                                isWeekly = checkedState && weekly,
+                                isDaily = checkedState && !weekly,
+                                important = isImportant,
+                                water = water,
+                                fertilizer = fertilizer
+                            )
+
+                            viewModel.createTask(task)
+                            navHostController.popBackStack()
+                        }
+
+                        else {
+                            mToast(context)
+                        }
                               },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.app_yellow), contentColor = Color.Black),
                     elevation = ButtonDefaults.buttonElevation(5.dp)
@@ -366,6 +377,10 @@ fun CreateTask(navHostController : NavHostController){
 
         }
     }
+}
+
+private fun mToast(context: Context){
+    Toast.makeText(context, "Empty Task", Toast.LENGTH_LONG).show()
 }
 
 @Preview
