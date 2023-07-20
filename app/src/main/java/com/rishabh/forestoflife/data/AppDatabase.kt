@@ -161,6 +161,7 @@ interface TaskDao {
         val currentDate = calendar.time
         val tasks = getAllTasksAsList()
         tasks.forEach { task ->
+            Log.d("Date",task.due.toString() + ";" + currentDate.toString())
             if (task.due.before(currentDate)) {
                 val toDue = DueTask(
                     taskHeading = task.taskHeading,

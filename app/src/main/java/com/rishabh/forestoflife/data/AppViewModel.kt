@@ -8,6 +8,7 @@ import androidx.room.Database
 import androidx.room.Room
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
@@ -27,6 +28,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         val taskDao : TaskDao = database.taskDao()
         val dueTaskDao : DueTaskDao = database.dueTaskDao()
 
+        val sdf = SimpleDateFormat("dd-MM-yyyy")
+        val dateWithoutTime = sdf.parse(sdf.format(Date()))
+
         val newItem = Inventory(
             water = 10,
             fertilizer = 5,
@@ -39,7 +43,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             isWeekly = false,
             water = 5,
             fertilizer = 1,
-            due = Calendar.getInstance().time,
+            due = sdf.parse(sdf.format(Calendar.getInstance().time)),
             important = true
         )
 
@@ -49,7 +53,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             isWeekly = false,
             water = 5,
             fertilizer = 1,
-            due = Calendar.getInstance().time,
+            due = sdf.parse(sdf.format(Calendar.getInstance().time)),
             important = true
         )
 
@@ -58,7 +62,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             important = true,
             isWeekly = false,
             isDaily = false,
-            due = Calendar.getInstance().time
+            due = sdf.parse(sdf.format(Calendar.getInstance().time))
         )
 
         viewModelScope.launch {
@@ -169,5 +173,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             database.inventoryDao().addToInventory(waterToAdd, fertilizerToAdd, treesToAdd)
         }
+    }
+
+
+    // Other
+    fun onTurnOnNotificationsClicked(granted: Boolean?) {
+
     }
 }

@@ -98,9 +98,9 @@ fun Profile(navHostController : NavHostController){
                         .clip(shape = CircleShape)
                         .background(
                             color = if (isSystemInDarkTheme())
-                                        colorResource(id = R.color.app_white).copy(alpha = 0.5f)
-                                    else
-                                        colorResource(id = R.color.card_green).copy(alpha = 0.1f)
+                                colorResource(id = R.color.app_white).copy(alpha = 0.5f)
+                            else
+                                colorResource(id = R.color.card_green).copy(alpha = 0.1f)
                         )
 
                 ) {
@@ -214,6 +214,26 @@ fun Profile(navHostController : NavHostController){
                         )
                     }
                 }
+            }
+            
+            // Settings
+            Column(){
+                
+                // Import and Export
+                Row(){
+                    
+                }
+                
+                // Dark Mode/Light Mode
+                Row() {
+                    
+                }
+                
+                // Notifications
+                Row() {
+                    
+                }
+                
             }
 
 

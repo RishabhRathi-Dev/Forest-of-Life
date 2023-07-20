@@ -61,6 +61,7 @@ import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.headers.AlternateHeader
 import com.rishabh.forestoflife.data.AppViewModel
 import com.rishabh.forestoflife.data.Task
+import java.text.SimpleDateFormat
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -341,13 +342,14 @@ fun CreateTask(navHostController : NavHostController){
                 OutlinedButton(
                     onClick = {
 
-                        if (taskHeading.length > 0) {
-
+                        if (taskHeading.isNotEmpty()) {
+                            val cal = (Calendar.getInstance().apply {
+                                timeInMillis = state.selectedDateMillis!!
+                            }).time
+                            val sdf = SimpleDateFormat("dd-MM-yyyy")
                             val task: Task = Task(
                                 taskHeading = taskHeading,
-                                due = (Calendar.getInstance().apply {
-                                    timeInMillis = state.selectedDateMillis!!
-                                }).time,
+                                due = sdf.parse(sdf.format(cal)),
                                 isWeekly = checkedState && weekly,
                                 isDaily = checkedState && !weekly,
                                 important = isImportant,

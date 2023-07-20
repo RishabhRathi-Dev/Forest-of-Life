@@ -171,9 +171,6 @@ fun Onboarding2(navHostController: NavHostController){
                         if (allFieldsFilled) {
                             saveUserInformation(nameState.value, context, viewModel)
 
-                            val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-                            ContextCompat.startActivity(context, intent, null)
-
                             // Navigate to Home screen
                             navHostController.navigate("Home") {
                                 // Pop up to the start destination of the graph to

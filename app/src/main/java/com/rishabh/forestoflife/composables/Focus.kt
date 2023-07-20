@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Paint.Style
 import android.media.AudioManager
 import android.os.Build
+import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
 import androidx.compose.animation.animateContentSize
@@ -50,6 +51,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -78,14 +80,21 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.LockScreenOrientation
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
+import com.rishabh.forestoflife.data.TimerViewModel
+import com.rishabh.forestoflife.data.services.TimerService
+import com.rishabh.forestoflife.data.services.TimerServiceManager
 import kotlinx.coroutines.delay
 import java.lang.Math.abs
 import java.text.DecimalFormat
+import java.util.Calendar
+import java.util.Timer
+import java.util.TimerTask
 
 
 @Composable
@@ -116,6 +125,14 @@ fun Focus(navHostController : NavHostController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun timer(){
+    var startTime by remember {
+        mutableStateOf(0L)
+    }
+
+    var endTime by remember {
+        mutableStateOf(0L)
+    }
+
     var value by remember {
         mutableStateOf(15)
     }
@@ -129,19 +146,26 @@ fun timer(){
     }
 
     var timeElapsed by remember {
-        mutableStateOf(0)
+        mutableStateOf(0L)
     }
 
+    val timerViewModel: TimerViewModel = viewModel()
+
+    val elapsedTime by timerViewModel.getTimerLiveData().observeAsState(initial = 0L)
+
+    val serviceStatus = remember {
+        mutableStateOf(false)
+    }
+
+    val context = LocalContext.current
 
     val animatedProgress = animateFloatAsState(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     ).value
 
-    var accumulatedDrag = 0f
-    val threshold = 18f
 
-    PlainTooltipBox(tooltip = { Text("Left to subtract Right to add") }) {
+    PlainTooltipBox(tooltip = { Text("Left to subtract; Right to add") }) {
 
         Box(
             contentAlignment = Alignment.Center,
@@ -156,24 +180,8 @@ fun timer(){
 
         ) {
 
-            LaunchedEffect(timerStart) {
-                if (timerStart) {
-                    while (timeElapsed < (value * 60)) {
-                        delay(1000) // Change interval here (in milliseconds)
-                        timeElapsed++
-                        progress = (((timeElapsed).toFloat()) / (value * 60))
-                        Log.d("Time", progress.toString())
-                    }
-                }
-            }
-
             if (timerStart) {
 
-                val minutes = timeElapsed / 60
-                val seconds = timeElapsed % 60
-
-
-                startDND()
                 CircularProgressIndicator(
                     progress = animatedProgress,
                     Modifier
@@ -185,12 +193,10 @@ fun timer(){
                     strokeCap = StrokeCap.Round
                 )
                 
-                Text(text = String.format("%02d:%02d", minutes, seconds))
+                Text(text = formatTime(elapsedTime))
 
-                if (timeElapsed >= value * 60){
+                if (elapsedTime >= endTime){
                     timerStart = false
-                    stopDND()
-                    timeElapsed = 0
                     progress = 0f
                 }
 
@@ -257,6 +263,23 @@ fun timer(){
                 OutlinedButton(
                     onClick = {
                         timerStart = true
+                        startTime = SystemClock.elapsedRealtime()
+                        endTime = startTime+(value*60000)
+                        timerViewModel.setTimerTarget(endTime)
+                        val timerServiceManager = TimerServiceManager(applicationContext = context)
+
+                        if (serviceStatus.value) {
+                            // service already running
+                            // stop the service
+                            serviceStatus.value = !serviceStatus.value
+                            timerServiceManager.stopTimerService()
+
+                        } else {
+                            // service not running start service.
+                            serviceStatus.value = !serviceStatus.value
+                            // start
+                            timerServiceManager.startTimerService()
+                        }
 
                     },
                     shape = CircleShape,
@@ -300,39 +323,14 @@ fun timer(){
     }
 }
 
-
-@Composable
-fun startDND(){
-
-    val notificationManager = LocalContext.current.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-    if (notificationManager.isNotificationPolicyAccessGranted) {
-        Log.d("NM", "has permissions")
-        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
-
-    } else {
-        Log.d("NM", "does not have permissions")
-        val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-        startActivity(LocalContext.current, intent, null)
-    }
+fun formatTime(timeInMillis: Long): String {
+    val seconds = timeInMillis / 1000
+    val minutes = seconds / 60
+    val remainingSeconds = seconds % 60
+    return "%02d:%02d".format(minutes, remainingSeconds)
 }
 
-@Composable
-fun stopDND(){
-    val notificationManager = LocalContext.current.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    if (notificationManager.isNotificationPolicyAccessGranted) {
-        Log.d("NM", "has permissions")
-        // Set interruption filter to allow all interruptions
-        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-    } else {
-        Log.d("NM", "does not have permissions")
-        // Open the system settings screen for notification policy access
-        val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-        startActivity(LocalContext.current, intent, null)
-    }
-
-}
 @Preview
 @Composable
 fun FocusPreview(){

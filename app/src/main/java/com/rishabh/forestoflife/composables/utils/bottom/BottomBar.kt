@@ -44,7 +44,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rishabh.forestoflife.R
-import com.rishabh.forestoflife.composables.stopDND
 import com.rishabh.forestoflife.composables.utils.helpers.HexagonShape
 import com.rishabh.forestoflife.composables.utils.helpers.drawCustomHexagonPath
 
@@ -88,14 +87,6 @@ fun RowScope.AddItem(
     navController: NavHostController
 ) {
 
-    var isScreenChanging by remember {
-        mutableStateOf(false)
-    }
-
-    if (isScreenChanging){
-        stopDND()
-    }
-
     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
     val background =
@@ -131,9 +122,6 @@ fun RowScope.AddItem(
             .wrapContentSize()
             .clickable(onClick = {
                 navController.navigate(screen.route) {
-                    if (screen.route == "Home" || screen.route == "Island" || screen.route == "Profile") {
-                        isScreenChanging = true
-                    }
                     popUpTo(navController.graph.findStartDestination().id)
                     launchSingleTop = true
                 }
@@ -167,9 +155,6 @@ fun RowScope.AddItem(
                 .background(background)
                 .clickable(onClick = {
                     navController.navigate(screen.route) {
-                        if (screen.route == "Home" || screen.route == "Island" || screen.route == "Profile") {
-                            isScreenChanging = true
-                        }
                         popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true
                     }
