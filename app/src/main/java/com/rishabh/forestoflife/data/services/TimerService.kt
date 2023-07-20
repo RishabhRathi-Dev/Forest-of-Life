@@ -3,6 +3,7 @@ package com.rishabh.forestoflife.data.services
 import android.app.*
 import android.content.Intent
 import android.graphics.Color
+import android.os.Binder
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
@@ -14,6 +15,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.test.core.app.ApplicationProvider
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBarScreen.Add.title
 import com.rishabh.forestoflife.data.TimerViewModel
@@ -31,12 +34,13 @@ class TimerService : Service() {
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "TimerChannel"
         private const val NOTIFICATION_ID = 1
+        private const val ACTION_STOP = "com.rishabh.forestoflife.data.services.timer.ACTION_STOP"
     }
 
     private var isRunning = false
     private var startTime: Long = 0
-    private val timerViewModel = TimerViewModel()
-    private val timerLiveData = MutableLiveData<Long>()
+    private lateinit var timerViewModel: TimerViewModel
+
     private  var endTime : Long = 0
     private var elapsedTime : Long = 0
 
@@ -44,32 +48,44 @@ class TimerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
+        timerViewModel = TimerViewModel.getInstance(applicationContext)
+        timerViewModel.setElapsedTime(0L)
+        timerViewModel.setStopped(false)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        startForeground(NOTIFICATION_ID, createNotification())
 
-        if (!isRunning) {
-            isRunning = true
-            startTime = SystemClock.elapsedRealtime()
-            endTime = timerViewModel.getTimerTarget()!!
+        when (intent.action) {
+
+            ACTION_STOP -> {
+                // Handle stop action
+                stopSelf()
+            }
+            else -> {
+                startForeground(NOTIFICATION_ID, createNotification())
+
+                if (!isRunning) {
+                    isRunning = true
+                    startTime = SystemClock.elapsedRealtime()
+                    endTime = timerViewModel.getTimerTarget()!!
 
 
 
-            CoroutineScope(Dispatchers.Main).launch {
-                while (isRunning) {
-                    val currentTime = SystemClock.elapsedRealtime()
-                    elapsedTime = currentTime - startTime
-                    notificationManager.notify(
-                        1,
-                        createNotification()
-                    )
-                    if (elapsedTime >= endTime) {
-                        stopSelf() // Stop the service when the timer is finished
+                    CoroutineScope(Dispatchers.Main).launch {
+                        while (isRunning) {
+                            val currentTime = SystemClock.elapsedRealtime()
+                            elapsedTime = currentTime - startTime
+                            notificationManager.notify(
+                                1,
+                                createNotification()
+                            )
+                            if (elapsedTime >= endTime) {
+                                stopSelf() // Stop the service when the timer is finished
+                            }
+                            timerViewModel.setElapsedTime(elapsedTime)
+                            delay(1000)
+                        }
                     }
-                    timerViewModel.setElapsedTime(elapsedTime)
-                    delay(1000)
                 }
             }
         }
@@ -79,20 +95,30 @@ class TimerService : Service() {
 
 
     override fun onDestroy() {
-        super.onDestroy()
         isRunning = false
+        timerViewModel.setStopped(true)
         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
         stopForeground(STOP_FOREGROUND_REMOVE)
+        super.onDestroy()
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
+    inner class LocalBinder : Binder() {
+        fun getService(): TimerService = this@TimerService
     }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        return LocalBinder()
+    }
+
 
 
 
     private fun createNotification(): Notification {
         // Create a notification channel (if not created already, required for Android Oreo and above)
+        val stopIntent = Intent(this, TimerService::class.java)
+        stopIntent.action = ACTION_STOP
+        val stopPendingIntent = PendingIntent.getService(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
@@ -112,6 +138,7 @@ class TimerService : Service() {
             .setContentText(
                 formatTime(elapsedTime)
             )
+            .addAction(R.drawable.close_48px, "Stop", stopPendingIntent)
             .setColorized(true)
             .setColor(Green.toArgb())
             .setSmallIcon(R.drawable.mindfulness_focus)

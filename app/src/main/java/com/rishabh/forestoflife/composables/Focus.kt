@@ -80,6 +80,7 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.LockScreenOrientation
@@ -137,21 +138,17 @@ fun timer(){
         mutableStateOf(15)
     }
 
-    var timerStart by remember {
-        mutableStateOf(false)
-    }
+
 
     var progress by remember {
         mutableStateOf(0f)
     }
 
-    var timeElapsed by remember {
-        mutableStateOf(0L)
-    }
 
-    val timerViewModel: TimerViewModel = viewModel()
+    val timerViewModel = TimerViewModel.getInstance(LocalContext.current)
 
-    val elapsedTime by timerViewModel.getTimerLiveData().observeAsState(initial = 0L)
+    val elapsedTime by timerViewModel!!.getTimerLiveData().observeAsState(initial = 0L)
+    val timerStopped by timerViewModel!!.getStopped().observeAsState(initial = true)
 
     val serviceStatus = remember {
         mutableStateOf(false)
@@ -180,7 +177,7 @@ fun timer(){
 
         ) {
 
-            if (timerStart) {
+            if (!timerStopped) {
 
                 CircularProgressIndicator(
                     progress = animatedProgress,
@@ -195,12 +192,11 @@ fun timer(){
                 
                 Text(text = formatTime(elapsedTime))
 
-                if (elapsedTime >= endTime){
-                    timerStart = false
-                    progress = 0f
-                }
+
 
             } else {
+
+                progress = 0f
 
                 val w = (LocalConfiguration.current.screenWidthDp/2).dp
                 Row(
@@ -262,10 +258,9 @@ fun timer(){
 
                 OutlinedButton(
                     onClick = {
-                        timerStart = true
                         startTime = SystemClock.elapsedRealtime()
                         endTime = startTime+(value*60000)
-                        timerViewModel.setTimerTarget(endTime)
+                        timerViewModel?.setTimerTarget(endTime)
                         val timerServiceManager = TimerServiceManager(applicationContext = context)
 
                         if (serviceStatus.value) {
