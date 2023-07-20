@@ -51,6 +51,8 @@ class TimerService : Service() {
         timerViewModel = TimerViewModel.getInstance(applicationContext)
         timerViewModel.setElapsedTime(0L)
         timerViewModel.setStopped(false)
+        startTime = SystemClock.elapsedRealtime()
+        endTime = timerViewModel.getTimerTarget()!!
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -66,10 +68,6 @@ class TimerService : Service() {
 
                 if (!isRunning) {
                     isRunning = true
-                    startTime = SystemClock.elapsedRealtime()
-                    endTime = timerViewModel.getTimerTarget()!!
-
-
 
                     CoroutineScope(Dispatchers.Main).launch {
                         while (isRunning) {
