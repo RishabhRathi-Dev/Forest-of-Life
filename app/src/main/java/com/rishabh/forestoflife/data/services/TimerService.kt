@@ -1,9 +1,11 @@
 package com.rishabh.forestoflife.data.services
 
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
@@ -102,6 +104,12 @@ class TimerService : Service() {
         timerViewModel.setStopped(true)
         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
         stopForeground(STOP_FOREGROUND_REMOVE)
+        val sharedPreferences = applicationContext.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putLong("TotalFocusTime", elapsedTime)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            editor.apply()
+        }
         super.onDestroy()
     }
 

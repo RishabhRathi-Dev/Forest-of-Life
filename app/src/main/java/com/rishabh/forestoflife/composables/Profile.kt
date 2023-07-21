@@ -1,5 +1,6 @@
 package com.rishabh.forestoflife.composables
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -25,6 +26,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Switch
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,14 +49,18 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
+import java.time.format.TextStyle
 
 @Composable
 fun Profile(navHostController : NavHostController){
@@ -72,6 +78,11 @@ fun Profile(navHostController : NavHostController){
             var selectedImageUri by remember {
                 mutableStateOf(sharedPreferences.getInt("profile", R.drawable.person_48px))
             }
+
+            val textStyle = androidx.compose.ui.text.TextStyle(
+                fontSize = 24.sp,
+                fontFamily = FontFamily(Font(R.font.itim)),
+            )
 
             // Photo, Name,
             Column(
@@ -163,22 +174,31 @@ fun Profile(navHostController : NavHostController){
 
             // Details
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(16.dp)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Trees Grown : "
+                        text = "Trees Grown",
+                        style = textStyle
+                    )
+
+                    Text(
+                        text = ":",
+                        style = textStyle
                     )
 
                     sharedPreferences.getString("TreesGrown", "0")?.let { it1 ->
                         Text(
-                            text = it1
+                            text = it1,
+                            style = textStyle
                         )
                     }
                 }
@@ -186,15 +206,24 @@ fun Profile(navHostController : NavHostController){
                 // Flowers Grown
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Flowers Grown : "
+                        text = "Flowers Grown",
+                        style = textStyle
+                    )
+
+                    Text(
+                        text = ":",
+                        style = textStyle
                     )
 
                     sharedPreferences.getString("FlowersGrown", "0")?.let { it1 ->
                         Text(
-                            text = it1
+                            text = it1,
+                            style = textStyle
                         )
                     }
                 }
@@ -202,15 +231,24 @@ fun Profile(navHostController : NavHostController){
                 // Total Focus
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Total Focus Time : "
+                        text = "Total Focus Time",
+                        style = textStyle
                     )
 
-                    sharedPreferences.getString("TotalFocusTime", "00:00")?.let { it1 ->
+                    Text(
+                        text = ":",
+                        style = textStyle
+                    )
+
+                    sharedPreferences.getLong("TotalFocusTime", 0L)?.let { it1 ->
                         Text(
-                            text = it1
+                            text = formatTime(it1),
+                            style = textStyle
                         )
                     }
                 }
@@ -221,17 +259,10 @@ fun Profile(navHostController : NavHostController){
                 
                 // Import and Export
                 Row(){
-                    
-                }
-                
-                // Dark Mode/Light Mode
-                Row() {
-                    
-                }
-                
-                // Notifications
-                Row() {
-                    
+
+
+
+
                 }
                 
             }
