@@ -44,14 +44,6 @@ class TimerViewModel : ViewModel() {
         return stopped
     }
 
-    fun getElapsedTimeNormal() : Long {
-        if (timerLiveData.value != null){
-            return timerLiveData.value!!
-        }
-
-        return 0L
-    }
-
     companion object {
         private lateinit var instance: TimerViewModel
 

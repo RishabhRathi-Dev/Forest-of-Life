@@ -16,6 +16,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -138,17 +139,22 @@ fun timer(){
         mutableStateOf(15)
     }
 
-
-
     var progress by remember {
         mutableStateOf(0f)
     }
-
 
     val timerViewModel = TimerViewModel.getInstance(LocalContext.current)
 
     val elapsedTime by timerViewModel!!.getTimerLiveData().observeAsState(initial = 0L)
     val timerStopped by timerViewModel!!.getStopped().observeAsState(initial = true)
+
+    val targetTime = timerViewModel.getTimerTarget()
+    progress = elapsedTime.toFloat()
+
+    val animatedProgress = animateFloatAsState(
+        targetValue = progress/endTime,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    ).value
 
     val serviceStatus = remember {
         mutableStateOf(false)
@@ -156,10 +162,7 @@ fun timer(){
 
     val context = LocalContext.current
 
-    val animatedProgress = animateFloatAsState(
-        targetValue = progress,
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
-    ).value
+
 
 
     PlainTooltipBox(tooltip = { Text("Left to subtract; Right to add") }) {
@@ -179,7 +182,8 @@ fun timer(){
 
             if (!timerStopped) {
 
-                progress = (elapsedTime/endTime).toFloat()
+
+                //Log.d("Focus", progress.toString() + ";" + elapsedTime.toString() + ";" +targetTime.toString())
 
                 CircularProgressIndicator(
                     progress = animatedProgress,
@@ -194,11 +198,34 @@ fun timer(){
                 
                 Text(text = formatTime(elapsedTime))
 
+                Text(
+                    text = "Stop",
+                    style = TextStyle(
+                        color = colorResource(id = R.color.app_red),
+                        fontFamily = FontFamily(Font(R.font.itim)),
+                        fontSize = 18.sp
+                    ),
+                    modifier = Modifier
+                        .offset(y = 20.dp)
+                        .clickable {
+                            val timerServiceManager =
+                                TimerServiceManager(applicationContext = context)
 
+                            if (serviceStatus.value) {
+                                // service already running
+                                // stop the service
+                                serviceStatus.value = !serviceStatus.value
+                                timerServiceManager.stopTimerService()
 
+                            } else {
+                                // service not running start service.
+                                serviceStatus.value = !serviceStatus.value
+                                // start
+                                timerServiceManager.startTimerService()
+                            }
+                        }
+                )
             } else {
-
-                progress = 0f
 
                 val w = (LocalConfiguration.current.screenWidthDp/2).dp
                 Row(
