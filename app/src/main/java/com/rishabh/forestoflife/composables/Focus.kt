@@ -179,6 +179,8 @@ fun timer(){
 
             if (!timerStopped) {
 
+                progress = (elapsedTime/endTime).toFloat()
+
                 CircularProgressIndicator(
                     progress = animatedProgress,
                     Modifier
@@ -259,7 +261,7 @@ fun timer(){
                 OutlinedButton(
                     onClick = {
                         startTime = SystemClock.elapsedRealtime()
-                        endTime = startTime+(value*60000)
+                        endTime = ((value*60000).toLong())
                         timerViewModel?.setTimerTarget(endTime)
                         val timerServiceManager = TimerServiceManager(applicationContext = context)
 

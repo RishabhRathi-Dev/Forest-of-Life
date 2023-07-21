@@ -77,7 +77,10 @@ class TimerService : Service() {
                                 1,
                                 createNotification()
                             )
-                            if (elapsedTime >= endTime) {
+                            val isDNDTurnedOff = notificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALL
+                            // TODO :: Not stopping
+                            Log.d("Service cal", (elapsedTime >= endTime).toString() + ":" + elapsedTime.toString() + ":" + endTime.toString())
+                            if ((elapsedTime >= endTime) || isDNDTurnedOff) {
                                 stopSelf() // Stop the service when the timer is finished
                             }
                             timerViewModel.setElapsedTime(elapsedTime)
