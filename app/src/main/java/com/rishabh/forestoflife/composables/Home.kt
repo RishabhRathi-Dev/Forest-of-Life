@@ -18,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +41,8 @@ import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.cards.TaskCard
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.AppViewModel
+import io.github.sceneview.Scene
+import io.github.sceneview.nodes.Node
 import java.util.Calendar
 
 @Composable
@@ -61,10 +65,12 @@ fun Home(navHostController : NavHostController){
 
             Column(
                 modifier = Modifier
-                    .size(LocalConfiguration.current.screenWidthDp.dp, (LocalConfiguration.current.screenHeightDp/3.35).dp)
-                    .background(Color.Blue)
+                    .size(
+                        LocalConfiguration.current.screenWidthDp.dp,
+                        (LocalConfiguration.current.screenHeightDp / 3.35).dp
+                    )
             ) {
-
+                TreeScreen()
             }
 
             Column(){
@@ -72,7 +78,7 @@ fun Home(navHostController : NavHostController){
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top=16.dp, start = 16.dp, end = 16.dp)
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     ,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -100,8 +106,7 @@ fun Home(navHostController : NavHostController){
 
                 }
 
-                // TODO :: Visual bug where the list is getting updated before ui giving wrong importance to cards on different date
-                // Possible solution is to stop using livedata for the list then it will not change position
+
                 Column {
                     val viewModel : AppViewModel = viewModel()
                     val tasksItems by viewModel.getTaskList().observeAsState()
@@ -126,6 +131,21 @@ fun Home(navHostController : NavHostController){
             }
 
         }
+    }
+}
+
+@Composable
+fun TreeScreen() {
+    val nodes = remember { mutableStateListOf<Node>() }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scene(
+            modifier = Modifier.fillMaxSize(),
+            nodes = nodes,
+            onCreate = { sceneView ->
+                // Apply your configuration
+            }
+        )
     }
 }
 

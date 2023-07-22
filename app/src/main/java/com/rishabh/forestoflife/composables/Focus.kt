@@ -53,6 +53,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -91,6 +92,8 @@ import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.TimerViewModel
 import com.rishabh.forestoflife.data.services.TimerService
 import com.rishabh.forestoflife.data.services.TimerServiceManager
+import io.github.sceneview.Scene
+import io.github.sceneview.nodes.Node
 import kotlinx.coroutines.delay
 import java.lang.Math.abs
 import java.text.DecimalFormat
@@ -113,8 +116,9 @@ fun Focus(navHostController : NavHostController){
                 modifier = Modifier
                     .fillMaxWidth()
                     .height((LocalConfiguration.current.screenHeightDp / 2.25).dp)
-                    .background(color = Color.Cyan)
             ) {
+
+                PlantScreen()
 
             }
 
@@ -352,6 +356,22 @@ fun formatTime(timeInMillis: Long): String {
     val minutes = seconds / 60
     val remainingSeconds = seconds % 60
     return "%02d:%02d".format(minutes, remainingSeconds)
+}
+
+
+@Composable
+fun PlantScreen(){
+    val nodes = remember { mutableStateListOf<Node>() }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scene(
+            modifier = Modifier.fillMaxSize(),
+            nodes = nodes,
+            onCreate = { sceneView ->
+                // Apply your configuration
+            }
+        )
+    }
 }
 
 
