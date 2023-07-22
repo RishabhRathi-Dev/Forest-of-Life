@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import io.github.sceneview.Scene
+import io.github.sceneview.loaders.loadHdrIndirectLight
 import io.github.sceneview.nodes.Node
 
 @Composable
@@ -43,8 +46,9 @@ fun Island(navHostController : NavHostController){
                 modifier = Modifier
                     .fillMaxWidth()
                     .height((LocalConfiguration.current.screenHeightDp / 1.5).dp)
+                    .background(color = Color.Cyan)
             ) {
-                IslandScreen()
+
             }
         }
     }
