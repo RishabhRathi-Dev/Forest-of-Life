@@ -1,24 +1,10 @@
 package com.rishabh.forestoflife.composables
 
-import android.app.NotificationManager
-import android.content.Context
-import android.content.Intent
-import android.graphics.Paint.Style
-import android.media.AudioManager
-import android.os.Build
 import android.os.SystemClock
-import android.provider.Settings
-import android.util.Log
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,27 +16,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
@@ -63,43 +42,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontSynthesis.Companion.Style
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.content.getSystemService
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.rishabh.forestoflife.LockScreenOrientation
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.TimerViewModel
-import com.rishabh.forestoflife.data.services.TimerService
 import com.rishabh.forestoflife.data.services.TimerServiceManager
-import io.github.sceneview.Scene
-import io.github.sceneview.nodes.Node
-import kotlinx.coroutines.delay
-import java.lang.Math.abs
-import java.text.DecimalFormat
-import java.util.Calendar
-import java.util.Timer
-import java.util.TimerTask
+
 
 
 @Composable
@@ -361,17 +320,7 @@ fun formatTime(timeInMillis: Long): String {
 
 @Composable
 fun PlantScreen(){
-    val nodes = remember { mutableStateListOf<Node>() }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Scene(
-            modifier = Modifier.fillMaxSize(),
-            nodes = nodes,
-            onCreate = { sceneView ->
-                // Apply your configuration
-            }
-        )
-    }
 }
 
 

@@ -1,8 +1,6 @@
 package com.rishabh.forestoflife.composables
 
-import android.content.Intent
-import android.provider.Settings
-import androidx.compose.foundation.background
+import android.view.SurfaceView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,30 +8,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.doOnAttach
+import androidx.core.view.doOnDetach
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
@@ -41,9 +37,7 @@ import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.cards.TaskCard
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.AppViewModel
-import io.github.sceneview.Scene
-import io.github.sceneview.nodes.Node
-import java.util.Calendar
+
 
 @Composable
 fun Home(navHostController : NavHostController){
@@ -134,19 +128,26 @@ fun Home(navHostController : NavHostController){
     }
 }
 
+
 @Composable
 fun TreeScreen() {
-    val nodes = remember { mutableStateListOf<Node>() }
+    Box(modifier = Modifier.height(20.dp)) {
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Scene(
-            modifier = Modifier.fillMaxSize(),
-            nodes = nodes,
-            onCreate = { sceneView ->
-                // Apply your configuration
+        AndroidView(factory = {context ->
+            SurfaceView(context).apply {
+                val surfaceView = this
+                var customViewer: CustomViewer = CustomViewer()
+
+                doOnAttach {
+                    customViewer.init(context, surfaceView)
+                    customViewer.createRenderables("mouse", "mouse 2")
+                    customViewer.createIndirectLight("pillars_2k")
+                }
             }
-        )
+        })
+
     }
+
 }
 
 @Composable

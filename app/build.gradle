@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.rishabh.forestoflife"
-        minSdk 28
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -50,8 +50,9 @@ android {
 
 dependencies {
 
-    // 3D only
-    implementation 'io.github.sceneview:sceneview:1.0.10'
+    implementation 'com.google.android.filament:filament-android:1.20.0'
+    implementation 'com.google.android.filament:filament-utils-android:1.20.0'
+    implementation 'com.google.android.filament:gltfio-android:1.20.0'
 
     implementation 'androidx.appcompat:appcompat:1.6.1' // or later version
 

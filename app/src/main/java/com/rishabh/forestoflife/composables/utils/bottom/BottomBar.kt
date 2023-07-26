@@ -19,6 +19,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +48,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.helpers.HexagonShape
 import com.rishabh.forestoflife.composables.utils.helpers.drawCustomHexagonPath
+import kotlinx.coroutines.delay
 
 @Composable
 fun BottomBar(navController: NavHostController){
@@ -106,7 +109,7 @@ fun RowScope.AddItem(
         val myShape = HexagonShape()
 
         Box(modifier = Modifier
-            .offset(y=(-5).dp)
+            .offset(y = (-5).dp)
             .padding(5.dp)
             .drawWithContent {
                 drawContent()
@@ -155,7 +158,10 @@ fun RowScope.AddItem(
                 .background(background)
                 .clickable(onClick = {
                     navController.navigate(screen.route) {
-                        popUpTo(navController.graph.findStartDestination().id)
+                        popUpTo(navController.graph.findStartDestination().id){
+                            inclusive = true
+                        }
+
                         launchSingleTop = true
                     }
                 })
