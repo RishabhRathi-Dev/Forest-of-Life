@@ -1,6 +1,7 @@
 package com.rishabh.forestoflife.composables
 
 import android.os.SystemClock
+import android.view.SurfaceView
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -30,6 +31,7 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
@@ -52,6 +54,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
@@ -320,7 +323,29 @@ fun formatTime(timeInMillis: Long): String {
 
 @Composable
 fun PlantScreen(){
+    val context = LocalContext.current
+    val surfaceView = remember { SurfaceView(context) }
+    val customViewer = remember { CustomViewer() }
 
+    // Handle initialization and cleanup with DisposableEffect
+    DisposableEffect(surfaceView) {
+        customViewer.init(surfaceView.context, surfaceView)
+        customViewer.createRenderables("mouse", "mouse 2")
+        customViewer.createIndirectLight("pillars_2k")
+        customViewer.onResume()
+
+        onDispose {
+            customViewer.onPause()
+            customViewer.onDestroy()
+        }
+    }
+
+    // Use ViewCompositionStrategy to control the view's lifecycle
+    AndroidView(
+        factory = { surfaceView },
+        modifier = Modifier.fillMaxSize(), // Adjust the modifier as needed
+        update = {}
+    )
 }
 
 
