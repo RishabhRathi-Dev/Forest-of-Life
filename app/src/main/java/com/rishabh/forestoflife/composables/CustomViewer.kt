@@ -10,11 +10,14 @@ import com.google.android.filament.IndirectLight
 import com.google.android.filament.Skybox
 import com.google.android.filament.View
 import com.google.android.filament.utils.AutomationEngine
+import com.google.android.filament.utils.Float3
 import com.google.android.filament.utils.HDRLoader
 import com.google.android.filament.utils.IBLPrefilterContext
 import com.google.android.filament.utils.KTXLoader
 import com.google.android.filament.utils.ModelViewer
 import com.google.android.filament.utils.Utils
+import com.google.android.filament.utils.rotation
+import com.google.android.filament.utils.translation
 import com.rishabh.forestoflife.data.colorsForHours
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -105,10 +108,11 @@ class CustomViewer {
         updateRootTransform()
     }
 
-    fun createRenderables(dirName: String, name: String) {
+    fun createRenderables(dirName: String, name: String, position : Float3 = Float3(0F, 0F, 0F)) {
         val buffer = readAsset(context, "models/${dirName}/${name}.glb")
         modelViewer.apply {
             loadModelGlb(buffer)
+            translation(position)
         }
         updateRootTransform()
     }

@@ -14,7 +14,7 @@ val colorsForHours = listOf(
     Color(0xFF012847), // (4:00 AM)
     Color(0xFF00304a), // (5:00 AM)
     Color(0xFF054162), // (6:00 AM)
-    Color(0xFF0b6987), // (7:00 AM)
+    Color(0xFF1386AA), // (7:00 AM)
     Color(0xFF309db1), // (8:00 AM)
     Color(0xFF8cd9c9), // (9:00 AM)
     Color(0xFF8cf1d0), // (10:00 AM)
