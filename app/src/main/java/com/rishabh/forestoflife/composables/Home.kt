@@ -138,6 +138,11 @@ fun TreeScreen() {
     val surfaceView = remember { SurfaceView(context) }
     val customViewer = remember { CustomViewer() }
 
+    /*
+     DisposableEffect is used to handle the initialization and cleanup of the CustomViewer,
+     ensuring that it starts and stops correctly with the Composable function.
+     */
+
     // Handle initialization and cleanup with DisposableEffect
     DisposableEffect(surfaceView) {
         customViewer.init(surfaceView.context, surfaceView)
