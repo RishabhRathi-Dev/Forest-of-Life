@@ -5,24 +5,21 @@ import android.content.Context
 import android.util.Log
 import android.view.Choreographer
 import android.view.SurfaceView
-import android.widget.TextView
 import com.google.android.filament.Fence
 import com.google.android.filament.IndirectLight
 import com.google.android.filament.Skybox
 import com.google.android.filament.View
 import com.google.android.filament.utils.AutomationEngine
-import com.google.android.filament.utils.GestureDetector
 import com.google.android.filament.utils.HDRLoader
 import com.google.android.filament.utils.IBLPrefilterContext
 import com.google.android.filament.utils.KTXLoader
 import com.google.android.filament.utils.ModelViewer
-import com.google.android.filament.utils.RemoteServer
 import com.google.android.filament.utils.Utils
-import kotlinx.coroutines.CoroutineScope
+import com.rishabh.forestoflife.data.colorsForHours
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
+import java.util.Calendar
 
 class CustomViewer {
     companion object {
@@ -60,6 +57,7 @@ class CustomViewer {
         }
 
 
+
         val view = modelViewer.view
 
         /*
@@ -70,6 +68,8 @@ class CustomViewer {
         view.renderQuality = view.renderQuality.apply {
             hdrColorBuffer = View.QualityLevel.MEDIUM
         }
+
+        view.blendMode = View.BlendMode.OPAQUE
 
         // dynamic resolution often helps a lot
         view.dynamicResolutionOptions = view.dynamicResolutionOptions.apply {
@@ -113,7 +113,7 @@ class CustomViewer {
         updateRootTransform()
     }
 
-    fun createIndirectLight(ibl : String) {
+    fun createIndirectLight(ibl : String, isSkybox : Boolean = false) {
         val engine = modelViewer.engine
         val scene = modelViewer.scene
         val ibl = ibl
@@ -122,8 +122,15 @@ class CustomViewer {
             scene.indirectLight!!.intensity = 30_000.0f
             viewerContent.indirectLight = modelViewer.scene.indirectLight
         }
-        readCompressedAsset("environments/$ibl/${ibl}_skybox.ktx").let {
-            scene.skybox = KTXLoader.createSkybox(engine, it)
+        if (isSkybox){
+            readCompressedAsset("environments/$ibl/${ibl}_skybox.ktx").let {
+                scene.skybox = KTXLoader.createSkybox(engine, it)
+            }
+        } else {
+            val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            Log.d("Hour", hour.toString())
+            val c = colorsForHours[hour]
+            modelViewer.scene.skybox = Skybox.Builder().color(c.red, c.green, c.blue, c.alpha).build(modelViewer.engine)
         }
     }
 
@@ -141,10 +148,11 @@ class CustomViewer {
         return ByteBuffer.wrap(bytes)
     }
 
-    private suspend fun loadHdr(message: RemoteServer.ReceivedMessage) {
+    suspend fun loadHdr(dirName: String, name: String) {
+        val buffer = readAsset(context, "environments/${dirName}/${name}.hdr")
         withContext(Dispatchers.Main) {
             val engine = modelViewer.engine
-            val equirect = HDRLoader.createTexture(engine, message.buffer)
+            val equirect = HDRLoader.createTexture(engine, buffer)
             if (equirect == null) {
 
             } else {
@@ -170,8 +178,8 @@ class CustomViewer {
                 context.destroy()
 
                 // destroy the previous IBl
-                engine.destroyIndirectLight(modelViewer.scene.indirectLight!!)
-                engine.destroySkybox(modelViewer.scene.skybox!!)
+                //engine.destroyIndirectLight(modelViewer.scene.indirectLight!!)
+                //engine.destroySkybox(modelViewer.scene.skybox!!)
 
                 modelViewer.scene.skybox = sky
                 modelViewer.scene.indirectLight = ibl
@@ -220,6 +228,9 @@ class CustomViewer {
                 if (animationCount > 0) {
                     val elapsedTimeSeconds = (frameTimeNanos - startTime).toDouble() / 1_000_000_000
                     applyAnimation(0, elapsedTimeSeconds.toFloat())
+                    val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                    val c = colorsForHours[hour]
+                    modelViewer.scene.skybox = Skybox.Builder().color(c.red, c.green, c.blue, c.alpha).build(modelViewer.engine)
                 }
                 updateBoneMatrices()
             }

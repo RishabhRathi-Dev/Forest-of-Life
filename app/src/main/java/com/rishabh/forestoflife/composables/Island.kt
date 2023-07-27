@@ -1,6 +1,7 @@
 package com.rishabh.forestoflife.composables
 
 import android.view.SurfaceView
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -75,7 +76,7 @@ fun IslandScreen(){
     // Use ViewCompositionStrategy to control the view's lifecycle
     AndroidView(
         factory = { surfaceView },
-        modifier = Modifier.fillMaxSize(), // Adjust the modifier as needed
+        modifier = Modifier.fillMaxSize(),
         update = {}
     )
 }

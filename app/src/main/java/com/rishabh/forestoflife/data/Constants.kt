@@ -1,6 +1,35 @@
 package com.rishabh.forestoflife.data
 
+import androidx.compose.ui.graphics.Color
+
 const val MAX_TREES = 30
 const val MAX_WATER = 20
 const val MAX_FERTILIZER = 10
+
+val colorsForHours = listOf(
+    Color(0xFF001832), // (12:00 AM)
+    Color(0xFF001d37), // (1:00 AM)
+    Color(0xFF001e39), // (2:00 AM)
+    Color(0xFF00243F), // (3:00 AM)
+    Color(0xFF012847), // (4:00 AM)
+    Color(0xFF00304a), // (5:00 AM)
+    Color(0xFF054162), // (6:00 AM)
+    Color(0xFF0b6987), // (7:00 AM)
+    Color(0xFF309db1), // (8:00 AM)
+    Color(0xFF8cd9c9), // (9:00 AM)
+    Color(0xFF8cf1d0), // (10:00 AM)
+    Color(0xFF8cf3d1), // (11:00 AM)
+    Color(0xFF8cf5d2), // (12:00 PM / Noon)
+    Color(0xFF8cf7d3), // (1:00 PM)
+    Color(0xFF8cf9d4), // (2:00 PM)
+    Color(0xFF8cffd5), // (3:00 PM)
+    Color(0xFF8cd9d6), // (4:00 PM)
+    Color(0xFF309db1), // (5:00 PM)
+    Color(0xFF054162), // (6:00 PM)
+    Color(0xFF012847), // (7:00 PM)
+    Color(0xFF00243F), // (8:00 PM)
+    Color(0xFF001e39), // (9:00 PM)
+    Color(0xFF001d37), // (10:00 PM)
+    Color(0xFF001832)  // (11:00 PM)
+)
 

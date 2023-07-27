@@ -32,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
@@ -332,6 +333,14 @@ fun PlantScreen(){
      ensuring that it starts and stops correctly with the Composable function.
      */
 
+    /*
+    // Load time is quite high
+    LaunchedEffect(Unit){
+        customViewer.loadHdr("moonlit_golf_4k", "moonlit_golf_4k")
+    }
+
+     */
+
     // Handle initialization and cleanup with DisposableEffect
     DisposableEffect(surfaceView) {
         customViewer.init(surfaceView.context, surfaceView)
@@ -348,7 +357,7 @@ fun PlantScreen(){
     // Use ViewCompositionStrategy to control the view's lifecycle
     AndroidView(
         factory = { surfaceView },
-        modifier = Modifier.fillMaxSize(), // Adjust the modifier as needed
+        modifier = Modifier.fillMaxSize(),
         update = {}
     )
 }

@@ -1,3 +1,1 @@
-https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky
-
-https://polyhaven.com/a/moonlit_golf
+https://github.com/google/filament/tree/main/docs/webgl/pillars_2k
