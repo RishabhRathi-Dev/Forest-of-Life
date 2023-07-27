@@ -14,12 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -131,32 +134,28 @@ fun Home(navHostController : NavHostController){
 
 @Composable
 fun TreeScreen() {
-    Box(modifier = Modifier.height(20.dp)) {
+    val context = LocalContext.current
+    val surfaceView = remember { SurfaceView(context) }
+    val customViewer = remember { CustomViewer() }
 
-        AndroidView(factory = {context ->
-            SurfaceView(context).apply {
-                val surfaceView = this
-                var customViewer: CustomViewer = CustomViewer()
+    // Handle initialization and cleanup with DisposableEffect
+    DisposableEffect(surfaceView) {
+        customViewer.init(surfaceView.context, surfaceView)
+        customViewer.createRenderables("mouse", "mouse 2")
+        customViewer.createIndirectLight("pillars_2k")
+        customViewer.onResume()
 
-                doOnAttach {
-                    customViewer.init(context, surfaceView)
-                    customViewer.createRenderables("mouse", "mouse 2")
-                    customViewer.createIndirectLight("pillars_2k")
-                }
-            }
-        })
-
+        onDispose {
+            customViewer.onPause()
+            customViewer.onDestroy()
+        }
     }
 
+    // Use ViewCompositionStrategy to control the view's lifecycle
+    AndroidView(
+        factory = { surfaceView },
+        modifier = Modifier.fillMaxSize(), // Adjust the modifier as needed
+        update = {}
+    )
 }
 
-@Composable
-fun HomeMock(){
-
-}
-
-@Preview
-@Composable
-fun HomePreview(){
-    HomeMock()
-}

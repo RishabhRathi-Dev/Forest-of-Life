@@ -35,8 +35,6 @@ class CustomViewer {
     private lateinit var choreographer: Choreographer
     private val frameScheduler = FrameCallback()
     private lateinit var modelViewer: ModelViewer
-    private lateinit var doubleTapDetector: GestureDetector
-    private var remoteServer: RemoteServer? = null
     private val automation = AutomationEngine()
     private var loadStartTime = 0L
     private var loadStartFence: Fence? = null
@@ -58,7 +56,6 @@ class CustomViewer {
 
         surfaceView.setOnTouchListener { _, event ->
             modelViewer.onTouchEvent(event)
-            doubleTapDetector.onTouchEvent(event)
             true
         }
 
@@ -98,7 +95,6 @@ class CustomViewer {
             enabled = true
         }
 
-        remoteServer = RemoteServer(8082)
     }
 
     fun createRenderables(name: String) {
@@ -194,7 +190,6 @@ class CustomViewer {
 
     fun onDestroy() {
         choreographer.removeFrameCallback(frameScheduler)
-        remoteServer?.close()
     }
 
 
