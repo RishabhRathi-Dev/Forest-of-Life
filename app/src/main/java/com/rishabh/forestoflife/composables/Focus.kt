@@ -79,6 +79,8 @@ fun Focus(navHostController : NavHostController){
                 modifier = Modifier
                     .fillMaxWidth()
                     .height((LocalConfiguration.current.screenHeightDp / 2.25).dp)
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(10.dp))
             ) {
 
                 PlantScreen()

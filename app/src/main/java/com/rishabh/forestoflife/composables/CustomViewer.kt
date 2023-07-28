@@ -13,10 +13,9 @@ import com.google.android.filament.utils.AutomationEngine
 import com.google.android.filament.utils.Float3
 import com.google.android.filament.utils.HDRLoader
 import com.google.android.filament.utils.IBLPrefilterContext
-import com.google.android.filament.utils.KTXLoader
+import com.google.android.filament.utils.KTX1Loader
 import com.google.android.filament.utils.ModelViewer
 import com.google.android.filament.utils.Utils
-import com.google.android.filament.utils.rotation
 import com.google.android.filament.utils.translation
 import com.rishabh.forestoflife.data.colorsForHours
 import kotlinx.coroutines.Dispatchers
@@ -122,13 +121,13 @@ class CustomViewer {
         val scene = modelViewer.scene
         val ibl = ibl
         readCompressedAsset("environments/$ibl/${ibl}_ibl.ktx").let {
-            scene.indirectLight = KTXLoader.createIndirectLight(engine, it)
+            scene.indirectLight = KTX1Loader.createIndirectLight(engine, it)
             scene.indirectLight!!.intensity = 30_000.0f
             viewerContent.indirectLight = modelViewer.scene.indirectLight
         }
         if (isSkybox){
             readCompressedAsset("environments/$ibl/${ibl}_skybox.ktx").let {
-                scene.skybox = KTXLoader.createSkybox(engine, it)
+                scene.skybox = KTX1Loader.createSkybox(engine, it)
             }
         } else {
             val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)

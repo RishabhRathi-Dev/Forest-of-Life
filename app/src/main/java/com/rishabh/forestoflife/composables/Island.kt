@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +43,9 @@ fun Island(navHostController : NavHostController){
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
                     .height((LocalConfiguration.current.screenHeightDp / 1.5).dp)
+                    .clip(RoundedCornerShape(10.dp))
             ) {
                 IslandScreen()
             }
@@ -63,7 +67,7 @@ fun IslandScreen(){
     // Handle initialization and cleanup with DisposableEffect
     DisposableEffect(surfaceView) {
         customViewer.init(surfaceView.context, surfaceView)
-        customViewer.createRenderables("mouse", "mouse 2")
+        customViewer.createRenderables("mouse","mouse 2")
         customViewer.createIndirectLight("pillars_2k")
         customViewer.onResume()
 

@@ -57,7 +57,7 @@ fun TaskCard(
 
     Card(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(horizontal = 16.dp, vertical = 10.dp)
             .wrapContentSize()
         ,
 
