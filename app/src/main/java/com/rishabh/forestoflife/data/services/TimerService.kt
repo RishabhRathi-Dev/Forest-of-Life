@@ -55,6 +55,12 @@ class TimerService : Service() {
         timerViewModel.setStopped(false)
         startTime = SystemClock.elapsedRealtime()
         endTime = timerViewModel.getTimerTarget()!!
+        val sharedPreferences = applicationContext.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putLong("CurrentEndTime", endTime)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            editor.apply()
+        }
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -107,6 +113,7 @@ class TimerService : Service() {
         val sharedPreferences = applicationContext.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putLong("TotalFocusTime", elapsedTime)
+        editor.putLong("CurrentEndTime", 0L)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             editor.apply()
         }

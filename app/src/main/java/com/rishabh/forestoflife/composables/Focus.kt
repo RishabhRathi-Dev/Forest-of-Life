@@ -1,5 +1,7 @@
 package com.rishabh.forestoflife.composables
 
+import android.content.Context
+import android.os.Build
 import android.os.SystemClock
 import android.view.SurfaceView
 import androidx.compose.animation.core.animateFloatAsState
@@ -32,10 +34,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
@@ -63,8 +64,7 @@ import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.TimerViewModel
 import com.rishabh.forestoflife.data.services.TimerServiceManager
 
-
-
+var modelf = "mouse 2"
 @Composable
 fun Focus(navHostController : NavHostController){
     // TODO:: Create Focus Page
@@ -93,6 +93,7 @@ fun Focus(navHostController : NavHostController){
 
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun timer(){
@@ -100,8 +101,10 @@ fun timer(){
         mutableStateOf(0L)
     }
 
+    val sharedPreferences = LocalContext.current.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+
     var endTime by remember {
-        mutableStateOf(0L)
+        mutableStateOf(sharedPreferences.getLong("CurrentEndTime", 0L))
     }
 
     var value by remember {
@@ -113,11 +116,9 @@ fun timer(){
     }
 
     val timerViewModel = TimerViewModel.getInstance(LocalContext.current)
-
     val elapsedTime by timerViewModel!!.getTimerLiveData().observeAsState(initial = 0L)
     val timerStopped by timerViewModel!!.getStopped().observeAsState(initial = true)
 
-    val targetTime = timerViewModel.getTimerTarget()
     progress = elapsedTime.toFloat()
 
     val animatedProgress = animateFloatAsState(
@@ -150,7 +151,6 @@ fun timer(){
         ) {
 
             if (!timerStopped) {
-
 
                 //Log.d("Focus", progress.toString() + ";" + elapsedTime.toString() + ";" +targetTime.toString())
 
@@ -342,7 +342,6 @@ fun PlantScreen(){
     }
 
      */
-
     // Handle initialization and cleanup with DisposableEffect
     DisposableEffect(surfaceView) {
         customViewer.init(surfaceView.context, surfaceView)
