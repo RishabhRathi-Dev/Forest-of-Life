@@ -80,6 +80,7 @@ fun Focus(navHostController : NavHostController){
                     .fillMaxWidth()
                     .height((LocalConfiguration.current.screenHeightDp / 2.25).dp)
                     .padding(horizontal = 16.dp)
+                    .padding(bottom = 10.dp)
                     .clip(RoundedCornerShape(10.dp))
             ) {
 

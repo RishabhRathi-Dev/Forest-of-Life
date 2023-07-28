@@ -112,7 +112,7 @@ class TimerService : Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
         val sharedPreferences = applicationContext.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putLong("TotalFocusTime", elapsedTime)
+        editor.putLong("TotalFocusTime", sharedPreferences.getLong("TotalFocusTime", 0L) + elapsedTime)
         editor.putLong("CurrentEndTime", 0L)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             editor.apply()
