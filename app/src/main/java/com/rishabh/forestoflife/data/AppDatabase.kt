@@ -63,10 +63,14 @@ interface PointsDao {
     @Query("SELECT points FROM Points WHERE id = 0")
     fun getPointsStatic() : Int
 
+    @Query("SELECT * FROM Points WHERE id = 0")
+    fun getAll() : Points
+
     @Transaction
     suspend fun addPoints(points: Int){
+        val sdf = SimpleDateFormat("dd-MM-yyyy")
         newPoints(points = getPointsStatic() + points)
-        newModified(date = Calendar.getInstance().time)
+        newModified(date = sdf.parse(sdf.format(Calendar.getInstance().time)))
     }
 
     @Query("UPDATE Points SET points = :points WHERE id = 0")
@@ -77,6 +81,18 @@ interface PointsDao {
 
     @Update
     suspend fun updatePoints(points: Points)
+    @Transaction
+    suspend fun checkForDeduction(){
+        val calendar = Calendar.getInstance()
+        calendar.time = Calendar.getInstance().time
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        val currentDate = calendar.time
+        val p = getAll()
+
+        if (p.lastModified.before(currentDate)){
+            addPoints(-50)
+        }
+    }
 }
 
 

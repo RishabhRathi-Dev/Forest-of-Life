@@ -179,6 +179,7 @@ fun Profile(navHostController : NavHostController){
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
+
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -186,7 +187,7 @@ fun Profile(navHostController : NavHostController){
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Trees Grown",
+                        text = "Total Points Earned",
                         style = textStyle
                     )
 
@@ -195,34 +196,9 @@ fun Profile(navHostController : NavHostController){
                         style = textStyle
                     )
 
-                    sharedPreferences.getString("TreesGrown", "0")?.let { it1 ->
+                    sharedPreferences.getInt("TotalPoints", 0)?.let { it1 ->
                         Text(
-                            text = it1,
-                            style = textStyle
-                        )
-                    }
-                }
-
-                // Flowers Grown
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Flowers Grown",
-                        style = textStyle
-                    )
-
-                    Text(
-                        text = ":",
-                        style = textStyle
-                    )
-
-                    sharedPreferences.getString("FlowersGrown", "0")?.let { it1 ->
-                        Text(
-                            text = it1,
+                            text = it1.toString(),
                             style = textStyle
                         )
                     }

@@ -1,5 +1,7 @@
 package com.rishabh.forestoflife.composables.utils.cards
 
+import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -199,9 +202,17 @@ fun DeleteButton(viewModel: AppViewModel, taskId: Long){
 
 @Composable
 fun CompletedButton(viewModel: AppViewModel, taskId : Long, points : Int){
+    val context = LocalContext.current
     IconButton(
         onClick = {
             viewModel.taskCompleted(taskId = taskId, points)
+            val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putInt("TotalPoints", sharedPreferences.getInt("TotalPoints", 0) + points)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                editor.apply()
+            }
         },
         modifier = Modifier
             .size(60.dp)

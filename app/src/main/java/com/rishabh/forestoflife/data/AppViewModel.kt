@@ -30,7 +30,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
         val sdf = SimpleDateFormat("dd-MM-yyyy")
         val dateWithoutTime = sdf.parse(sdf.format(Date()))
-        val starterPoints = Points(0, 0, Calendar.getInstance().time)
+        val starterPoints = Points(0, 0, sdf.parse(sdf.format(Calendar.getInstance().time)))
 
         val excercise = Task(
             taskHeading = "Excercise",
@@ -71,6 +71,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun workerCall(){
         viewModelScope.launch {
             database.taskDao().checkDueAndUpdate()
+            database.pointsDao().checkForDeduction()
         }
     }
 
@@ -156,14 +157,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Other
-    fun onTurnOnNotificationsClicked(granted: Boolean?) {
-
-    }
-
     fun getPoints(): LiveData<Int> {
         return database.pointsDao().getPoints()
     }
 
+    fun deductPoints(points: Int) {
+        viewModelScope.launch {
+            database.pointsDao().addPoints(points = -points)
+        }
+    }
 
 }
