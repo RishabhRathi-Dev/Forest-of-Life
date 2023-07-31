@@ -90,6 +90,7 @@ class CustomViewer {
         // ambient occlusion is the cheapest effect that adds a lot of quality
         view.ambientOcclusionOptions = view.ambientOcclusionOptions.apply {
             enabled = true
+            quality = View.QualityLevel.MEDIUM
         }
 
         // bloom is pretty expensive but adds a fair amount of realism
@@ -120,9 +121,12 @@ class CustomViewer {
         val engine = modelViewer.engine
         val scene = modelViewer.scene
         val ibl = ibl
+
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val c = colorsForHours[hour]
         readCompressedAsset("environments/$ibl/${ibl}_ibl.ktx").let {
             scene.indirectLight = KTX1Loader.createIndirectLight(engine, it)
-            scene.indirectLight!!.intensity = 30_000.0f
+            scene.indirectLight!!.intensity = 30_000f
             viewerContent.indirectLight = modelViewer.scene.indirectLight
         }
         if (isSkybox){
@@ -130,9 +134,7 @@ class CustomViewer {
                 scene.skybox = KTX1Loader.createSkybox(engine, it)
             }
         } else {
-            val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
             Log.d("Hour", hour.toString())
-            val c = colorsForHours[hour]
             modelViewer.scene.skybox = Skybox.Builder().color(c.red, c.green, c.blue, c.alpha).build(modelViewer.engine)
         }
     }
@@ -231,9 +233,6 @@ class CustomViewer {
                 if (animationCount > 0) {
                     val elapsedTimeSeconds = (frameTimeNanos - startTime).toDouble() / 1_000_000_000
                     applyAnimation(0, elapsedTimeSeconds.toFloat())
-                    val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                    val c = colorsForHours[hour]
-                    modelViewer.scene.skybox = Skybox.Builder().color(c.red, c.green, c.blue, c.alpha).build(modelViewer.engine)
                 }
                 updateBoneMatrices()
             }

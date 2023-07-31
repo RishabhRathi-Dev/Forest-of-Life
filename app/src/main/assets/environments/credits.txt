@@ -1,1 +1,6 @@
 https://github.com/google/filament/tree/main/docs/webgl/pillars_2k
+
+Parent HDR URL:
+
+https://hdrihaven.com/
+https://mapswire.com/world/physical-maps/

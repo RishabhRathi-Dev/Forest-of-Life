@@ -67,7 +67,7 @@ fun IslandScreen(){
     // Handle initialization and cleanup with DisposableEffect
     DisposableEffect(surfaceView) {
         customViewer.init(surfaceView.context, surfaceView)
-        customViewer.createRenderables("mouse","mouse 2")
+        customViewer.createRenderables("island","023")
         customViewer.createIndirectLight("pillars_2k")
         customViewer.onResume()
 
