@@ -1,18 +1,12 @@
 package com.rishabh.forestoflife.composables
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.rishabh.forestoflife.composables.extras.ChoosePlant
-import com.rishabh.forestoflife.composables.extras.ChooseTree
 import com.rishabh.forestoflife.composables.extras.CreateTask
 import com.rishabh.forestoflife.composables.extras.TaskList
-import com.rishabh.forestoflife.navigation.ChoosePlant
-import com.rishabh.forestoflife.navigation.ChooseTree
 import com.rishabh.forestoflife.navigation.CreateTask
 import com.rishabh.forestoflife.navigation.Focus
 import com.rishabh.forestoflife.navigation.Home
@@ -67,14 +61,6 @@ fun NavigationComposable(context: Context, navController: NavHostController) {
 
         composable(CreateTask.route){
             CreateTask(navController)
-        }
-
-        composable(ChoosePlant.route){
-            ChoosePlant()
-        }
-
-        composable(ChooseTree.route){
-            ChooseTree()
         }
     }
 }

@@ -18,25 +18,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-// Define the Inventory entity
-@Entity(tableName = "inventory")
-data class Inventory(
-    @PrimaryKey val id: Long = 0,
-    var water: Int,
-    var fertilizer: Int,
-    var trees: Int
-)
-
-// Define the Island entity
-@Entity(tableName = "island")
-data class Island(
-    @PrimaryKey val id: Long = 0,
-    val typeString: String,
-    val lifeString: String,
-    val treeVectorString: String,
-    val treeDateString: String
-)
-
 // Define the Task entity
 @Entity(tableName = "task")
 data class Task(
@@ -44,8 +25,7 @@ data class Task(
     val taskId: Long = 0,
     val taskHeading: String,
     var due: Date,
-    val water: Int,
-    val fertilizer: Int,
+    val points: Int,
     val isDaily: Boolean,
     val isWeekly: Boolean,
     val important: Boolean
@@ -59,50 +39,46 @@ data class DueTask(
     var taskHeading: String,
     var important: Boolean,
     var due: Date,
+    var points : Int,
     val isDaily: Boolean,
     val isWeekly: Boolean,
 )
 
-// Create a Data Access Object (DAO) for the Inventory entity
+@Entity(tableName = "Points")
+data class Points(
+    @PrimaryKey
+    val id : Int = 0,
+    var points: Int,
+    var lastModified: Date
+)
+
 @Dao
-interface InventoryDao {
-    @Query("SELECT * FROM inventory WHERE id=0")
-    fun getAllItems(): LiveData<List<Inventory>>
+interface PointsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertItem(item: Inventory)
+    suspend fun insert(points: Points)
+    @Query("SELECT points FROM Points WHERE id = 0")
+    fun getPoints() : LiveData<Int>
 
-    @Update
-    suspend fun updateItem(item: Inventory)
+    @Query("SELECT points FROM Points WHERE id = 0")
+    fun getPointsStatic() : Int
 
     @Transaction
-    suspend fun addToInventory(waterToAdd: Int, fertilizerToAdd: Int, treesToAdd: Int) {
-        val existingItem = getInventoryItem()
-        existingItem?.let {
-
-            val updatedWater = if (existingItem.water + waterToAdd <= MAX_WATER) existingItem.water + waterToAdd else MAX_WATER
-            val updatedFertilizer = if (existingItem.fertilizer + fertilizerToAdd <= MAX_FERTILIZER) existingItem.fertilizer + fertilizerToAdd else MAX_FERTILIZER
-            val updatedTrees = if (existingItem.trees + treesToAdd <= MAX_TREES) existingItem.trees + treesToAdd else MAX_TREES
-            existingItem.water = updatedWater
-            existingItem.fertilizer = updatedFertilizer
-            existingItem.trees = updatedTrees
-            updateItem(existingItem)
-        }
+    suspend fun addPoints(points: Int){
+        newPoints(points = getPointsStatic() + points)
+        newModified(date = Calendar.getInstance().time)
     }
 
-    @Query("SELECT * FROM inventory WHERE id=0")
-    suspend fun getInventoryItem(): Inventory?
+    @Query("UPDATE Points SET points = :points WHERE id = 0")
+    fun newPoints(points: Int)
+
+    @Query("UPDATE POINTS SET lastModified = :date WHERE id = 0")
+    fun newModified(date: Date)
+
+    @Update
+    suspend fun updatePoints(points: Points)
 }
 
-// Create a Data Access Object (DAO) for the Island entity
-@Dao
-interface IslandDao {
-    @Query("SELECT * FROM island")
-    fun getAllIslands(): LiveData<List<Island>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertIsland(island: Island)
-}
 
 // Create a Data Access Object (DAO) for the Task entity
 @Dao
@@ -168,6 +144,7 @@ interface TaskDao {
                     important = task.important,
                     isWeekly = task.isWeekly,
                     isDaily = task.isDaily,
+                    points = task.points,
                     due = task.due
                 )
 
@@ -180,8 +157,8 @@ interface TaskDao {
     @Query("UPDATE task SET important = (NOT important) WHERE taskId = :taskId")
     suspend fun markUnmarkImportance(taskId: Long)
 
-    @Query("UPDATE task SET water = :water, fertilizer = :fertilizer WHERE taskId = :taskId")
-    suspend fun updateRewards(taskId: Long, water: Int, fertilizer: Int)
+    @Query("UPDATE task SET points = :points WHERE taskId = :taskId")
+    suspend fun updateRewards(taskId: Long, points : Int)
 
     @Query("DELETE FROM task WHERE taskId = :taskId")
     suspend fun deleteTask(taskId: Long)
@@ -233,8 +210,7 @@ interface DueTaskDao {
                         important = task.important,
                         isDaily = task.isDaily,
                         isWeekly = task.isWeekly,
-                        water = 5,
-                        fertilizer = 1,
+                        points = task.points,
                         due = task.due
                     )
 
@@ -255,8 +231,7 @@ interface DueTaskDao {
                         important = task.important,
                         isDaily = task.isDaily,
                         isWeekly = task.isWeekly,
-                        water = 5,
-                        fertilizer = 1,
+                        points = task.points,
                         due = task.due
                     )
 
@@ -294,11 +269,10 @@ class DateTypeConverter {
 }
 
 // Update your Room database configuration with the type converter
-@Database(entities = [Inventory::class, Island::class, Task::class, DueTask::class], version = 1)
+@Database(entities = [Points::class, Task::class, DueTask::class], version = 1)
 @TypeConverters(DateTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun inventoryDao(): InventoryDao
-    abstract fun islandDao(): IslandDao
+    abstract fun pointsDao() : PointsDao
     abstract fun taskDao(): TaskDao
     abstract fun dueTaskDao() : DueTaskDao
 }

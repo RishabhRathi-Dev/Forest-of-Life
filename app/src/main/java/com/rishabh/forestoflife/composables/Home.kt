@@ -113,8 +113,7 @@ fun Home(navHostController : NavHostController){
                                 taskId = item.taskId,
                                 TaskHeading = item.taskHeading,
                                 Due = item.due,
-                                Water = item.water,
-                                Fertilizer = item.fertilizer,
+                                Points = item.points,
                                 isDaily = item.isDaily,
                                 isWeekly = item.isWeekly,
                                 important = item.important

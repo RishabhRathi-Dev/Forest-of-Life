@@ -91,11 +91,7 @@ fun CreateTask(navHostController : NavHostController){
         val state = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis, initialDisplayMode = DisplayMode.Input)
 
         // Rewards
-        var water by remember {
-            mutableStateOf(0)
-        }
-
-        var fertilizer by remember {
+        var points by remember {
             mutableStateOf(0)
         }
 
@@ -252,8 +248,35 @@ fun CreateTask(navHostController : NavHostController){
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
+                    if(isImportant){
+                        if (checkedState && !weekly){
+                            points = 25
+                        }
+
+                        else if (checkedState && weekly){
+                            points = 30
+                        }
+
+                        else {
+                            points = 40
+                        }
+
+                    } else {
+                        if (checkedState && !weekly){
+                            points = 15
+                        }
+
+                        else if (checkedState && weekly){
+                            points = 20
+                        }
+
+                        else {
+                            points = 30
+                        }
+                    }
+
                     Text(
-                        text = "Water",
+                        text = "Points",
                         fontSize = 18.sp,
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                         style = TextStyle(
@@ -263,7 +286,7 @@ fun CreateTask(navHostController : NavHostController){
                     )
 
                     Text(
-                        text = water.toString(),
+                        text = points.toString(),
                         fontSize = 18.sp,
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                         style = TextStyle(
@@ -273,64 +296,6 @@ fun CreateTask(navHostController : NavHostController){
                     )
                 }
 
-                if(isImportant){
-                    if (checkedState && !weekly){
-                        water = 3
-                        fertilizer = 1
-                    }
-
-                    else if (checkedState && weekly){
-                        water = 5
-                        fertilizer = 5
-                    }
-
-                    else {
-                        water = 3
-                        fertilizer = 3
-                    }
-                } else {
-                    if (checkedState && !weekly){
-                        water = 2
-                        fertilizer = 0
-                    }
-
-                    else if (checkedState && weekly){
-                        water = 5
-                        fertilizer = 3
-                    }
-
-                    else {
-                        water = 3
-                        fertilizer = 2
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Text(
-                        text = "Fertilizer",
-                        fontSize = 18.sp,
-                        modifier = Modifier.padding(10.dp),
-                        style = TextStyle(
-                            color = colorResource(id = R.color.app_bg),
-                            fontFamily = FontFamily(Font(R.font.itim))
-                        )
-                    )
-
-                    Text(
-                        text = fertilizer.toString(),
-                        fontSize = 18.sp,
-                        modifier = Modifier.padding(10.dp),
-                        style = TextStyle(
-                            color = colorResource(id = R.color.app_bg),
-                            fontFamily = FontFamily(Font(R.font.itim))
-                        )
-                    )
-                }
             }
 
             Row(
@@ -353,8 +318,7 @@ fun CreateTask(navHostController : NavHostController){
                                 isWeekly = checkedState && weekly,
                                 isDaily = checkedState && !weekly,
                                 important = isImportant,
-                                water = water,
-                                fertilizer = fertilizer
+                                points = points
                             )
 
                             viewModel.createTask(task)

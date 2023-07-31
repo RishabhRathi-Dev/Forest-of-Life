@@ -44,8 +44,7 @@ fun TaskCard(
     taskId: Long,
     TaskHeading : String,
     Due : Date,
-    Water : Int,
-    Fertilizer : Int,
+    Points : Int,
     isDaily : Boolean,
     isWeekly : Boolean,
     important : Boolean
@@ -98,35 +97,18 @@ fun TaskCard(
 
                     Row(modifier = Modifier
                         .padding(start = 5.dp, end = 5.dp)) {
-                        // Water
-                        //TODO
                         Box(
                             modifier = Modifier
                                 .wrapContentSize()
                                 .padding(start = 5.dp, end = 5.dp)
-                            //.paint(painterResource(id = ), contentScale = ContentScale.FillBounds)
                         ) {
                             Text(
-                                text = Water.toString(),
+                                text = Points.toString(),
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.itim))
                             )
                         }
 
-                        // Fertilizer
-                        //TODO
-                        Box(
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .padding(start = 5.dp, end = 5.dp)
-                            //.paint(painterResource(id = ), contentScale = ContentScale.FillBounds)
-                        ) {
-                            Text(
-                                text = Fertilizer.toString(),
-                                fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.itim))
-                            )
-                        }
                     }
 
                 }
@@ -195,7 +177,7 @@ fun TaskCard(
                     .padding(5.dp)
             ) {
                 ImportantToggleButton(taskId, viewModel, important, isDaily, isWeekly)
-                CompletedButton(viewModel, taskId = taskId, water = Water, fertilizer = Fertilizer)
+                CompletedButton(viewModel, taskId = taskId, points = Points)
             }
         }
 
@@ -216,10 +198,10 @@ fun DeleteButton(viewModel: AppViewModel, taskId: Long){
 }
 
 @Composable
-fun CompletedButton(viewModel: AppViewModel, taskId : Long, water : Int, fertilizer : Int){
+fun CompletedButton(viewModel: AppViewModel, taskId : Long, points : Int){
     IconButton(
         onClick = {
-            viewModel.taskCompleted(taskId = taskId, waterToAdd = water, fertilizerToAdd = fertilizer)
+            viewModel.taskCompleted(taskId = taskId, points)
         },
         modifier = Modifier
             .size(60.dp)
@@ -236,8 +218,7 @@ fun CompletedButton(viewModel: AppViewModel, taskId : Long, water : Int, fertili
 @Composable
 fun ImportantToggleButton(taskId: Long, viewModel: AppViewModel, important: Boolean, isDaily: Boolean, isWeekly: Boolean) {
     val (isImportant, setImportant) = remember { mutableStateOf(important) }
-    var water = 0
-    var fertilizer = 0
+    var points = 0
 
     IconButton(
         onClick = {
@@ -245,38 +226,32 @@ fun ImportantToggleButton(taskId: Long, viewModel: AppViewModel, important: Bool
 
             if(!isImportant){
                 if (isDaily){
-                    water = 3
-                    fertilizer = 1
+                    points = 25
                 }
 
                 else if (isWeekly){
-                    water = 5
-                    fertilizer = 5
+                    points = 30
                 }
 
                 else {
-                    water = 3
-                    fertilizer = 3
+                    points = 40
                 }
 
             } else {
                 if (isDaily){
-                    water = 2
-                    fertilizer = 0
+                    points = 15
                 }
 
                 else if (isWeekly){
-                    water = 5
-                    fertilizer = 3
+                    points = 20
                 }
 
                 else {
-                    water = 3
-                    fertilizer = 2
+                    points = 30
                 }
             }
 
-            viewModel.markAndUnMarkImportant(taskId, water, fertilizer)
+            viewModel.markAndUnMarkImportant(taskId, points)
                   },
         modifier = Modifier
             .size(50.dp)
@@ -294,5 +269,5 @@ fun ImportantToggleButton(taskId: Long, viewModel: AppViewModel, important: Bool
 @Preview
 @Composable
 fun TaskCardPreview(){
-    TaskCard(0, "adfaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaatingaaaaaaaaaaaaaaaaaaaaaaaaaa", Calendar.getInstance().time, 10, 5, true, false, true)
+    TaskCard(0, "adfaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaatingaaaaaaaaaaaaaaaaaaaaaaaaaa", Calendar.getInstance().time, 10, true, true, false)
 }

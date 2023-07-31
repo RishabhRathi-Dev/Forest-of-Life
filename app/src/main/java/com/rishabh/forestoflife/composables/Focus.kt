@@ -64,7 +64,6 @@ import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.TimerViewModel
 import com.rishabh.forestoflife.data.services.TimerServiceManager
 
-var modelf = "mouse 2"
 @Composable
 fun Focus(navHostController : NavHostController){
     // TODO:: Create Focus Page

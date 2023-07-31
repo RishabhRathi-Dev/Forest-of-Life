@@ -37,11 +37,3 @@ object TaskList: Destinations{
 object CreateTask: Destinations{
     override val route = "CreateTask"
 }
-
-object ChoosePlant: Destinations{
-    override val route = "ChoosePlant"
-}
-
-object ChooseTree: Destinations{
-    override val route = "ChooseTree"
-}

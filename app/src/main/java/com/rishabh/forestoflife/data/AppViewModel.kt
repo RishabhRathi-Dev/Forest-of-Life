@@ -24,25 +24,19 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun initialSetup() {
-        val inventoryDao: InventoryDao = database.inventoryDao()
         val taskDao : TaskDao = database.taskDao()
         val dueTaskDao : DueTaskDao = database.dueTaskDao()
+        val pointsDao : PointsDao = database.pointsDao()
 
         val sdf = SimpleDateFormat("dd-MM-yyyy")
         val dateWithoutTime = sdf.parse(sdf.format(Date()))
-
-        val newItem = Inventory(
-            water = 10,
-            fertilizer = 5,
-            trees = 20
-        )
+        val starterPoints = Points(0, 0, Calendar.getInstance().time)
 
         val excercise = Task(
             taskHeading = "Excercise",
             isDaily = true,
             isWeekly = false,
-            water = 5,
-            fertilizer = 1,
+            points = 20,
             due = sdf.parse(sdf.format(Calendar.getInstance().time)),
             important = true
         )
@@ -51,8 +45,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             taskHeading = "Make Routine",
             isDaily = false,
             isWeekly = false,
-            water = 5,
-            fertilizer = 1,
+            points = 20,
             due = sdf.parse(sdf.format(Calendar.getInstance().time)),
             important = true
         )
@@ -62,11 +55,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             important = true,
             isWeekly = false,
             isDaily = false,
+            points = 0,
             due = sdf.parse(sdf.format(Calendar.getInstance().time))
         )
 
         viewModelScope.launch {
-            inventoryDao.insertItem(newItem)
+            pointsDao.insert(starterPoints)
             taskDao.insertTask(excercise)
             taskDao.insertTask(makeRoutine)
             dueTaskDao.insertTask(readAbout)
@@ -82,9 +76,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     // Tasks Functions
 
-    fun taskCompleted(taskId : Long, waterToAdd: Int, fertilizerToAdd: Int) {
+    fun taskCompleted(taskId : Long, points: Int) {
         viewModelScope.launch {
-            database.inventoryDao().addToInventory(waterToAdd = waterToAdd, fertilizerToAdd = fertilizerToAdd, treesToAdd = 0)
+            database.pointsDao().addPoints(points = points)
             database.taskDao().completeTask(taskId = taskId)
         }
     }
@@ -101,10 +95,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun markAndUnMarkImportant(taskId: Long, water : Int, fertilizer : Int){
+    fun markAndUnMarkImportant(taskId: Long, points : Int){
         viewModelScope.launch {
             database.taskDao().markUnmarkImportance(taskId)
-            database.taskDao().updateRewards(taskId, water, fertilizer)
+            database.taskDao().updateRewards(taskId, points)
         }
     }
 
@@ -162,22 +156,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
-    // Inventory Functions
-
-    fun getInventoryItems(): LiveData<List<Inventory>> {
-        return database.inventoryDao().getAllItems()
-    }
-
-    fun updateInventory(waterToAdd: Int, fertilizerToAdd: Int, treesToAdd: Int){
-        viewModelScope.launch {
-            database.inventoryDao().addToInventory(waterToAdd, fertilizerToAdd, treesToAdd)
-        }
-    }
-
-
     // Other
     fun onTurnOnNotificationsClicked(granted: Boolean?) {
 
     }
+
+    fun getPoints(): LiveData<Int> {
+        return database.pointsDao().getPoints()
+    }
+
+
 }
