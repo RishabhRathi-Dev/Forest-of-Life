@@ -1,5 +1,6 @@
 package com.rishabh.forestoflife.composables
 
+import android.util.Log
 import android.view.SurfaceView
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,9 +24,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
+import com.rishabh.forestoflife.data.AppViewModel
 
 @Composable
 fun Island(navHostController : NavHostController){
@@ -59,24 +64,68 @@ fun IslandScreen(){
     val surfaceView = remember { SurfaceView(context) }
     val customViewer = remember { CustomViewer() }
 
+    val appViewModel : AppViewModel = viewModel()
+
+    val point by appViewModel.getPoints().observeAsState()
+    val time by appViewModel.getTime().observeAsState()
+
+    var modelName = when (point) {
+        in 0..50 -> {
+            "00"
+        }
+        in 51..150 -> {
+            "01"
+        }
+        in 151..250 ->{
+            "12"
+        }
+        in 251..350 ->{
+            "22"
+        }
+        else -> {
+            "00"
+        }
+    }
+
+    if (time != null){
+        // 60 min of focus time and more than 250 points then special model
+        modelName = when (time) {
+            in 0L..15*60*1000 -> {
+                modelName + "0"
+            }
+            in (15*60*1000L+1)..30*60*1000L -> {
+                modelName + "1"
+            }
+            in 30*60*1000L+1..60*60*1000L ->{
+                modelName + "2"
+            }
+            else -> {
+                modelName + "3"
+            }
+        }
+    }
+
     /*
      DisposableEffect is used to handle the initialization and cleanup of the CustomViewer,
      ensuring that it starts and stops correctly with the Composable function.
      */
 
     // Handle initialization and cleanup with DisposableEffect
-    DisposableEffect(surfaceView) {
-        customViewer.init(surfaceView.context, surfaceView)
-        customViewer.createRenderables("island","023")
-        customViewer.createIndirectLight("pillars_2k")
-        customViewer.onResume()
+    if (point != null && time != null){
+        DisposableEffect(surfaceView, modelName) {
+            Log.d("Point", point.toString())
+            Log.d("Time", time.toString())
+            customViewer.init(surfaceView.context, surfaceView)
+            customViewer.createRenderables("island", modelName)
+            customViewer.createIndirectLight("pillars_2k")
+            customViewer.onResume()
 
-        onDispose {
-            customViewer.onPause()
-            customViewer.onDestroy()
+            onDispose {
+                customViewer.onPause()
+                customViewer.onDestroy()
+            }
         }
     }
-
     // Use ViewCompositionStrategy to control the view's lifecycle
     AndroidView(
         factory = { surfaceView },

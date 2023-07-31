@@ -3,6 +3,7 @@ package com.rishabh.forestoflife.composables
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock
+import android.util.Log
 import android.view.SurfaceView
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
@@ -61,6 +62,7 @@ import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
+import com.rishabh.forestoflife.data.AppViewModel
 import com.rishabh.forestoflife.data.TimerViewModel
 import com.rishabh.forestoflife.data.services.TimerServiceManager
 
@@ -330,28 +332,44 @@ fun PlantScreen(){
     val surfaceView = remember { SurfaceView(context) }
     val customViewer = remember { CustomViewer() }
 
+    val appViewModel : AppViewModel = viewModel()
+
+    val time by appViewModel.getTime().observeAsState()
+
+    var modelName = when (time) {
+        in 0L..15*60*1000 -> {
+            "00"
+        }
+        in (15*60*1000L+1)..30*60*1000L -> {
+            "1"
+        }
+        in 30*60*1000L+1..60*60*1000L ->{
+            "2"
+        }
+        else -> {
+            "3"
+        }
+    }
+
+
     /*
      DisposableEffect is used to handle the initialization and cleanup of the CustomViewer,
      ensuring that it starts and stops correctly with the Composable function.
      */
 
-    /*
-    // Load time is quite high
-    LaunchedEffect(Unit){
-        customViewer.loadHdr("moonlit_golf_4k", "moonlit_golf_4k")
-    }
-
-     */
     // Handle initialization and cleanup with DisposableEffect
-    DisposableEffect(surfaceView) {
-        customViewer.init(surfaceView.context, surfaceView)
-        customViewer.createRenderables("focus", "3")
-        customViewer.createIndirectLight("pillars_2k")
-        customViewer.onResume()
+    if (time != null){
+        DisposableEffect(surfaceView, modelName) {
+            Log.d("Time", time.toString())
+            customViewer.init(surfaceView.context, surfaceView)
+            customViewer.createRenderables("focus", modelName)
+            customViewer.createIndirectLight("pillars_2k")
+            customViewer.onResume()
 
-        onDispose {
-            customViewer.onPause()
-            customViewer.onDestroy()
+            onDispose {
+                customViewer.onPause()
+                customViewer.onDestroy()
+            }
         }
     }
 

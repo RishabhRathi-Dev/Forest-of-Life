@@ -1,8 +1,11 @@
 package com.rishabh.forestoflife.data
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewModelScope
 import androidx.room.Database
 import androidx.room.Room
@@ -27,10 +30,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         val taskDao : TaskDao = database.taskDao()
         val dueTaskDao : DueTaskDao = database.dueTaskDao()
         val pointsDao : PointsDao = database.pointsDao()
+        val focusTime : FocusTimeDao = database.focusTimeDao()
 
         val sdf = SimpleDateFormat("dd-MM-yyyy")
         val dateWithoutTime = sdf.parse(sdf.format(Date()))
         val starterPoints = Points(0, 0, sdf.parse(sdf.format(Calendar.getInstance().time)))
+        val starterTime = FocusTime(0, 0, sdf.parse(sdf.format(Calendar.getInstance().time)))
 
         val excercise = Task(
             taskHeading = "Excercise",
@@ -64,6 +69,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             taskDao.insertTask(excercise)
             taskDao.insertTask(makeRoutine)
             dueTaskDao.insertTask(readAbout)
+            focusTime.insert(starterTime)
         }
     }
 
@@ -72,6 +78,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             database.taskDao().checkDueAndUpdate()
             database.pointsDao().checkForDeduction()
+            database.focusTimeDao().checkDailyReset()
         }
     }
 
@@ -161,9 +168,40 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         return database.pointsDao().getPoints()
     }
 
+    fun getStaticPoints() : Int {
+        return database.pointsDao().getPointsStatic()
+    }
+
     fun deductPoints(points: Int) {
         viewModelScope.launch {
             database.pointsDao().addPoints(points = -points)
+        }
+    }
+
+    fun getTime(): LiveData<Long> {
+        return database.focusTimeDao().getTime()
+    }
+
+    fun getStaticTime() : Long {
+        return database.focusTimeDao().getTimeStatic()
+    }
+
+    fun addTime(time: Long) {
+        viewModelScope.launch {
+            database.focusTimeDao().addTime(time)
+        }
+    }
+
+    companion object {
+        private lateinit var instance: AppViewModel
+        fun getInstance(context: Context): AppViewModel {
+            if (!::instance.isInitialized) {
+                instance = ViewModelProvider(
+                    ViewModelStore(),
+                    ViewModelProvider.AndroidViewModelFactory.getInstance(context.applicationContext as Application)
+                )[AppViewModel::class.java]
+            }
+            return instance
         }
     }
 

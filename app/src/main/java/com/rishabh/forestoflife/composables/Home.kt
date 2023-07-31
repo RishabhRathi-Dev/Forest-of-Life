@@ -1,5 +1,6 @@
 package com.rishabh.forestoflife.composables
 
+import android.util.Log
 import android.view.SurfaceView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -136,21 +138,55 @@ fun TreeScreen() {
     val surfaceView = remember { SurfaceView(context) }
     val customViewer = remember { CustomViewer() }
 
+    val appViewModel : AppViewModel = viewModel()
+
+    val point by appViewModel.getPoints().observeAsState()
+    val time by appViewModel.getTime().observeAsState()
+
+    var modelName = when (point) {
+        in 0..50 -> {
+            "00"
+        }
+        in 51..150 -> {
+            "01"
+        }
+        in 151..250 ->{
+            "12"
+        }
+        in 251..350 ->{
+            "22"
+        }
+        else -> {
+            "00"
+        }
+    }
+
+    if (time != null){
+        // 60 min of focus time and more than 250 points then special model
+        if (time!! > 60 * 60 * 1000 && point!! > 250){
+            modelName = "F$modelName"
+        }
+    }
+
     /*
      DisposableEffect is used to handle the initialization and cleanup of the CustomViewer,
      ensuring that it starts and stops correctly with the Composable function.
      */
 
     // Handle initialization and cleanup with DisposableEffect
-    DisposableEffect(surfaceView) {
-        customViewer.init(surfaceView.context, surfaceView)
-        customViewer.createRenderables("home", "F22")
-        customViewer.createIndirectLight("pillars_2k")
-        customViewer.onResume()
+    if (point != null){
+        DisposableEffect(surfaceView, modelName) {
+            Log.d("Point", point.toString())
+            Log.d("Time", time.toString())
+            customViewer.init(surfaceView.context, surfaceView)
+            customViewer.createRenderables("home", modelName)
+            customViewer.createIndirectLight("pillars_2k")
+            customViewer.onResume()
 
-        onDispose {
-            customViewer.onPause()
-            customViewer.onDestroy()
+            onDispose {
+                customViewer.onPause()
+                customViewer.onDestroy()
+            }
         }
     }
 
@@ -161,4 +197,3 @@ fun TreeScreen() {
         update = {}
     )
 }
-

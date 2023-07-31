@@ -52,6 +52,14 @@ data class Points(
     var lastModified: Date
 )
 
+@Entity(tableName = "FocusTime")
+data class FocusTime(
+    @PrimaryKey
+    val id : Int = 0,
+    var time: Long,
+    var lastModified: Date
+)
+
 @Dao
 interface PointsDao {
 
@@ -69,7 +77,9 @@ interface PointsDao {
     @Transaction
     suspend fun addPoints(points: Int){
         val sdf = SimpleDateFormat("dd-MM-yyyy")
-        newPoints(points = getPointsStatic() + points)
+        if (getPointsStatic() + points <= 350){
+            newPoints(points = getPointsStatic() + points)
+        }
         newModified(date = sdf.parse(sdf.format(Calendar.getInstance().time)))
     }
 
@@ -91,6 +101,52 @@ interface PointsDao {
 
         if (p.lastModified.before(currentDate)){
             addPoints(-50)
+        }
+    }
+}
+
+@Dao
+interface FocusTimeDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(focusTime: FocusTime)
+    @Query("SELECT time FROM FocusTime WHERE id = 0")
+    fun getTime() : LiveData<Long>
+
+    @Query("SELECT time FROM FocusTime WHERE id = 0")
+    fun getTimeStatic() : Long
+
+    @Query("SELECT * FROM FocusTime WHERE id = 0")
+    fun getAll() : FocusTime
+
+    @Transaction
+    suspend fun addTime(points: Long){
+        val sdf = SimpleDateFormat("dd-MM-yyyy")
+
+        newPoints(time = getTimeStatic() + points)
+        newModified(date = sdf.parse(sdf.format(Calendar.getInstance().time)))
+    }
+
+    @Query("UPDATE FocusTime SET time = :time WHERE id = 0")
+    fun newPoints(time: Long)
+
+    @Query("UPDATE FocusTime SET lastModified = :date WHERE id = 0")
+    fun newModified(date: Date)
+
+    @Query("UPDATE FocusTime SET time = 0 WHERE id = 0")
+    fun dailyReset()
+
+    @Update
+    suspend fun updateFocusTime(focusTime: FocusTime)
+    @Transaction
+    suspend fun checkDailyReset(){
+        val calendar = Calendar.getInstance()
+        calendar.time = Calendar.getInstance().time
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        val currentDate = calendar.time
+        val p = getAll()
+
+        if (p.lastModified.before(currentDate)){
+            dailyReset()
         }
     }
 }
@@ -285,9 +341,10 @@ class DateTypeConverter {
 }
 
 // Update your Room database configuration with the type converter
-@Database(entities = [Points::class, Task::class, DueTask::class], version = 1)
+@Database(entities = [FocusTime::class, Points::class, Task::class, DueTask::class], version = 1)
 @TypeConverters(DateTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun focusTimeDao() : FocusTimeDao
     abstract fun pointsDao() : PointsDao
     abstract fun taskDao(): TaskDao
     abstract fun dueTaskDao() : DueTaskDao

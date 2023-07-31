@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.test.core.app.ApplicationProvider
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBarScreen.Add.title
+import com.rishabh.forestoflife.data.AppViewModel
 import com.rishabh.forestoflife.data.TimerViewModel
 import com.rishabh.forestoflife.ui.theme.Green
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +43,7 @@ class TimerService : Service() {
     private var isRunning = false
     private var startTime: Long = 0
     private lateinit var timerViewModel: TimerViewModel
+    private lateinit var appViewModel: AppViewModel
 
     private  var endTime : Long = 0
     private var elapsedTime : Long = 0
@@ -51,6 +53,7 @@ class TimerService : Service() {
     override fun onCreate() {
         super.onCreate()
         timerViewModel = TimerViewModel.getInstance(applicationContext)
+        appViewModel = AppViewModel.getInstance(applicationContext)
         timerViewModel.setElapsedTime(0L)
         timerViewModel.setStopped(false)
         startTime = SystemClock.elapsedRealtime()
@@ -112,6 +115,7 @@ class TimerService : Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
         val sharedPreferences = applicationContext.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
+        appViewModel.addTime(elapsedTime)
         editor.putLong("TotalFocusTime", sharedPreferences.getLong("TotalFocusTime", 0L) + elapsedTime)
         editor.putLong("CurrentEndTime", 0L)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
