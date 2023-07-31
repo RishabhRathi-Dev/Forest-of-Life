@@ -65,11 +65,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         )
 
         viewModelScope.launch {
+            focusTime.insert(starterTime)
             pointsDao.insert(starterPoints)
             taskDao.insertTask(excercise)
             taskDao.insertTask(makeRoutine)
             dueTaskDao.insertTask(readAbout)
-            focusTime.insert(starterTime)
+
         }
     }
 

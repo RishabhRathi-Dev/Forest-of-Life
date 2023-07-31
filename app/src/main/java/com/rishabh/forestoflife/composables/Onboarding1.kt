@@ -89,7 +89,7 @@ fun Onboarding1(navHostController: NavHostController){
             ) {
                 Image(
                     // Placeholder
-                    painter = painterResource(R.mipmap._64903),
+                    painter = painterResource(R.mipmap.island),
                     contentDescription = "Your Image",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
