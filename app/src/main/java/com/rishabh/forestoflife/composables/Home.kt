@@ -163,7 +163,7 @@ fun TreeScreen() {
 
     if (time != null){
         // 60 min of focus time and more than 250 points then special model
-        if (time!! > 60 * 60 * 1000 && point!! > 250){
+        if (time!! > 45 * 60 * 1000 && point!! > 250){
             modelName = "F$modelName"
         }
     }
