@@ -18,8 +18,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,115 +75,248 @@ fun TaskCard(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .size((1.5 * w).dp, h)
+            val sharedPreferences = LocalContext.current.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+            var lefty by remember {
+                mutableStateOf(sharedPreferences.getBoolean("LeftHandMode", false))
+            }
+            if (lefty) {
+                // Star and Completed Button
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .size((0.28 * w).dp, h)
+                        .padding(5.dp)
+                ) {
+                    ImportantToggleButton(taskId, viewModel, important, isDaily, isWeekly)
+                    CompletedButton(viewModel, taskId = taskId, points = Points)
+                }
 
-            ) {
+                DeleteButton(viewModel = viewModel, taskId = taskId)
 
-                Column() {
-                    AutoResizeText(
-                        text = TaskHeading,
-                        fontSizeRange = FontSizeRange(
-                            min = 16.sp,
-                            max = 24.sp,
-                        ),
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        fontFamily = FontFamily(Font(R.font.itim)),
-                        modifier = Modifier
-                            .padding(5.dp)
-                    )
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .size((1.72 * w).dp, h)
 
-                    // Rewards
+                ) {
+
+                    Column() {
+                        AutoResizeText(
+                            text = TaskHeading,
+                            fontSizeRange = FontSizeRange(
+                                min = 16.sp,
+                                max = 24.sp,
+                            ),
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            fontFamily = FontFamily(Font(R.font.itim)),
+                            modifier = Modifier
+                                .padding(5.dp)
+                        )
+
+                        // Rewards
+
+                        Row(modifier = Modifier
+                            .padding(start = 5.dp, end = 5.dp)) {
+                            Row(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .padding(start = 5.dp, end = 5.dp)
+                            ) {
+
+                                Text(
+                                    text = "Points : ",
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.itim))
+                                )
+
+                                Text(
+                                    text = Points.toString(),
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.itim))
+                                )
+                            }
+
+                        }
+
+                    }
+
+                    // Type and Due
 
                     Row(modifier = Modifier
-                        .padding(start = 5.dp, end = 5.dp)) {
+                        .padding(5.dp)) {
                         Box(
                             modifier = Modifier
                                 .wrapContentSize()
                                 .padding(start = 5.dp, end = 5.dp)
                         ) {
+                            var resulting = ""
+
+                            if (isDaily && isWeekly){
+                                resulting = "Error"
+                            }
+
+                            else if (isDaily){
+                                resulting = "Daily"
+                            }
+
+                            else if (isWeekly){
+                                resulting = "Weekly"
+                            }
+
+                            else {
+                                resulting = "Single"
+                            }
+
+
                             Text(
-                                text = Points.toString(),
+                                text = "Type : " + resulting,
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.itim))
                             )
                         }
 
-                    }
+                        Box(
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(start = 5.dp)
+                        ) {
 
+                            val formatter = SimpleDateFormat("dd.MM.yyyy")
+                            val formattedDate = formatter.format(Due)
+
+                            Text(
+                                text = "Due : " + formattedDate,
+                                fontSize = 14.sp,
+                                fontFamily = FontFamily(Font(R.font.itim))
+                            )
+                        }
+                    }
                 }
 
-                // Type and Due
 
-                Row(modifier = Modifier
-                    .padding(5.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .padding(start = 5.dp, end = 5.dp)
-                    ) {
-                        var resulting = ""
+            } else {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .size((1.5 * w).dp, h)
 
-                        if (isDaily && isWeekly){
-                            resulting = "Error"
-                        }
+                ) {
 
-                        else if (isDaily){
-                            resulting = "Daily"
-                        }
-
-                        else if (isWeekly){
-                            resulting = "Weekly"
-                        }
-
-                        else {
-                            resulting = "One Time"
-                        }
-
-
-                        Text(
-                            text = "Type : " + resulting,
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.itim))
+                    Column() {
+                        AutoResizeText(
+                            text = TaskHeading,
+                            fontSizeRange = FontSizeRange(
+                                min = 16.sp,
+                                max = 24.sp,
+                            ),
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            fontFamily = FontFamily(Font(R.font.itim)),
+                            modifier = Modifier
+                                .padding(5.dp)
                         )
+
+                        // Rewards
+
+                        Row(modifier = Modifier
+                            .padding(start = 5.dp, end = 5.dp)) {
+                            Row(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .padding(start = 5.dp, end = 5.dp)
+                            ) {
+
+                                Text(
+                                    text = "Points : ",
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.itim))
+                                )
+
+                                Text(
+                                    text = Points.toString(),
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.itim))
+                                )
+                            }
+
+                        }
+
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .padding(start = 5.dp)
-                    ) {
+                    // Type and Due
 
-                        val formatter = SimpleDateFormat("dd.MM.yyyy")
-                        val formattedDate = formatter.format(Due)
+                    Row(modifier = Modifier
+                        .padding(5.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(start = 5.dp, end = 5.dp)
+                        ) {
+                            var resulting = ""
 
-                        Text(
-                            text = "Due : " + formattedDate,
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.itim))
-                        )
+                            if (isDaily && isWeekly){
+                                resulting = "Error"
+                            }
+
+                            else if (isDaily){
+                                resulting = "Daily"
+                            }
+
+                            else if (isWeekly){
+                                resulting = "Weekly"
+                            }
+
+                            else {
+                                resulting = "Single"
+                            }
+
+
+                            Text(
+                                text = "Type : " + resulting,
+                                fontSize = 14.sp,
+                                fontFamily = FontFamily(Font(R.font.itim))
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(start = 5.dp)
+                        ) {
+
+                            val formatter = SimpleDateFormat("dd.MM.yyyy")
+                            val formattedDate = formatter.format(Due)
+
+                            Text(
+                                text = "Due : " + formattedDate,
+                                fontSize = 14.sp,
+                                fontFamily = FontFamily(Font(R.font.itim))
+                            )
+                        }
                     }
+                }
+
+                DeleteButton(viewModel = viewModel, taskId = taskId)
+
+                // Star and Completed Button
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .size((0.5 * w).dp, h)
+                        .padding(5.dp)
+                ) {
+                    ImportantToggleButton(taskId, viewModel, important, isDaily, isWeekly)
+                    CompletedButton(viewModel, taskId = taskId, points = Points)
                 }
             }
 
-            DeleteButton(viewModel = viewModel, taskId = taskId)
-
-            // Star and Completed Button
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .size((0.5 * w).dp, h)
-                    .padding(5.dp)
-            ) {
-                ImportantToggleButton(taskId, viewModel, important, isDaily, isWeekly)
-                CompletedButton(viewModel, taskId = taskId, points = Points)
-            }
         }
 
     }

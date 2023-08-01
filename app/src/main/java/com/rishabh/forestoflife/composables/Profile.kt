@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,19 +51,25 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import java.time.format.TextStyle
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun Profile(navHostController : NavHostController){
     //TODO:: Create Profile Page
@@ -231,13 +239,79 @@ fun Profile(navHostController : NavHostController){
             }
             
             // Settings
-            Column(){
-                
-                // Import and Export
-                Row(){
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ){
+                Text(
+                    text = "Settings",
+                    fontSize = 32.sp,
+                )
+                // Notification
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    val notificationManager = LocalContext.current.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    var noti by remember { mutableStateOf(notificationManager.areNotificationsEnabled()) }
+
+                    val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+
+                    val context = LocalContext.current
+                    Text(
+                        text = "Notification",
+                        style = textStyle
+                    )
+
+                    androidx.compose.material3.Switch(
+                        modifier = Modifier.semantics { contentDescription = "Notification" },
+                        checked = noti,
+                        onCheckedChange = {
+                            if (!noti){
+                                notificationPermissionState.launchPermissionRequest()
+                            } else {
+                                val intent = Intent(Settings.ACTION_ALL_APPS_NOTIFICATION_SETTINGS)
+                                ContextCompat.startActivity(context, intent, null)
+                            }
+                            noti = it
+                        }
+                    )
+
+                }
 
 
+                // Left Hand Mode
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    val sharedPreferences = LocalContext.current.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+                    var lefty by remember {
+                        mutableStateOf(sharedPreferences.getBoolean("LeftHandMode", false))
+                    }
 
+                    val context = LocalContext.current
+                    Text(
+                        text = "Left Hand Mode",
+                        style = textStyle
+                    )
+
+                    androidx.compose.material3.Switch(
+                        modifier = Modifier.semantics { contentDescription = "Left Hand Mode" },
+                        checked = lefty,
+                        onCheckedChange = {
+                            val editor = sharedPreferences.edit()
+                            editor.putBoolean("LeftHandMode", it)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                                editor.apply()
+                            }
+                            lefty = it
+                        }
+                    )
 
                 }
                 
@@ -247,7 +321,9 @@ fun Profile(navHostController : NavHostController){
         }
     }
 }
-
+private fun mToast(context: Context){
+    Toast.makeText(context, "Please turn off notification from settings", Toast.LENGTH_LONG).show()
+}
 @Preview
 @Composable
 fun ProfilePreview(){
