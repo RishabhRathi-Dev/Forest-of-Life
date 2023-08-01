@@ -244,7 +244,8 @@ fun CreateTask(navHostController : NavHostController){
                 )
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
@@ -288,7 +289,7 @@ fun CreateTask(navHostController : NavHostController){
                     Text(
                         text = points.toString(),
                         fontSize = 18.sp,
-                        modifier = Modifier.padding(start = 10.dp, end = 10.dp),
+                        modifier = Modifier.padding(start = 10.dp, end = 20.dp),
                         style = TextStyle(
                             color = colorResource(id = R.color.app_bg),
                             fontFamily = FontFamily(Font(R.font.itim))

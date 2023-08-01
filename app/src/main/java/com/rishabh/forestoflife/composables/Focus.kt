@@ -1,8 +1,11 @@
 package com.rishabh.forestoflife.composables
 
 import android.content.Context
+import android.media.RingtoneManager
 import android.os.Build
 import android.os.SystemClock
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.SurfaceView
 import androidx.compose.animation.core.animateFloatAsState
@@ -57,6 +60,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R

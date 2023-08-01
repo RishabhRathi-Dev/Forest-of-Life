@@ -3,6 +3,7 @@ package com.rishabh.forestoflife.data.services
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
 import android.provider.Settings
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -13,9 +14,15 @@ class TimerServiceManager constructor(
     private val applicationContext: Context,
 ){
     private val serviceIntent = Intent(applicationContext, TimerService::class.java)
+    private val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     fun startTimerService(){
         startDND()
-        ContextCompat.startForegroundService(applicationContext, serviceIntent)
+        if (notificationManager.isNotificationPolicyAccessGranted){
+            val notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val ringtone = RingtoneManager.getRingtone(applicationContext, notificationSoundUri)
+            ringtone.play()
+            ContextCompat.startForegroundService(applicationContext, serviceIntent)
+        }
     }
     fun stopTimerService(){
         stopDND()
@@ -23,8 +30,6 @@ class TimerServiceManager constructor(
     }
 
     fun startDND(){
-
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (notificationManager.isNotificationPolicyAccessGranted) {
             Log.d("NM", "has permissions")
@@ -38,7 +43,6 @@ class TimerServiceManager constructor(
     }
 
     fun stopDND(){
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (notificationManager.isNotificationPolicyAccessGranted) {
             Log.d("NM", "has permissions")
