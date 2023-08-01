@@ -27,18 +27,25 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +64,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.data.AppViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun Onboarding2(navHostController: NavHostController){
@@ -162,66 +171,102 @@ fun Onboarding2(navHostController: NavHostController){
                     .fillMaxWidth()
                     .padding(top = 10.dp, bottom = 10.dp, start = 16.dp, end = 16.dp)
             ) {
-                OutlinedButton(
-                    onClick = {
-                        //Toast.makeText(mContext, "This is a Circular Button with a + Icon", Toast.LENGTH_LONG).show()
-                        //navHostController.navigate("Home")
-                        val allFieldsFilled = nameState.value.isNotBlank()
-
-                        if (allFieldsFilled) {
-                            saveUserInformation(nameState.value, context, viewModel)
-
-                            // Navigate to Home screen
-                            navHostController.navigate("Home") {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
-                                // on the back stack as users select items
-                                popUpTo(navHostController.graph.findStartDestination().id) {
-                                    saveState = true
-                                    inclusive = true // to delete previous stack
-                                }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
-                                launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
-                                restoreState = true
-                            }
-                        } else {
-                            mToast(context)
+                val courtine = rememberCoroutineScope()
+                var loading by remember {
+                    mutableStateOf(false)
+                }
+                var changeNow by remember {
+                    mutableStateOf(false)
+                }
+                // Navigate to Home screen
+                if (changeNow){
+                    navHostController.navigate("Home") {
+                        // Pop up to the start destination of the graph to
+                        // avoid building up a large stack of destinations
+                        // on the back stack as users select items
+                        popUpTo(navHostController.graph.findStartDestination().id) {
+                            saveState = true
+                            inclusive = true // to delete previous stack
                         }
-                    },
-                    shape = CircleShape,
-                    modifier= Modifier.wrapContentSize(),
-                    border= BorderStroke(0.dp, Color(MaterialTheme.colorScheme.background.hashCode())),
-                    contentPadding = PaddingValues(10.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = colorResource(id = R.color.card_green), 
-                        contentColor =  colorResource(id = R.color.app_bg)
-                    ),
-                    
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp)
-                ) {
+                        // Avoid multiple copies of the same destination when
+                        // reselecting the same item
+                        launchSingleTop = true
+                        // Restore state when reselecting a previously selected item
+                        restoreState = true
+                    }
+                }
 
-                    Text(
-                        text = "Get Started",
-                        style = TextStyle(
-                            fontSize = 24.sp,
-                            fontFamily = FontFamily(Font(R.font.itim)),
-                            fontWeight = FontWeight(700),
-                            letterSpacing = 0.4.sp,
+                if (loading){
+                    Row(horizontalArrangement = Arrangement.Center) {
+                        CircularProgressIndicator(
+                            Modifier
+                                .size(30.dp)
+                                .padding(5.dp),
+                            trackColor = colorResource(id = R.color.app_bg),
+                            color = colorResource(id = R.color.app_yellow),
+                            strokeWidth = 15.dp,
+                            strokeCap = StrokeCap.Round
+                        )
+                    }
+                }
+
+                else {
+                    OutlinedButton(
+                        onClick = {
+                            //Toast.makeText(mContext, "This is a Circular Button with a + Icon", Toast.LENGTH_LONG).show()
+                            //navHostController.navigate("Home")
+                            val allFieldsFilled = nameState.value.isNotBlank()
+
+                            if (allFieldsFilled) {
+                                loading = true
+                                saveUserInformation(nameState.value, context, viewModel)
+                                courtine.launch {
+                                    delay(3000)
+                                    changeNow = true
+                                    loading = false
+                                }
+
+
+                            } else {
+                                mToast(context)
+                            }
+                        },
+                        shape = CircleShape,
+                        modifier = Modifier.wrapContentSize(),
+                        border = BorderStroke(
+                            0.dp,
+                            Color(MaterialTheme.colorScheme.background.hashCode())
                         ),
-                        modifier = Modifier
-                            .padding(10.dp)
-                    )
+                        contentPadding = PaddingValues(10.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = colorResource(id = R.color.card_green),
+                            contentColor = colorResource(id = R.color.app_bg)
+                        ),
 
-                    Icon(
-                        painterResource(id = R.drawable.arrow_forward_48px) ,
-                        contentDescription = "content description",
-                        tint= colorResource(id = R.color.app_bg),
-                        modifier = Modifier
-                            .width(30.dp)
-                            .height(30.dp)
-                    )
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp)
+                    ) {
+
+                        Text(
+                            text = "Get Started",
+                            style = TextStyle(
+                                fontSize = 24.sp,
+                                fontFamily = FontFamily(Font(R.font.itim)),
+                                fontWeight = FontWeight(700),
+                                letterSpacing = 0.4.sp,
+                            ),
+                            modifier = Modifier
+                                .padding(10.dp)
+                        )
+
+                        Icon(
+                            painterResource(id = R.drawable.arrow_forward_48px),
+                            contentDescription = "content description",
+                            tint = colorResource(id = R.color.app_bg),
+                            modifier = Modifier
+                                .width(30.dp)
+                                .height(30.dp)
+                        )
+                    }
                 }
 
             }
