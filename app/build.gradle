@@ -50,6 +50,8 @@ android {
 
 dependencies {
 
+    implementation 'nl.dionsegijn:konfetti-compose:2.0.1'
+
     implementation 'com.google.android.filament:filament-android:1.36.0'
     implementation 'com.google.android.filament:filament-utils-android:1.36.0'
     implementation 'com.google.android.filament:gltfio-android:1.36.0'

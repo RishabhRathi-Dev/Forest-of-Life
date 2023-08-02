@@ -72,6 +72,15 @@ import com.rishabh.forestoflife.data.MAX_POINTS
 import com.rishabh.forestoflife.data.MAX_TIME
 import com.rishabh.forestoflife.data.TimerViewModel
 import com.rishabh.forestoflife.data.services.TimerServiceManager
+import nl.dionsegijn.konfetti.compose.KonfettiView
+import nl.dionsegijn.konfetti.core.Angle
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.Spread
+import nl.dionsegijn.konfetti.core.emitter.Emitter
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun Focus(navHostController : NavHostController){
@@ -97,36 +106,76 @@ fun Focus(navHostController : NavHostController){
 
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .offset(x = 0.dp, y = (-18).dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (time != null) {
-                    var progress = (time!!).toFloat() / MAX_TIME
-                    if (progress < 0){
-                        progress = 0f
-                    }
-                    LinearProgressIndicator(
-                        progress = progress,
-                        color = colorResource(id = R.color.card_green),
-                        backgroundColor = colorResource(id = R.color.app_yellow),
-                        strokeCap = StrokeCap.Square,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(10.dp)
-                    )
+            Box{
+                Box(
+                    modifier = Modifier.padding(top = 10.dp)
+                ) {
+                    timer()
                 }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .offset(x = 0.dp, y = (-18).dp),
+                ) {
+                    if (time != null) {
+                        val sharedPreferences = LocalContext.current.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+                        val sdf = SimpleDateFormat("dd-MM-yyyy")
+                        val today = sdf.parse(sdf.format(Calendar.getInstance().time))
+                        val last = sdf.parse(sharedPreferences.getString("DayFocusCelebrated", "01-01-1970"))
+
+
+                        var progress = (time!!).toFloat() / MAX_TIME
+                        if (progress < 0){
+                            progress = 0f
+                        }
+
+                        val celebrate = last.before(today) && (progress>=1.0f)
+
+                        LinearProgressIndicator(
+                            progress = progress,
+                            color = colorResource(id = R.color.card_green),
+                            backgroundColor = colorResource(id = R.color.app_yellow),
+                            strokeCap = StrokeCap.Square,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp)
+                        )
+
+                        if (celebrate){
+
+                            val party = Party(
+                                speed = 0f,
+                                maxSpeed = 15f,
+                                damping = 0.9f,
+                                angle = Angle.BOTTOM,
+                                spread = Spread.ROUND,
+                                colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+                                emitter = Emitter(duration = 3, TimeUnit.SECONDS).perSecond(100),
+                                position = Position.Relative(0.0, 0.0).between(Position.Relative(1.0, 0.0))
+                            )
+
+                            Box{
+                                KonfettiView(
+                                    parties = listOf(party),
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+
+                            // Closing Party
+                            val editor = sharedPreferences.edit()
+                            editor.putString("DayFocusCelebrated", sdf.format(Calendar.getInstance().time))
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                                editor.apply()
+                            }
+                        }
+                    }
+                }
+
+
             }
 
-            Column(
-                modifier = Modifier.padding(top = 10.dp)
-            ) {
-                timer()
-            }
         }
     }
 

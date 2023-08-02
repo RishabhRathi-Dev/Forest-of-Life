@@ -1,9 +1,12 @@
 package com.rishabh.forestoflife.composables
 
+import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.view.SurfaceView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +49,19 @@ import com.rishabh.forestoflife.composables.utils.cards.TaskCard
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.AppViewModel
 import com.rishabh.forestoflife.data.MAX_POINTS
+import nl.dionsegijn.konfetti.compose.KonfettiView
+import nl.dionsegijn.konfetti.compose.OnParticleSystemUpdateListener
+import nl.dionsegijn.konfetti.core.Angle
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.PartySystem
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.Spread
+import nl.dionsegijn.konfetti.core.emitter.Emitter
+import nl.dionsegijn.konfetti.core.models.Shape
+import nl.dionsegijn.konfetti.core.models.Size
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 
 @Composable
@@ -81,83 +97,123 @@ fun Home(navHostController : NavHostController){
                 TreeScreen()
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .offset(x=0.dp,y=(-8).dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (point != null) {
-                    var progress = (point!!).toFloat() / MAX_POINTS
-                    if (progress < 0){
-                        progress = 0f
+            Box{
+
+                Column(){
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                        ,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Text(
+                            text = "Your Tasks",
+                            fontFamily = FontFamily(Font(R.font.itim)),
+                            fontSize = 24.sp
+                        )
+
+                        Text(
+                            text = "See All",
+                            fontFamily = FontFamily(Font(R.font.itim)),
+                            style = TextStyle(
+                                color = colorResource(id = R.color.app_red)
+                            ),
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .clickable {
+                                    navHostController.navigate("TaskList")
+                                }
+
+                        )
+
                     }
-                    LinearProgressIndicator(
-                        progress = progress,
-                        color = colorResource(id = R.color.card_green),
-                        backgroundColor = colorResource(id = R.color.app_yellow),
-                        strokeCap = StrokeCap.Square,
-                        modifier = Modifier.fillMaxWidth().height(10.dp)
-                    )
+
+
+                    Column {
+                        val viewModel : AppViewModel = viewModel()
+                        val tasksItems by viewModel.getTaskList().observeAsState()
+                        var count = 2
+                        tasksItems?.forEach { item ->
+                            if (count > 0) {
+                                TaskCard(
+                                    taskId = item.taskId,
+                                    TaskHeading = item.taskHeading,
+                                    Due = item.due,
+                                    Points = item.points,
+                                    isDaily = item.isDaily,
+                                    isWeekly = item.isWeekly,
+                                    important = item.important
+                                )
+                                count--
+                            }
+                        }
+                    }
+
                 }
-            }
 
-            Column(){
-
-                Row(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                    ,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(horizontal = 16.dp)
+                        .offset(x = 0.dp, y = (-8).dp),
                 ) {
+                    if (point != null) {
+                        val sharedPreferences = LocalContext.current.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+                        val sdf = SimpleDateFormat("dd-MM-yyyy")
+                        val today = sdf.parse(sdf.format(Calendar.getInstance().time))
+                        val last = sdf.parse(sharedPreferences.getString("DayHomeCelebrated", "01-01-1970"))
 
-                    Text(
-                        text = "Your Tasks",
-                        fontFamily = FontFamily(Font(R.font.itim)),
-                        fontSize = 24.sp
-                    )
 
-                    Text(
-                        text = "See All",
-                        fontFamily = FontFamily(Font(R.font.itim)),
-                        style = TextStyle(
-                            color = colorResource(id = R.color.app_red)
-                        ),
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .clickable {
-                                navHostController.navigate("TaskList")
+                        var progress = (point!!).toFloat() / MAX_POINTS
+                        if (progress < 0){
+                            progress = 0f
+                        }
+
+                        val celebrate = last.before(today) && (progress>=1.0f)
+
+                        LinearProgressIndicator(
+                            progress = progress,
+                            color = colorResource(id = R.color.card_green),
+                            backgroundColor = colorResource(id = R.color.app_yellow),
+                            strokeCap = StrokeCap.Square,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp)
+                        )
+
+                        if (celebrate){
+
+                            val party = Party(
+                                speed = 0f,
+                                maxSpeed = 15f,
+                                damping = 0.9f,
+                                angle = Angle.BOTTOM,
+                                spread = Spread.ROUND,
+                                colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+                                emitter = Emitter(duration = 3, TimeUnit.SECONDS).perSecond(100),
+                                position = Position.Relative(0.0, 0.0).between(Position.Relative(1.0, 0.0))
+                            )
+
+                            Box{
+                                KonfettiView(
+                                    parties = listOf(party),
+                                    modifier = Modifier.fillMaxSize(),
+                                )
                             }
 
-                    )
-
-                }
-
-
-                Column {
-                    val viewModel : AppViewModel = viewModel()
-                    val tasksItems by viewModel.getTaskList().observeAsState()
-                    var count = 2
-                    tasksItems?.forEach { item ->
-                        if (count > 0) {
-                            TaskCard(
-                                taskId = item.taskId,
-                                TaskHeading = item.taskHeading,
-                                Due = item.due,
-                                Points = item.points,
-                                isDaily = item.isDaily,
-                                isWeekly = item.isWeekly,
-                                important = item.important
-                            )
-                            count--
+                            // Closing Party
+                            val editor = sharedPreferences.edit()
+                            editor.putString("DayHomeCelebrated", sdf.format(Calendar.getInstance().time))
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                                editor.apply()
+                            }
                         }
                     }
                 }
-
             }
 
         }
