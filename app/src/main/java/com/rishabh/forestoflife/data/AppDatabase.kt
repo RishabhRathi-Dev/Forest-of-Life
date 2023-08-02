@@ -77,12 +77,17 @@ interface PointsDao {
     @Transaction
     suspend fun addPoints(points: Int){
         val sdf = SimpleDateFormat("dd-MM-yyyy")
-        if (getPointsStatic() + points <= 350){
+
+        if ((getPointsStatic() + points) in 0..350){
             newPoints(points = getPointsStatic() + points)
         }
 
-        if (getPointsStatic() + points < 0){
-            newPoints(points=0)
+        else if ((getPointsStatic() + points) > 350){
+            newPoints(points = 350)
+        }
+
+        else if ((getPointsStatic() + points) < 0){
+            newPoints(points = 0)
         }
 
         newModified(date = sdf.parse(sdf.format(Calendar.getInstance().time)))
