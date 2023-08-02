@@ -8,9 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -38,6 +45,7 @@ import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.cards.TaskCard
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.AppViewModel
+import com.rishabh.forestoflife.data.MAX_POINTS
 
 
 @Composable
@@ -51,6 +59,8 @@ fun Home(navHostController : NavHostController){
         topBar = { MainHeader(pageName = "Main") },
         bottomBar = { BottomBar(navController = navHostController) }
     ) {
+        val point by viewModel.getPoints().observeAsState()
+
         Column(
             verticalArrangement = Arrangement.Top,
             modifier = Modifier
@@ -69,6 +79,29 @@ fun Home(navHostController : NavHostController){
             ) {
 
                 TreeScreen()
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .offset(x=0.dp,y=(-8).dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (point != null) {
+                    var progress = (point!!).toFloat() / MAX_POINTS
+                    if (progress < 0){
+                        progress = 0f
+                    }
+                    LinearProgressIndicator(
+                        progress = progress,
+                        color = colorResource(id = R.color.card_green),
+                        backgroundColor = colorResource(id = R.color.app_yellow),
+                        strokeCap = StrokeCap.Square,
+                        modifier = Modifier.fillMaxWidth().height(10.dp)
+                    )
+                }
             }
 
             Column(){
@@ -138,7 +171,7 @@ fun TreeScreen() {
     val surfaceView = remember { SurfaceView(context) }
     val customViewer = remember { CustomViewer() }
 
-    val appViewModel : AppViewModel = viewModel()
+    val appViewModel: AppViewModel = viewModel()
 
     val point by appViewModel.getPoints().observeAsState()
     val time by appViewModel.getTime().observeAsState()
@@ -147,23 +180,27 @@ fun TreeScreen() {
         in 0..50 -> {
             "00"
         }
+
         in 51..150 -> {
             "01"
         }
-        in 151..250 ->{
+
+        in 151..250 -> {
             "12"
         }
-        in 251..350 ->{
+
+        in 251..350 -> {
             "22"
         }
+
         else -> {
             "00"
         }
     }
 
-    if (time != null){
+    if (time != null) {
         // 60 min of focus time and more than 250 points then special model
-        if (time!! > 45 * 60 * 1000 && point!! > 250){
+        if (time!! > 45 * 60 * 1000 && point!! > 250) {
             modelName = "F$modelName"
         }
     }
@@ -174,7 +211,7 @@ fun TreeScreen() {
      */
 
     // Handle initialization and cleanup with DisposableEffect
-    if (point != null){
+    if (point != null) {
         DisposableEffect(surfaceView, modelName) {
             Log.d("Point", point.toString())
             Log.d("Time", time.toString())
@@ -190,10 +227,12 @@ fun TreeScreen() {
         }
     }
 
-    // Use ViewCompositionStrategy to control the view's lifecycle
-    AndroidView(
-        factory = { surfaceView },
-        modifier = Modifier.fillMaxSize(),
-        update = {}
-    )
+    Column {
+        // Use ViewCompositionStrategy to control the view's lifecycle
+        AndroidView(
+            factory = { surfaceView },
+            modifier = Modifier.fillMaxSize(),
+            update = {}
+        )
+    }
 }

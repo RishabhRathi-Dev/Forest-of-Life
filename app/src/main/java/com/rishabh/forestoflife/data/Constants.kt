@@ -2,7 +2,8 @@ package com.rishabh.forestoflife.data
 
 import androidx.compose.ui.graphics.Color
 
-const val MAX_POINTS = 500
+const val MAX_POINTS = 350
+const val MAX_TIME = 45*60*1000
 
 val colorsForHours = listOf(
     Color(0xFF001832), // (12:00 AM)

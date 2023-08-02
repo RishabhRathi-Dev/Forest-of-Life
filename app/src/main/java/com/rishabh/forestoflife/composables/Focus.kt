@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -67,6 +68,8 @@ import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.composables.utils.headers.MainHeader
 import com.rishabh.forestoflife.data.AppViewModel
+import com.rishabh.forestoflife.data.MAX_POINTS
+import com.rishabh.forestoflife.data.MAX_TIME
 import com.rishabh.forestoflife.data.TimerViewModel
 import com.rishabh.forestoflife.data.services.TimerServiceManager
 
@@ -79,7 +82,8 @@ fun Focus(navHostController : NavHostController){
     ) {
 
         Column(modifier = Modifier.padding(it)) {
-
+            val viewModel : AppViewModel = viewModel()
+            val time by viewModel.getTime().observeAsState()
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,7 +97,36 @@ fun Focus(navHostController : NavHostController){
 
             }
 
-            timer()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .offset(x = 0.dp, y = (-18).dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (time != null) {
+                    var progress = (time!!).toFloat() / MAX_TIME
+                    if (progress < 0){
+                        progress = 0f
+                    }
+                    LinearProgressIndicator(
+                        progress = progress,
+                        color = colorResource(id = R.color.card_green),
+                        backgroundColor = colorResource(id = R.color.app_yellow),
+                        strokeCap = StrokeCap.Square,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(10.dp)
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier.padding(top = 10.dp)
+            ) {
+                timer()
+            }
         }
     }
 

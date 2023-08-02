@@ -80,6 +80,11 @@ interface PointsDao {
         if (getPointsStatic() + points <= 350){
             newPoints(points = getPointsStatic() + points)
         }
+
+        if (getPointsStatic() + points < 0){
+            newPoints(points=0)
+        }
+
         newModified(date = sdf.parse(sdf.format(Calendar.getInstance().time)))
     }
 
