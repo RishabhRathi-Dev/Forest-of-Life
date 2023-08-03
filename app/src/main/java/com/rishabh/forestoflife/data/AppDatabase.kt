@@ -110,7 +110,7 @@ interface PointsDao {
         val p = getAll()
 
         if (p.lastModified.before(currentDate)){
-            addPoints(-50)
+            addPoints(-100)
         }
     }
 }
