@@ -132,7 +132,17 @@ interface FocusTimeDao {
     suspend fun addTime(points: Long){
         val sdf = SimpleDateFormat("dd-MM-yyyy")
 
-        newPoints(time = getTimeStatic() + points)
+        if ((getTimeStatic() + points) in 0..45*60*1000){
+            newPoints(time = getTimeStatic() + points)
+        }
+
+        else if ((getTimeStatic() + points) > 45*60*1000){
+            newPoints(time = 45*60*1000)
+        }
+
+        else if ((getTimeStatic() + points) < 0){
+            newPoints(time = 0)
+        }
         newModified(date = sdf.parse(sdf.format(Calendar.getInstance().time)))
     }
 

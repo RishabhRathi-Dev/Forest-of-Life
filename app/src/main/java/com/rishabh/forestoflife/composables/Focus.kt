@@ -108,7 +108,7 @@ fun Focus(navHostController : NavHostController){
 
             Box{
                 Box(
-                    modifier = Modifier.padding(top = 10.dp)
+                    modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     timer()
                 }
@@ -429,7 +429,7 @@ fun PlantScreen(){
         in (15*60*1000L+1)..30*60*1000L -> {
             "1"
         }
-        in 30*60*1000L+1..45*60*1000L ->{
+        in 30*60*1000L+1..45*60*1000L - 1000 ->{
             "2"
         }
         else -> {

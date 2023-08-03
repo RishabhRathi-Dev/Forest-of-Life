@@ -72,7 +72,7 @@ fun Home(navHostController : NavHostController){
     viewModel.workerCall()
 
     Scaffold(
-        topBar = { MainHeader(pageName = "Main") },
+        topBar = { MainHeader(pageName = "Home") },
         bottomBar = { BottomBar(navController = navHostController) }
     ) {
         val point by viewModel.getPoints().observeAsState()
@@ -256,7 +256,7 @@ fun TreeScreen() {
 
     if (time != null) {
         // 60 min of focus time and more than 250 points then special model
-        if (time!! > 45 * 60 * 1000 && point!! > 250) {
+        if (time!! > 45 * 60 * 1000 - 1000 && point!! > 250) {
             modelName = "F$modelName"
         }
     }
