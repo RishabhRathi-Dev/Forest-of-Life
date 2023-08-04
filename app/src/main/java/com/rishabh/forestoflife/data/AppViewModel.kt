@@ -38,7 +38,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         val starterTime = FocusTime(0, 0, sdf.parse(sdf.format(Calendar.getInstance().time)))
 
         val excercise = Task(
-            taskHeading = "Excercise",
+            taskHeading = "Exercise",
             isDaily = true,
             isWeekly = false,
             points = 20,
@@ -47,7 +47,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         )
 
         val makeRoutine = Task(
-            taskHeading = "Make Routine",
+            taskHeading = "Read Help From Profile",
             isDaily = false,
             isWeekly = false,
             points = 20,
@@ -55,21 +55,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             important = true
         )
 
-        val readAbout = DueTask(
-            taskHeading = "Read About in Profile",
-            important = true,
-            isWeekly = false,
-            isDaily = false,
-            points = 0,
-            due = sdf.parse(sdf.format(Calendar.getInstance().time))
-        )
 
         viewModelScope.launch {
             focusTime.insert(starterTime)
             pointsDao.insert(starterPoints)
             taskDao.insertTask(excercise)
             taskDao.insertTask(makeRoutine)
-            dueTaskDao.insertTask(readAbout)
 
         }
     }
