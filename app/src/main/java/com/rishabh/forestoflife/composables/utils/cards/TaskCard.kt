@@ -376,24 +376,24 @@ fun ImportantToggleButton(taskId: Long, viewModel: AppViewModel, important: Bool
                 }
 
                 else if (isWeekly){
-                    points = 30
+                    points = 35
                 }
 
                 else {
-                    points = 40
+                    points = 45
                 }
 
             } else {
                 if (isDaily){
-                    points = 15
-                }
-
-                else if (isWeekly){
                     points = 20
                 }
 
-                else {
+                else if (isWeekly){
                     points = 30
+                }
+
+                else {
+                    points = 35
                 }
             }
 

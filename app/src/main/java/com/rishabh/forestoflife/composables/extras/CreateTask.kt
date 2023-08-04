@@ -255,24 +255,24 @@ fun CreateTask(navHostController : NavHostController){
                         }
 
                         else if (checkedState && weekly){
-                            points = 30
+                            points = 35
                         }
 
                         else {
-                            points = 40
+                            points = 45
                         }
 
                     } else {
                         if (checkedState && !weekly){
-                            points = 15
-                        }
-
-                        else if (checkedState && weekly){
                             points = 20
                         }
 
-                        else {
+                        else if (checkedState && weekly){
                             points = 30
+                        }
+
+                        else {
+                            points = 35
                         }
                     }
 

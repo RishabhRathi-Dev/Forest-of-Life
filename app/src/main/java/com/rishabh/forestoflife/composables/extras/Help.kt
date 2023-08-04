@@ -193,15 +193,15 @@ fun RewardsHelp(){
             Column() {
                 Text(text = "Important")
                 Text(text = "25")
-                Text(text = "30")
-                Text(text = "40")
+                Text(text = "35")
+                Text(text = "45")
             }
 
             Column() {
                 Text(text = "Normal")
-                Text(text = "15")
                 Text(text = "20")
                 Text(text = "30")
+                Text(text = "35")
             }
         }
         Text(
