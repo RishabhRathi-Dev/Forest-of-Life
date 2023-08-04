@@ -328,7 +328,7 @@ fun Profile(navHostController : NavHostController){
                         style = textStyle
                     )
 
-                    val chosen = sharedPreferences.getInt("Graphics", 1)
+                    val chosen = sharedPreferences.getInt("Graphics", 2)
                     var expanded by remember { mutableStateOf(false) }
                     var selectedText by remember { mutableStateOf(GRAPHICS_SETTINGS[chosen]) }
 

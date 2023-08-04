@@ -419,7 +419,7 @@ fun PlantScreen(){
     val customViewer = remember { CustomViewer() }
 
     val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
-    val graphic = sharedPreferences.getInt("Graphics", 1)
+    val graphic = sharedPreferences.getInt("Graphics", 2)
 
     val appViewModel : AppViewModel = viewModel()
 

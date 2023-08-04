@@ -71,7 +71,7 @@ fun IslandScreen(){
     val time by appViewModel.getTime().observeAsState()
 
     val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
-    val graphic = sharedPreferences.getInt("Graphics", 1)
+    val graphic = sharedPreferences.getInt("Graphics", 2)
 
     Log.d("Graphics", graphic.toString())
 
