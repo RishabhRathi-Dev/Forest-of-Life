@@ -64,7 +64,7 @@ import com.rishabh.forestoflife.data.GRAPHICS_SETTINGS
 fun Profile(navHostController : NavHostController){
     //TODO:: Create Profile Page
     Scaffold(
-        topBar = { MainHeader(pageName = "Profile") },
+        topBar = { MainHeader(pageName = "Profile", navHostController = navHostController) },
         bottomBar = { BottomBar(navController = navHostController) }
     ) {
         Column(

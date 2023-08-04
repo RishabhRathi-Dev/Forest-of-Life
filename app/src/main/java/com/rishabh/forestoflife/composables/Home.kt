@@ -72,7 +72,7 @@ fun Home(navHostController : NavHostController){
     viewModel.workerCall()
 
     Scaffold(
-        topBar = { MainHeader(pageName = "Home") },
+        topBar = { MainHeader(pageName = "Home", navHostController = navHostController) },
         bottomBar = { BottomBar(navController = navHostController) }
     ) {
         val point by viewModel.getPoints().observeAsState()

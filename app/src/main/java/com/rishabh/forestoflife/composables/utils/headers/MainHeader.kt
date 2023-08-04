@@ -37,15 +37,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.data.AppViewModel
 import com.rishabh.forestoflife.data.MAX_POINTS
+import com.rishabh.forestoflife.navigation.Help
 import kotlinx.coroutines.delay
 import java.util.Calendar
 
 
 @Composable
-fun MainHeader(pageName: String){
+fun MainHeader(pageName: String, navHostController: NavHostController){
     
     val viewModel: AppViewModel = viewModel()
 
@@ -180,7 +183,13 @@ fun MainHeader(pageName: String){
             }
 
             else if (pageName == "Profile"){
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(
+                    onClick = {
+                        navHostController.navigate(Help.route) {
+                        popUpTo(navHostController.graph.findStartDestination().id)
+                        launchSingleTop = true
+                        }
+                    }) {
                     Icon(
                         painterResource(id = R.drawable.help_48px),
                         contentDescription = "Help",
@@ -196,5 +205,5 @@ fun MainHeader(pageName: String){
 @Preview
 @Composable
 fun MainHeaderPreview(){
-    MainHeader("Testing")
+    //MainHeader("Testing")
 }

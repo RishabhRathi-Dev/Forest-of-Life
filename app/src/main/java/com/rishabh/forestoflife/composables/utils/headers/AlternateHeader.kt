@@ -34,7 +34,7 @@ import com.rishabh.forestoflife.R
 
 @Composable
 fun AlternateHeader(pageName : String, navHostController: NavHostController){
-    // TODO:: Create Alternate Header that goes on Task List and Create
+
     Row(
         modifier = Modifier
             .size(

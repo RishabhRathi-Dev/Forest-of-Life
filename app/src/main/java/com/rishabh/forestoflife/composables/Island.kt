@@ -35,7 +35,7 @@ import com.rishabh.forestoflife.data.AppViewModel
 fun Island(navHostController : NavHostController){
     // TODO: Create Island Page
     Scaffold(
-        topBar = { MainHeader(pageName = "Island") },
+        topBar = { MainHeader(pageName = "Island", navHostController = navHostController) },
         bottomBar = { BottomBar(navController = navHostController) }
     ) {
 

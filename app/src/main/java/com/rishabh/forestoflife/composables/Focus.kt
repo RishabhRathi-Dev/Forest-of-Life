@@ -86,7 +86,7 @@ import java.util.concurrent.TimeUnit
 fun Focus(navHostController : NavHostController){
     // TODO:: Create Focus Page
     Scaffold(
-        topBar = { MainHeader(pageName = "Focus") },
+        topBar = { MainHeader(pageName = "Focus", navHostController = navHostController) },
         bottomBar = { BottomBar(navController = navHostController) }
     ) {
 
