@@ -23,8 +23,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -108,7 +110,7 @@ fun Focus(navHostController : NavHostController){
 
             Box{
                 Box(
-                    modifier = Modifier.padding(vertical = 10.dp)
+                    modifier = Modifier.padding(vertical = 10.dp).verticalScroll(rememberScrollState())
                 ) {
                     timer()
                 }
@@ -116,6 +118,7 @@ fun Focus(navHostController : NavHostController){
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp)
                         .offset(x = 0.dp, y = (-18).dp),
                 ) {
