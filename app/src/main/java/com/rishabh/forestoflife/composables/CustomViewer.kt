@@ -57,14 +57,40 @@ class CustomViewer {
             modelViewer.onTouchEvent(event)
             true
         }
+    }
 
-
-
+    fun lowSetting(){
         val view = modelViewer.view
 
-        /*
-         * Note: The settings below are overriden when connecting to the remote UI.
-         */
+        view.renderQuality = view.renderQuality.apply {
+            hdrColorBuffer = View.QualityLevel.LOW
+        }
+
+        view.blendMode = View.BlendMode.OPAQUE
+
+        // dynamic resolution often helps a lot
+        view.dynamicResolutionOptions = view.dynamicResolutionOptions.apply {
+            enabled = true
+            quality = View.QualityLevel.LOW
+        }
+
+        // FXAA is pretty cheap and helps a lot
+        view.antiAliasing = View.AntiAliasing.FXAA
+
+        // ambient occlusion is the cheapest effect that adds a lot of quality
+        view.ambientOcclusionOptions = view.ambientOcclusionOptions.apply {
+            enabled = true
+            quality = View.QualityLevel.LOW
+        }
+
+        // bloom is pretty expensive but adds a fair amount of realism
+        view.bloomOptions = view.bloomOptions.apply {
+            enabled = true
+        }
+    }
+
+    fun mediumSetting(){
+        val view = modelViewer.view
 
         // on mobile, better use lower quality color buffer
         view.renderQuality = view.renderQuality.apply {
@@ -97,7 +123,88 @@ class CustomViewer {
         view.bloomOptions = view.bloomOptions.apply {
             enabled = true
         }
+    }
 
+    fun highSetting(){
+        val view = modelViewer.view
+
+        // on mobile, better use lower quality color buffer
+        view.renderQuality = view.renderQuality.apply {
+            hdrColorBuffer = View.QualityLevel.HIGH
+        }
+
+        view.blendMode = View.BlendMode.OPAQUE
+
+        // dynamic resolution often helps a lot
+        view.dynamicResolutionOptions = view.dynamicResolutionOptions.apply {
+            enabled = true
+            quality = View.QualityLevel.HIGH
+        }
+
+        // MSAA is needed with dynamic resolution MEDIUM
+        view.multiSampleAntiAliasingOptions = view.multiSampleAntiAliasingOptions.apply {
+            enabled = true
+        }
+
+        // FXAA is pretty cheap and helps a lot
+        view.antiAliasing = View.AntiAliasing.FXAA
+
+        view.fogOptions = View.FogOptions().apply {
+            enabled = true
+            density = 0.015f
+        }
+
+        // ambient occlusion is the cheapest effect that adds a lot of quality
+        view.ambientOcclusionOptions = view.ambientOcclusionOptions.apply {
+            enabled = true
+            quality = View.QualityLevel.HIGH
+        }
+
+        // bloom is pretty expensive but adds a fair amount of realism
+        view.bloomOptions = view.bloomOptions.apply {
+            enabled = true
+        }
+    }
+
+    fun ultraSetting(){
+        val view = modelViewer.view
+
+        // on mobile, better use lower quality color buffer
+        view.renderQuality = view.renderQuality.apply {
+            hdrColorBuffer = View.QualityLevel.ULTRA
+        }
+
+        view.blendMode = View.BlendMode.OPAQUE
+
+        // dynamic resolution often helps a lot
+        view.dynamicResolutionOptions = view.dynamicResolutionOptions.apply {
+            enabled = true
+            quality = View.QualityLevel.ULTRA
+        }
+
+        // MSAA is needed with dynamic resolution MEDIUM
+        view.multiSampleAntiAliasingOptions = view.multiSampleAntiAliasingOptions.apply {
+            enabled = true
+        }
+
+        // FXAA is pretty cheap and helps a lot
+        view.antiAliasing = View.AntiAliasing.FXAA
+
+        view.fogOptions = View.FogOptions().apply {
+            enabled = true
+            density = 0.015f
+        }
+
+        // ambient occlusion is the cheapest effect that adds a lot of quality
+        view.ambientOcclusionOptions = view.ambientOcclusionOptions.apply {
+            enabled = true
+            quality = View.QualityLevel.ULTRA
+        }
+
+        // bloom is pretty expensive but adds a fair amount of realism
+        view.bloomOptions = view.bloomOptions.apply {
+            enabled = true
+        }
     }
 
     fun createRenderables(name: String) {

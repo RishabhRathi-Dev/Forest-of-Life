@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 
 const val MAX_POINTS = 350
 const val MAX_TIME = 45*60*1000
+val GRAPHICS_SETTINGS =
+    arrayOf("Low", "Medium", "High", "Ultra")
 
 val colorsForHours = listOf(
     Color(0xFF001832), // (12:00 AM)

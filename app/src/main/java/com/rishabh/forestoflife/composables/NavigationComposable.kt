@@ -6,9 +6,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.rishabh.forestoflife.composables.extras.CreateTask
+import com.rishabh.forestoflife.composables.extras.Help
 import com.rishabh.forestoflife.composables.extras.TaskList
 import com.rishabh.forestoflife.navigation.CreateTask
 import com.rishabh.forestoflife.navigation.Focus
+import com.rishabh.forestoflife.navigation.Help
 import com.rishabh.forestoflife.navigation.Home
 import com.rishabh.forestoflife.navigation.Island
 import com.rishabh.forestoflife.navigation.Onboarding1
@@ -61,6 +63,10 @@ fun NavigationComposable(context: Context, navController: NavHostController) {
 
         composable(CreateTask.route){
             CreateTask(navController)
+        }
+
+        composable(Help.route){
+            Help(navController)
         }
     }
 }

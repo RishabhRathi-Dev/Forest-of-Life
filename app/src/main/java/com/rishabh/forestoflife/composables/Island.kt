@@ -1,5 +1,6 @@
 package com.rishabh.forestoflife.composables
 
+import android.content.Context
 import android.util.Log
 import android.view.SurfaceView
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -69,6 +70,11 @@ fun IslandScreen(){
     val point by appViewModel.getPoints().observeAsState()
     val time by appViewModel.getTime().observeAsState()
 
+    val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+    val graphic = sharedPreferences.getInt("Graphics", 1)
+
+    Log.d("Graphics", graphic.toString())
+
     var modelName = when (point) {
         in 0..50 -> {
             "00"
@@ -116,6 +122,27 @@ fun IslandScreen(){
             Log.d("Point", point.toString())
             Log.d("Time", time.toString())
             customViewer.init(surfaceView.context, surfaceView)
+            when (graphic){
+                0 -> {
+                    customViewer.lowSetting()
+                }
+
+                1 -> {
+                    customViewer.mediumSetting()
+                }
+
+                2 -> {
+                    customViewer.highSetting()
+                }
+
+                3 -> {
+                    customViewer.ultraSetting()
+                }
+
+                else -> {
+                    customViewer.mediumSetting()
+                }
+            }
             customViewer.createRenderables("island", modelName)
             customViewer.createIndirectLight("pillars_2k")
             customViewer.onResume()

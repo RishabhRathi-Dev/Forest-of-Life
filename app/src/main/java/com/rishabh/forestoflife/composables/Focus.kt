@@ -418,6 +418,9 @@ fun PlantScreen(){
     val surfaceView = remember { SurfaceView(context) }
     val customViewer = remember { CustomViewer() }
 
+    val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+    val graphic = sharedPreferences.getInt("Graphics", 1)
+
     val appViewModel : AppViewModel = viewModel()
 
     val time by appViewModel.getTime().observeAsState()
@@ -448,6 +451,27 @@ fun PlantScreen(){
         DisposableEffect(surfaceView, modelName) {
             Log.d("Time", time.toString())
             customViewer.init(surfaceView.context, surfaceView)
+            when (graphic){
+                0 -> {
+                    customViewer.lowSetting()
+                }
+
+                1 -> {
+                    customViewer.mediumSetting()
+                }
+
+                2 -> {
+                    customViewer.highSetting()
+                }
+
+                3 -> {
+                    customViewer.ultraSetting()
+                }
+
+                else -> {
+                    customViewer.mediumSetting()
+                }
+            }
             customViewer.createRenderables("focus", modelName)
             customViewer.createIndirectLight("pillars_2k")
             customViewer.onResume()
