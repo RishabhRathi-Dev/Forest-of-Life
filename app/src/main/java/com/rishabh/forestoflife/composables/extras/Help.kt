@@ -1,29 +1,23 @@
 package com.rishabh.forestoflife.composables.extras
 
-import android.util.Log
-import android.view.SurfaceView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -32,10 +26,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
-import com.rishabh.forestoflife.composables.CustomViewer
 import com.rishabh.forestoflife.composables.utils.headers.AlternateHeader
 
 @Composable
@@ -67,47 +59,52 @@ fun modelContainer(modelName : Int, target : String){
         Image(
             painter = painterResource(id = modelName),
             contentDescription = "ModelPhoto",
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.Center
         )
         Text(text = "Needs : $target")
     }
 }
 
 @Composable
-fun HomeHelp(){
+fun HomeHelp() {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Home",
             fontSize = 32.sp,
         )
 
-        val context = LocalContext.current
-        val homeModels = listOf(R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground)
+        val homeModels = listOf(R.drawable._00, R.drawable._01, R.drawable._12, R.drawable._22, R.drawable._f22)
         val needPoints = listOf("0 Points", "50 Points", "150 Points", "250 Points", "250 Points & 45 min")
 
-        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-            for (i in 0..4){
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(homeModels.size) { i ->
                 modelContainer(modelName = homeModels[i], target = needPoints[i])
             }
         }
     }
-
 }
 
-@Composable()
-fun FocusHelp(){
+
+@Composable
+fun FocusHelp() {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Focus",
             fontSize = 32.sp,
         )
 
-        val context = LocalContext.current
-        val homeModels = listOf(R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground)
+        val homeModels = listOf(R.drawable._00, R.drawable._1, R.drawable._2, R.drawable._3)
         val needPoints = listOf("0 Min", "15 Min", "30 Min", "45 Min")
 
-        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-            for (i in 0..3){
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(homeModels.size) { i ->
                 modelContainer(modelName = homeModels[i], target = needPoints[i])
             }
         }
@@ -115,32 +112,30 @@ fun FocusHelp(){
 }
 
 @Composable
-fun IslandHelp(){
+fun IslandHelp() {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Island",
             fontSize = 32.sp,
         )
 
-        val context = LocalContext.current
-
         val homeModels = listOf(
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground
+            R.drawable._000,
+            R.drawable._001,
+            R.drawable._002,
+            R.drawable._003,
+            R.drawable._010,
+            R.drawable._011,
+            R.drawable._012,
+            R.drawable._013,
+            R.drawable._120,
+            R.drawable._121,
+            R.drawable._122,
+            R.drawable._123,
+            R.drawable._220,
+            R.drawable._221,
+            R.drawable._222,
+            R.drawable._223
         )
 
         val needPoints = listOf(
@@ -162,8 +157,11 @@ fun IslandHelp(){
             "250 Points, 45 Min"
         )
 
-        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-            for (i in 0..15){
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(homeModels.size) { i ->
                 modelContainer(modelName = homeModels[i], target = needPoints[i])
             }
         }

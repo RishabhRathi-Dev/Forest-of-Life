@@ -123,7 +123,7 @@ fun MainHeader(pageName: String, navHostController: NavHostController){
                     )
 
                     Text(
-                        text = "/$maxPoints",
+                        text = "/$maxPoints Points",
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(R.font.itim)),
                         modifier = Modifier.padding(top = 10.dp)
@@ -189,7 +189,9 @@ fun MainHeader(pageName: String, navHostController: NavHostController){
                         popUpTo(navHostController.graph.findStartDestination().id)
                         launchSingleTop = true
                         }
-                    }) {
+                    },
+                modifier = Modifier.size(60.dp)
+                    ) {
                     Icon(
                         painterResource(id = R.drawable.help_48px),
                         contentDescription = "Help",
