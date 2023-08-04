@@ -146,6 +146,10 @@ class CustomViewer {
             enabled = true
         }
 
+        view.screenSpaceReflectionsOptions = view.screenSpaceReflectionsOptions.apply {
+            enabled = true
+        }
+
         // FXAA is pretty cheap and helps a lot
         view.antiAliasing = View.AntiAliasing.FXAA
 
@@ -184,6 +188,10 @@ class CustomViewer {
 
         // MSAA is needed with dynamic resolution MEDIUM
         view.multiSampleAntiAliasingOptions = view.multiSampleAntiAliasingOptions.apply {
+            enabled = true
+        }
+
+        view.screenSpaceReflectionsOptions = view.screenSpaceReflectionsOptions.apply {
             enabled = true
         }
 
