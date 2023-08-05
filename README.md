@@ -13,7 +13,6 @@ In simpler terms, Forest of Life is a To Do app designed like a game.
 - [Features](#features)
 - [Contributing](#contributing)
 - [License](#license)
-- [Version History](#version-history)
 
 ## Screenshots
 |Dark|Light|
