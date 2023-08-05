@@ -94,8 +94,6 @@ Forest of Life simplifies task management with a range of helpful features. Sche
 
 - **Left-Hand Mode**: Customize the app with a left-hand mode, ensuring a user-friendly experience that aligns with personal preferences.
 
-## Contributing
-
 ## Licence
 
 MIT License
