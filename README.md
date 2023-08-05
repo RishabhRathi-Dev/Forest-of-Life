@@ -16,6 +16,12 @@ In simpler terms, Forest of Life is a To Do app designed like a game.
 - [Version History](#version-history)
 
 ## Screenshots
+|Dark|Light|
+|-|-|
+|<img src="/screenshots/Home-Dark.jpeg" alt="Home Dark"/>|<img src="/screenshots/Home-Light.jpeg" alt="Home Light"/>|
+|<img src="/screenshots/Focus-Dark.jpeg" alt="Focus Dark"/>|<img src="/screenshots/Focus-Light.jpeg" alt="Focus Light"/>|
+|<img src="/screenshots/Island-Dark.jpeg" alt="Island Dark"/>|<img src="/screenshots/Island-Light.jpeg" alt="Island Light"/>|
+|<img src="/screenshots/Profile-Dark.jpeg" alt="Profile Dark"/>|<img src="/screenshots/Profile-Light.jpeg" alt="Profile Light"/>|
 
 
 ## Installation Guide
