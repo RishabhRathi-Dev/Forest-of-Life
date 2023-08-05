@@ -101,7 +101,7 @@ fun Home(navHostController : NavHostController){
 
             Box{
 
-                Column(modifier = Modifier.verticalScroll(rememberScrollState())){
+                Column(){
 
                     Row(
                         modifier = Modifier
@@ -135,7 +135,7 @@ fun Home(navHostController : NavHostController){
                     }
 
 
-                    Column {
+                    Column (modifier = Modifier.verticalScroll(rememberScrollState())){
                         val viewModel : AppViewModel = viewModel()
                         val tasksItems by viewModel.getTaskList().observeAsState()
                         var count = 2

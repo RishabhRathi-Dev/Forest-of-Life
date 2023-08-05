@@ -110,7 +110,9 @@ fun Focus(navHostController : NavHostController){
 
             Box{
                 Box(
-                    modifier = Modifier.padding(vertical = 10.dp).verticalScroll(rememberScrollState())
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     timer()
                 }
@@ -118,7 +120,6 @@ fun Focus(navHostController : NavHostController){
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp)
                         .offset(x = 0.dp, y = (-18).dp),
                 ) {
@@ -256,35 +257,44 @@ fun timer(){
                     strokeCap = StrokeCap.Round
                 )
                 
-                Text(text = formatTime(elapsedTime))
 
-                Text(
-                    text = "Stop",
-                    style = TextStyle(
-                        color = colorResource(id = R.color.app_red),
-                        fontFamily = FontFamily(Font(R.font.itim)),
-                        fontSize = 18.sp
-                    ),
-                    modifier = Modifier
-                        .offset(y = 20.dp)
-                        .clickable {
-                            val timerServiceManager =
-                                TimerServiceManager(applicationContext = context)
 
-                            if (serviceStatus.value) {
-                                // service already running
-                                // stop the service
-                                serviceStatus.value = !serviceStatus.value
-                                timerServiceManager.stopTimerService()
+                OutlinedButton(
+                    shape = CircleShape,
+                    border = BorderStroke(0.dp, Color.Transparent),
+                    onClick = {
+                        val timerServiceManager =
+                            TimerServiceManager(applicationContext = context)
 
-                            } else {
-                                // service not running start service.
-                                serviceStatus.value = !serviceStatus.value
-                                // start
-                                timerServiceManager.startTimerService()
-                            }
-                        }
-                )
+                        if (serviceStatus.value) {
+                            // service already running
+                            // stop the service
+                            serviceStatus.value = !serviceStatus.value
+                            timerServiceManager.stopTimerService()
+
+                        } else {
+                            // service not running start service.
+                            serviceStatus.value = !serviceStatus.value
+                            // start
+                            timerServiceManager.startTimerService()
+                        }},
+
+                    modifier =
+                            Modifier
+                            .size(160.dp)
+                ) {
+                    Column {
+                        Text(text = formatTime(elapsedTime))
+                        Text(
+                            text = "Stop",
+                            style = TextStyle(
+                                color = colorResource(id = R.color.app_red),
+                                fontFamily = FontFamily(Font(R.font.itim)),
+                                fontSize = 18.sp
+                            ),
+                        )
+                    }
+                }
             } else {
 
                 val w = (LocalConfiguration.current.screenWidthDp/2).dp

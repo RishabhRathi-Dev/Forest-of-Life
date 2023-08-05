@@ -4,13 +4,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,10 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,16 +60,31 @@ fun Help(navHostController:NavHostController){
 
 @Composable
 fun modelContainer(modelName : Int, target : String){
-    Column (
-        modifier = Modifier.width(200.dp)
-    ) {
-        Image(
-            painter = painterResource(id = modelName),
-            contentDescription = "ModelPhoto",
-            contentScale = ContentScale.Fit,
-            alignment = Alignment.Center
+    Card (
+        modifier = Modifier.size(200.dp),
+        elevation = CardDefaults.cardElevation(5.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = colorResource(id = R.color.card_green),
+            contentColor = colorResource(id = R.color.app_white)
         )
-        Text(text = "Needs : $target")
+    ) {
+        Column(verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxSize()) {
+            Column(verticalArrangement = Arrangement.Center) {
+                Image(
+                    painter = painterResource(id = modelName),
+                    contentDescription = "ModelPhoto",
+                    contentScale = ContentScale.Fit,
+                    alignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                )
+            }
+            Text(text = "Needs : $target",textAlign = TextAlign.Center, modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth())
+        }
     }
 }
 
@@ -78,7 +100,9 @@ fun HomeHelp() {
         val needPoints = listOf("0 Points", "50 Points", "150 Points", "250 Points", "250 Points & 45 min")
 
         LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(homeModels.size) { i ->
@@ -101,7 +125,9 @@ fun FocusHelp() {
         val needPoints = listOf("0 Min", "15 Min", "30 Min", "45 Min")
 
         LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(homeModels.size) { i ->
@@ -158,7 +184,9 @@ fun IslandHelp() {
         )
 
         LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(homeModels.size) { i ->
@@ -176,41 +204,61 @@ fun RewardsHelp(){
             fontSize = 32.sp,
         )
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+        Card (
+            modifier = Modifier.wrapContentSize().padding(vertical = 16.dp),
+            elevation = CardDefaults.cardElevation(5.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = colorResource(id = R.color.card_green),
+                contentColor = colorResource(id = R.color.app_white)
+            )
         ) {
-            Column() {
-                Text(text = "")
-                Text(text = "Daily")
-                Text(text = "Weekly")
-                Text(text = "Single")
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp)) {
+                    Text(text = "")
+                    Text(text = "Daily")
+                    Text(text = "Weekly")
+                    Text(text = "Single")
+                }
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally,modifier = Modifier.padding(10.dp)) {
+                    Text(text = "Important")
+                    Text(text = "25")
+                    Text(text = "35")
+                    Text(text = "45")
+                }
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp)) {
+                    Text(text = "Normal")
+                    Text(text = "20")
+                    Text(text = "30")
+                    Text(text = "35")
+                }
             }
 
-            Column() {
-                Text(text = "Important")
-                Text(text = "25")
-                Text(text = "35")
-                Text(text = "45")
-            }
-
-            Column() {
-                Text(text = "Normal")
-                Text(text = "20")
-                Text(text = "30")
-                Text(text = "35")
+            Card (
+                modifier = Modifier.wrapContentSize().padding(10.dp),
+                elevation = CardDefaults.cardElevation(5.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(id = R.color.app_yellow),
+                    contentColor = colorResource(id = R.color.black)
+                )
+            ) {
+                Text(
+                    text = "Daily Changes",
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)
+                )
+                Text(
+                    text = "- Deduction of 120 Points\n- Focus Time Reset",
+                    modifier = Modifier.padding(top = 5.dp, start = 12.dp, end = 10.dp, bottom = 10.dp)
+                )
             }
         }
-        Text(
-            text = "Daily Changes",
-            fontSize = 24.sp,
-            modifier = Modifier.padding(top = 10.dp)
-        )
-        Text(
-            text = "- Deduction of 120 Points\n- Focus Time Reset",
-            modifier = Modifier.padding(top = 5.dp)
-        )
 
     }
 
@@ -224,7 +272,8 @@ fun BugsIssuesHelp(){
             fontSize = 32.sp,
         )
         Text(
-            text = "Please create issue at"
+            text = "Please create issue at",
+            modifier = Modifier.padding(horizontal = 5.dp)
         )
         val uriHandler = LocalUriHandler.current
         val link = "https://github.com/RishabhRathi-Dev/Forest-of-Life"
@@ -254,7 +303,8 @@ fun BugsIssuesHelp(){
                     .firstOrNull()?.let { stringAnnotation ->
                         uriHandler.openUri(stringAnnotation.item)
                     }
-            }
+            },
+            modifier = Modifier.padding(16.dp)
         )
     }
 }
