@@ -101,61 +101,60 @@ fun Home(navHostController : NavHostController){
 
             Box{
 
-                Column(){
+                Box(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                        ,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                        Column (){
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                                ,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                        Text(
-                            text = "Your Tasks",
-                            fontFamily = FontFamily(Font(R.font.itim)),
-                            fontSize = 24.sp
-                        )
-
-                        Text(
-                            text = "See All",
-                            fontFamily = FontFamily(Font(R.font.itim)),
-                            style = TextStyle(
-                                color = colorResource(id = R.color.app_red)
-                            ),
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .clickable {
-                                    navHostController.navigate("TaskList")
-                                }
-
-                        )
-
-                    }
-
-
-                    Column (modifier = Modifier.verticalScroll(rememberScrollState())){
-                        val viewModel : AppViewModel = viewModel()
-                        val tasksItems by viewModel.getTaskList().observeAsState()
-                        var count = 2
-                        tasksItems?.forEach { item ->
-                            if (count > 0) {
-                                TaskCard(
-                                    taskId = item.taskId,
-                                    TaskHeading = item.taskHeading,
-                                    Due = item.due,
-                                    Points = item.points,
-                                    isDaily = item.isDaily,
-                                    isWeekly = item.isWeekly,
-                                    important = item.important
+                                Text(
+                                    text = "Your Tasks",
+                                    fontFamily = FontFamily(Font(R.font.itim)),
+                                    fontSize = 24.sp
                                 )
-                                count--
+
+                                Text(
+                                    text = "See All",
+                                    fontFamily = FontFamily(Font(R.font.itim)),
+                                    style = TextStyle(
+                                        color = colorResource(id = R.color.app_red)
+                                    ),
+                                    fontSize = 16.sp,
+                                    modifier = Modifier
+                                        .clickable {
+                                            navHostController.navigate("TaskList")
+                                        }
+
+                                )
+
+                            }
+                            val viewModel : AppViewModel = viewModel()
+                            val tasksItems by viewModel.getTaskList().observeAsState()
+                            var count = 2
+                            tasksItems?.forEach { item ->
+                                if (count > 0) {
+                                    TaskCard(
+                                        taskId = item.taskId,
+                                        TaskHeading = item.taskHeading,
+                                        Due = item.due,
+                                        Points = item.points,
+                                        isDaily = item.isDaily,
+                                        isWeekly = item.isWeekly,
+                                        important = item.important
+                                    )
+                                    count--
+                                }
                             }
                         }
+
                     }
 
-                }
 
                 Box(
                     modifier = Modifier
@@ -216,9 +215,13 @@ fun Home(navHostController : NavHostController){
                         }
                     }
                 }
+
+
             }
 
+
         }
+
     }
 }
 
