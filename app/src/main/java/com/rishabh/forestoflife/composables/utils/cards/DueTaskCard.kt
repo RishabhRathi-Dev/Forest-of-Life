@@ -38,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.helpers.AutoResizeText
 import com.rishabh.forestoflife.composables.utils.helpers.FontSizeRange
+import com.rishabh.forestoflife.composables.utils.helpers.SoundPlayer
 import com.rishabh.forestoflife.data.AppViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -294,8 +295,12 @@ fun DueTaskCard(
 
 @Composable
 fun DueDeleteButton(viewModel: AppViewModel, taskId: Long){
+    val context = LocalContext.current
     IconButton(onClick = {
+
         viewModel.deleteDueTask(taskId)
+
+
     }) {
         Icon(
             painter = painterResource(id = R.drawable.delete_48px),
@@ -307,9 +312,14 @@ fun DueDeleteButton(viewModel: AppViewModel, taskId: Long){
 
 @Composable
 fun DueCompletedButton(viewModel: AppViewModel, taskId : Long){
+    val context = LocalContext.current
     IconButton(
         onClick = {
+
+            val soundPlayer = SoundPlayer()
+            soundPlayer.playSound(context, "sound/decidemp3-14575.mp3")
             viewModel.dueTaskCompleted(taskId = taskId)
+
         },
         modifier = Modifier
             .size(60.dp)

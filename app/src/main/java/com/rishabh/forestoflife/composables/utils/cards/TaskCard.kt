@@ -1,6 +1,8 @@
 package com.rishabh.forestoflife.composables.utils.cards
 
 import android.content.Context
+import android.content.res.AssetFileDescriptor
+import android.media.MediaPlayer
 import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,10 +41,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.helpers.AutoResizeText
 import com.rishabh.forestoflife.composables.utils.helpers.FontSizeRange
+import com.rishabh.forestoflife.composables.utils.helpers.SoundPlayer
+import com.rishabh.forestoflife.composables.utils.helpers.SoundPlayerListener
 import com.rishabh.forestoflife.data.AppViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+
 
 @Composable
 fun TaskCard(
@@ -324,8 +329,10 @@ fun TaskCard(
 
 @Composable
 fun DeleteButton(viewModel: AppViewModel, taskId: Long){
+    val context = LocalContext.current
     IconButton(onClick = {
         viewModel.deleteTask(taskId)
+
     }) {
         Icon(
             painter = painterResource(id = R.drawable.delete_48px),
@@ -344,10 +351,12 @@ fun CompletedButton(viewModel: AppViewModel, taskId : Long, points : Int){
             val sharedPreferences = context.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putInt("TotalPoints", sharedPreferences.getInt("TotalPoints", 0) + points)
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
                 editor.apply()
             }
+
+            val soundPlayer = SoundPlayer()
+            soundPlayer.playSound(context, "sound/decidemp3-14575.mp3")
         },
         modifier = Modifier
             .size(60.dp)
