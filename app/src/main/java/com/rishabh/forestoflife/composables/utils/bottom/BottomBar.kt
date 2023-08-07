@@ -52,7 +52,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun BottomBar(navController: NavHostController){
-    //TODO: Create Bottom bar ref https://www.boltuix.com/2022/08/custom-bottom-navigation-bar.html
     val screens = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Focus,
