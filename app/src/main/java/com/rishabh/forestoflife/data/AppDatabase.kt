@@ -17,6 +17,7 @@ import androidx.room.Update
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 // Define the Task entity
 @Entity(tableName = "task")
@@ -109,8 +110,10 @@ interface PointsDao {
         val currentDate = calendar.time
         val p = getAll()
 
+        val left = (TimeUnit.DAYS.convert(currentDate.time - p.lastModified.time, TimeUnit.MILLISECONDS)).toInt()
+
         if (p.lastModified.before(currentDate)){
-            addPoints(-120)
+            addPoints(-120 * left)
         }
     }
 }
