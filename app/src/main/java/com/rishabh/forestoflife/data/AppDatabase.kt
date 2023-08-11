@@ -14,6 +14,7 @@ import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.Update
+import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -109,11 +110,10 @@ interface PointsDao {
         calendar.add(Calendar.DAY_OF_MONTH, -1)
         val currentDate = calendar.time
         val p = getAll()
-
-        val left = (TimeUnit.DAYS.convert(currentDate.time - p.lastModified.time, TimeUnit.MILLISECONDS)).toInt()
-
         if (p.lastModified.before(currentDate)){
-            addPoints(-120 * left)
+            val left = 1+(kotlin.math.abs(p.lastModified.time - currentDate.time))/(24*60*60*1000)
+            Log.d("time", (left).toString())
+            addPoints(-120 * left.toInt())
         }
     }
 }
