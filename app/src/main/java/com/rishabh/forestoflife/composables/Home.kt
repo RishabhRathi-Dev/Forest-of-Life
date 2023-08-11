@@ -68,7 +68,6 @@ import java.util.concurrent.TimeUnit
 
 @Composable
 fun Home(navHostController : NavHostController){
-    // TODO: Create Home
 
     val viewModel : AppViewModel = viewModel()
     viewModel.workerCall()

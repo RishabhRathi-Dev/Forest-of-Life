@@ -64,7 +64,7 @@ import com.rishabh.forestoflife.data.GRAPHICS_SETTINGS
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Profile(navHostController : NavHostController){
-    //TODO:: Create Profile Page
+
     Scaffold(
         topBar = { MainHeader(pageName = "Profile", navHostController = navHostController) },
         bottomBar = { BottomBar(navController = navHostController) }
@@ -96,8 +96,10 @@ fun Profile(navHostController : NavHostController){
                 var expanded by remember { mutableStateOf(false) }
                 val pictureList = listOf(
                     R.drawable.person_48px,
-                    R.drawable.star_48px
-                    // TODO:: Add more image resource IDs here
+                    R.drawable.star_48px,
+                    R.drawable.water_drop_48px,
+                    R.drawable.park_48px,
+                    R.drawable.garden_cart_48px
                 )
 
                 IconButton(

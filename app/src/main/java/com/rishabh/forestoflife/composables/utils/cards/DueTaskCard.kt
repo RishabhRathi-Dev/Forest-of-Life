@@ -52,7 +52,7 @@ fun DueTaskCard(
     isWeekly : Boolean,
     important : Boolean
 ){
-    //TODO:: Create customizable Task Card
+
     val w = (LocalConfiguration.current.screenWidthDp/2 - 20)
     val h = (LocalConfiguration.current.screenHeightDp/5).dp
 

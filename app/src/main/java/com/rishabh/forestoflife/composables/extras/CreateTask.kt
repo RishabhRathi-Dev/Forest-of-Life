@@ -69,7 +69,7 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTask(navHostController : NavHostController){
-    // TODO:: Create Task Form
+
     Scaffold(
         topBar = { AlternateHeader(pageName = "Create Task", navHostController = navHostController) },
     ) {

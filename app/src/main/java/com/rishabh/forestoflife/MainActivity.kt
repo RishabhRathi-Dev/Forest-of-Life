@@ -55,6 +55,8 @@ class MainActivity : ComponentActivity() {
                         id = R.color.app_bg
                     )
                 ) {
+                    val viewModel : AppViewModel = viewModel()
+                    viewModel.workerCall()
                     Screen()
                     val navController = rememberNavController()
                     NavigationComposable(
