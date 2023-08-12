@@ -11,7 +11,6 @@ In simpler terms, Forest of Life is a To Do app designed like a game.
 - [Installation Guide](#installation-guide)
 - [Usage](#usage)
 - [Features](#features)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Screenshots
@@ -93,7 +92,7 @@ Forest of Life simplifies task management with a range of helpful features. Sche
 
 - **Left-Hand Mode**: Customize the app with a left-hand mode, ensuring a user-friendly experience that aligns with personal preferences.
 
-## Licence
+## License
 
 MIT License
 
