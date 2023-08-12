@@ -13,8 +13,8 @@ android {
         applicationId "com.rishabh.forestoflife"
         minSdk 26
         targetSdk 33
-        versionCode 2
-        versionName "1.1"
+        versionCode 4
+        versionName "1.12"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
