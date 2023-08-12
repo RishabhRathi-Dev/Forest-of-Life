@@ -60,7 +60,7 @@ To build and run the Android app from the source code, follow these steps:
 
 ### Google Playstore
 
-Will be added later
+[Play Store Link - https://play.google.com/store/apps/details?id=com.rishabh.forestoflife](https://play.google.com/store/apps/details?id=com.rishabh.forestoflife) 
 
 ## Usage
 Forest of Life simplifies task management with a range of helpful features. Schedule tasks to repeat daily or weekly or let it be a one time task. Boost your focus and productivity with the "Focus Mode," which minimizes distractions. Experience a fun twist with the Island, where it grows as you earn points and focus time. Stay motivated with the game-like "Daily Point Reduction" feature to create an engaging game loop. Plus, enjoy a consistent routine as the app automatically resets your focus time daily creating opportunities to consistently work with focus. These features make task management straightforward and engaging, helping you achieve your goals with ease.
