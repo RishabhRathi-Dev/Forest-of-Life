@@ -1,10 +1,12 @@
 package com.rishabh.forestoflife.data
 
 import androidx.compose.ui.graphics.Color
+import kotlin.random.Random
 
 const val MAX_POINTS = 350
 const val MAX_TIME = 45*60*1000
 const val DEDUCTION = 50
+val REQUESTCODE = Random.nextInt(100000, 999999)
 val GRAPHICS_SETTINGS =
     arrayOf("Low", "Medium", "High", "Ultra")
 

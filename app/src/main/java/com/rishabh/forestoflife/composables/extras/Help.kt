@@ -206,7 +206,9 @@ fun RewardsHelp(){
         )
 
         Card (
-            modifier = Modifier.wrapContentSize().padding(vertical = 16.dp),
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(vertical = 16.dp),
             elevation = CardDefaults.cardElevation(5.dp),
             colors = CardDefaults.cardColors(
                 containerColor = colorResource(id = R.color.card_green),
@@ -242,7 +244,9 @@ fun RewardsHelp(){
             }
 
             Card (
-                modifier = Modifier.wrapContentSize().padding(10.dp),
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(10.dp),
                 elevation = CardDefaults.cardElevation(5.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = colorResource(id = R.color.app_yellow),
@@ -255,7 +259,7 @@ fun RewardsHelp(){
                     modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)
                 )
                 Text(
-                    text = "- Deduction of "  + DEDUCTION + " Points\n- Focus Time Reset",
+                    text = "- Deduction of ${DEDUCTION} Points\n- Focus Time Reset",
                     modifier = Modifier.padding(top = 5.dp, start = 12.dp, end = 10.dp, bottom = 10.dp)
                 )
             }

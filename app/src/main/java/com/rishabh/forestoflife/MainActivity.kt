@@ -1,7 +1,9 @@
 package com.rishabh.forestoflife
 
 import android.app.Activity
+import android.app.AlarmManager
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -41,11 +43,21 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rishabh.forestoflife.composables.NavigationComposable
 import com.rishabh.forestoflife.composables.utils.bottom.BottomBar
 import com.rishabh.forestoflife.data.AppViewModel
+import com.rishabh.forestoflife.data.REQUESTCODE
+import com.rishabh.forestoflife.data.receiver.DailyNotification
 import com.rishabh.forestoflife.ui.theme.ForestOfLifeTheme
+import java.util.Calendar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val alarmSet = isAlarmSet()
+
+        // If the alarm is not set, schedule it
+        if (!alarmSet) {
+            setupDailyAlarm()
+            markAlarmAsSet()
+        }
 
         setContent {
             ForestOfLifeTheme {
@@ -68,6 +80,58 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+    }
+
+    private fun isAlarmSet(): Boolean {
+        val sharedPreferences = applicationContext.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("alarm", false)
+    }
+
+    private fun setupDailyAlarm() {
+        val notificationIntent = Intent(applicationContext, DailyNotification::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, REQUESTCODE, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.HOUR_OF_DAY, 7)
+        calendar.set(Calendar.MINUTE, 0)
+
+        // Ensure the time is in the future (if it's already past 7 AM today)
+        if (calendar.timeInMillis <= System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        // Set the repeating interval to one day
+        val repeatIntervalMillis = AlarmManager.INTERVAL_DAY
+
+        // Schedule the inexact repeating alarm at 7 AM daily
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            repeatIntervalMillis,
+            pendingIntent
+        )
+
+    }
+
+    private fun markAlarmAsSet() {
+        val sharedPreferences = applicationContext.getSharedPreferences("ForestOfLife", Context.MODE_PRIVATE)
+        val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val nextAlarmInfo = alarmManager.nextAlarmClock
+
+        if (nextAlarmInfo != null) {
+            Log.d("AlarmTest", "Next alarm is set for: ${nextAlarmInfo.triggerTime}")
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("alarm", true)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                editor.apply()
+            }
+        } else {
+            Log.d("AlarmTest", "No alarms are currently set.")
+        }
+
     }
 
     override fun onDestroy() {
