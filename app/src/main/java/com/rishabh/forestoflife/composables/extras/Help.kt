@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.rishabh.forestoflife.R
 import com.rishabh.forestoflife.composables.utils.headers.AlternateHeader
+import com.rishabh.forestoflife.data.DEDUCTION
 
 @Composable
 fun Help(navHostController:NavHostController){
@@ -254,7 +255,7 @@ fun RewardsHelp(){
                     modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)
                 )
                 Text(
-                    text = "- Deduction of 120 Points\n- Focus Time Reset",
+                    text = "- Deduction of "  + DEDUCTION + " Points\n- Focus Time Reset",
                     modifier = Modifier.padding(top = 5.dp, start = 12.dp, end = 10.dp, bottom = 10.dp)
                 )
             }

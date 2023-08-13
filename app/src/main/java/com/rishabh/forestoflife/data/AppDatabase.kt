@@ -113,7 +113,7 @@ interface PointsDao {
         if (p.lastModified.before(currentDate)){
             val left = 1+(kotlin.math.abs(p.lastModified.time - currentDate.time))/(24*60*60*1000)
             Log.d("time", (left).toString())
-            addPoints(-120 * left.toInt())
+            addPoints(-DEDUCTION * left.toInt())
         }
     }
 }
