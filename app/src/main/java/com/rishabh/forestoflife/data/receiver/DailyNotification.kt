@@ -1,66 +1,92 @@
 package com.rishabh.forestoflife.data.receiver
 
-import android.app.Application
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.BroadcastReceiver
+// NotificationUtils.kt
+
+import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.media.RingtoneManager
-import androidx.compose.ui.graphics.toArgb
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.rishabh.forestoflife.R
-import com.rishabh.forestoflife.data.AppViewModel
-import com.rishabh.forestoflife.ui.theme.Green
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
-class DailyNotification : BroadcastReceiver() {
-    override fun onReceive(p0: Context?, p1: Intent?) {
 
-        val applicationContext = p0?.applicationContext as? Application ?: return
+private const val CHANNEL_ID = "REMINDER_CHANNEL"
 
-        val appViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(applicationContext)
-            .create(AppViewModel::class.java)
+fun scheduleReminderNotification(context: Context, taskId: Long, taskTitle: String, dueDate: Long) {
+    val delay = dueDate - System.currentTimeMillis()
 
-        val notificationData = appViewModel.getTodayTaskList().value!!.size
+    val constraints = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .build()
 
-        createNotification(context = p0, notificationData)
+    val data = workDataOf(
+        "taskId" to taskId,
+        "taskTitle" to taskTitle
+    )
+
+    val notificationRequest = OneTimeWorkRequestBuilder<ReminderWorker>()
+        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+        .setConstraints(constraints)
+        .setInputData(data)
+        .addTag(ReminderWorker.TAG)
+        .build()
+
+    WorkManager.getInstance(context).enqueue(notificationRequest)
+}
+
+fun CancelReminderNotification(context: Context, taskId: Long) {
+    WorkManager.getInstance(context).cancelAllWorkByTag(ReminderWorker.TAG)
+}
+
+private fun ShowReminderNotification(context: Context, taskId: Long, taskTitle: String) {
+    val notificationId = taskId.toInt()
+
+    val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        .setContentTitle("Reminder: $taskTitle")
+        .setContentText("Task is due soon!")
+        .setSmallIcon(R.mipmap.ic_launcher_round)
+        .setAutoCancel(true)
+        .build()
+
+    val notificationManager = NotificationManagerCompat.from(context)
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+
+    } else {
+        notificationManager.notify(notificationId, notification)
     }
 
-    private fun createNotification(context: Context, notificationData: Int): Notification {
-        // Create a notification channel (if not created already, required for Android Oreo and above)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                "Daily Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.createNotificationChannel(channel)
+}
+
+class ReminderWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+    companion object {
+        const val TAG = "ReminderWorker"
+    }
+
+    override suspend fun doWork(): Result {
+        val taskId = inputData.getLong("taskId", -1)
+        val taskTitle = inputData.getString("taskTitle")
+
+        if (taskId != -1L && taskTitle != null) {
+            withContext(Dispatchers.Main) {
+                ShowReminderNotification(applicationContext, taskId, taskTitle)
+            }
         }
 
-        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-        return NotificationCompat.Builder(context , NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Today's Task")
-            .setOngoing(true)
-            .setContentText(
-                "You have $notificationData task pending"
-            )
-            .setColorized(true)
-            .setColor(Green.toArgb())
-            .setSmallIcon(R.drawable._223)
-            .setOnlyAlertOnce(true)
-            .setAutoCancel(true)
-            .setSound(soundUri)
-            .build()
+        return Result.success()
     }
-
-    companion object {
-        private const val NOTIFICATION_CHANNEL_ID = "DailyChannel"
-        private const val NOTIFICATION_ID = 2
-    }
-
 }

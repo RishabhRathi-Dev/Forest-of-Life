@@ -1,5 +1,6 @@
 package com.rishabh.forestoflife.data
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -14,6 +15,7 @@ import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.Update
+import com.rishabh.forestoflife.data.receiver.scheduleReminderNotification
 import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -201,7 +203,7 @@ interface TaskDao {
     suspend fun updateTask(task: Task)
 
     @Transaction
-    suspend fun completeTask(taskId: Long) {
+    suspend fun completeTask(taskId: Long, context: Context) {
         val task = getTaskById(taskId)
 
         task?.let {
@@ -210,12 +212,14 @@ interface TaskDao {
                 calendar.time = task.due
                 calendar.add(Calendar.DAY_OF_MONTH, 1) // Add one day
                 task.due = calendar.time
+                scheduleReminderNotification(context = context, taskId = taskId, taskTitle = task.taskHeading, dueDate = task.due.time)
                 updateTask(task)
             } else if (task.isWeekly) {
                 val calendar = Calendar.getInstance()
                 calendar.time = task.due
                 calendar.add(Calendar.WEEK_OF_YEAR, 1) // Add one week
                 task.due = calendar.time
+                scheduleReminderNotification(context = context, taskId = taskId, taskTitle = task.taskHeading, dueDate = task.due.time)
                 updateTask(task)
             } else {
                 deleteTask(task.taskId)
@@ -287,7 +291,7 @@ interface DueTaskDao {
     suspend fun addTaskToTaskTable(task: Task)
 
     @Transaction
-    suspend fun completeTask(taskId: Long) {
+    suspend fun completeTask(taskId: Long, context: Context) {
         val task = getTaskById(taskId)
         val c = Calendar.getInstance()
         c.time = Calendar.getInstance().time
@@ -308,7 +312,7 @@ interface DueTaskDao {
                         points = task.points,
                         due = task.due
                     )
-
+                    scheduleReminderNotification(context = context, taskId = backToCurrent.taskId, taskTitle = backToCurrent.taskHeading, dueDate = backToCurrent.due.time)
                     addTaskToTaskTable(backToCurrent)
                     deleteTask(task.taskId)
 
@@ -329,6 +333,7 @@ interface DueTaskDao {
                         points = task.points,
                         due = task.due
                     )
+                    scheduleReminderNotification(context = context, taskId = backToCurrent.taskId, taskTitle = backToCurrent.taskHeading, dueDate = backToCurrent.due.time)
 
                     addTaskToTaskTable(backToCurrent)
                     deleteTask(task.taskId)

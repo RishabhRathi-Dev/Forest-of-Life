@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewModelScope
 import androidx.room.Database
 import androidx.room.Room
+import com.rishabh.forestoflife.data.receiver.CancelReminderNotification
+import com.rishabh.forestoflife.data.receiver.scheduleReminderNotification
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -65,7 +67,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // TODO : Call is not updating list
     fun workerCall(){
         viewModelScope.launch {
             database.taskDao().checkDueAndUpdate()
@@ -79,17 +80,19 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun taskCompleted(taskId : Long, points: Int) {
         viewModelScope.launch {
             database.pointsDao().addPoints(points = points)
-            database.taskDao().completeTask(taskId = taskId)
+            database.taskDao().completeTask(taskId = taskId, getApplication<Application>().applicationContext)
         }
     }
 
     fun deleteTask(taskId: Long){
+        CancelReminderNotification(context = getApplication<Application>().applicationContext, taskId)
         viewModelScope.launch {
             database.taskDao().deleteTask(taskId)
         }
     }
 
     fun createTask(task: Task){
+        scheduleReminderNotification(context = getApplication<Application>().applicationContext, taskId = task.taskId, taskTitle = task.taskHeading, dueDate = task.due.time)
         viewModelScope.launch {
             database.taskDao().insertTask(task)
         }
@@ -139,11 +142,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun dueTaskCompleted(taskId : Long) {
         viewModelScope.launch {
-            database.dueTaskDao().completeTask(taskId = taskId)
+            database.dueTaskDao().completeTask(taskId = taskId, getApplication<Application>().applicationContext)
         }
     }
 
     fun deleteDueTask(taskId: Long){
+        CancelReminderNotification(context = getApplication<Application>().applicationContext, taskId)
         viewModelScope.launch {
             database.dueTaskDao().deleteTask(taskId)
         }
